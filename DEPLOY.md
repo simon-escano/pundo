@@ -153,7 +153,7 @@ npx wrangler d1 time-travel info pundo    # D1 point-in-time restore window / bo
 
 The login page itself is hosted by Cloudflare, so it is branded in the dashboard, not in the app:
 Zero Trust → Settings → Custom pages / Authentication → Login page: set the name to **pundo**, the accent colour
-to `#157a3e`, and a logo. The logo URL must be reachable *before* login, so either host `public/icons/icon-512.png`
+to `#b45309`, and a logo. The logo URL must be reachable *before* login, so either host `public/icons/icon-512.png`
 somewhere public or add an Access **Bypass** policy limited to the path `/icons/*`.
 - **Clock skew:** the server refuses changes stamped more than 60 s ahead of its own clock. A device whose
   clock is wrong shows **"Check device clock"**; its changes stay queued until the clock is fixed.

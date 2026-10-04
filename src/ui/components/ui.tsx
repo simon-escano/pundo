@@ -13,20 +13,20 @@ export const cx = (...parts: (string | false | null | undefined)[]) => parts.fil
 
 type Variant = "primary" | "secondary" | "ghost" | "danger";
 const VARIANT: Record<Variant, string> = {
-  primary: "bg-accent text-accent-ink shadow-card hover:brightness-110",
-  secondary: "border border-line bg-raised text-ink shadow-card hover:bg-sunken",
+  primary: "bg-accent text-accent-ink hover:brightness-110",
+  secondary: "text-ink ring-[1.5px] ring-inset ring-ink/35 hover:bg-ink/5",
   ghost: "text-ink hover:bg-sunken",
-  danger: "border border-danger/40 text-danger hover:bg-danger-soft",
+  danger: "text-danger ring-1 ring-inset ring-danger/40 hover:bg-danger-soft",
 };
 const BTN =
-  "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl px-4 text-sm font-semibold transition-[background-color,filter,transform,box-shadow,opacity] duration-150 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-45 aria-pressed:border-accent aria-pressed:bg-accent-soft aria-pressed:text-accent";
+  "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full px-5 text-[15px] font-semibold transition-[background-color,filter,transform,opacity] duration-150 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40 aria-pressed:bg-ink aria-pressed:text-surface aria-pressed:ring-0";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant; icon?: LucideIcon };
 
 export function Button({ variant = "secondary", icon: Icon, className, children, type = "button", ...rest }: ButtonProps) {
   return (
     <button type={type} className={cx(BTN, VARIANT[variant], className)} {...rest}>
-      {Icon && <Icon aria-hidden className="size-[1.1rem] shrink-0" strokeWidth={2} />}
+      {Icon && <Icon aria-hidden className="size-[1.1rem] shrink-0" strokeWidth={2.25} />}
       {children}
     </button>
   );
@@ -53,33 +53,28 @@ export function IconButton({ icon: Icon, label, variant = "ghost", className, ..
 
 /* ----------------------------------------------------------- small pieces */
 
-const TAG_TONE = {
-  neutral: "bg-sunken text-ink",
-  accent: "bg-accent-soft text-accent",
-  warn: "bg-warn-soft text-warn",
-  info: "bg-info-soft text-info",
-  danger: "bg-danger-soft text-danger",
-} as const;
+const TAG_TONE = { neutral: "text-muted", accent: "text-accent", ok: "text-ok", danger: "text-danger" } as const;
 
-export function Tag({ icon: Icon, tone = "neutral", children, ...rest }: { icon?: LucideIcon; tone?: keyof typeof TAG_TONE; children: ReactNode } & React.HTMLAttributes<HTMLSpanElement>) {
+/** Plain inline text label with an optional icon. Deliberately not a pill: most facts don't need a container. */
+export function Tag({ icon: Icon, tone = "neutral", children, className, ...rest }: { icon?: LucideIcon; tone?: keyof typeof TAG_TONE; children: ReactNode } & React.HTMLAttributes<HTMLSpanElement>) {
   return (
-    <span className={cx("inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium leading-none", TAG_TONE[tone])} {...rest}>
-      {Icon && <Icon aria-hidden className="size-3.5 shrink-0" strokeWidth={2.25} />}
+    <span className={cx("inline-flex items-center gap-1 text-[13px] font-semibold", TAG_TONE[tone], className)} {...rest}>
+      {Icon && <Icon aria-hidden className="size-3.5 shrink-0" strokeWidth={2.5} />}
       {children}
     </span>
   );
 }
 
 export const PROTEIN_ICON: Record<Recipe["protein_category"], LucideIcon> = { pork: Drumstick, chicken: Drumstick, beef: Beef, fish: Fish, vegetable: Leaf };
-
-const STOVE_TONE = { 1: "warn", 2: "info", 3: "accent" } as const;
+/** Each protein owns a flat tint: dishes and recipes are recognisable by colour before they are read. */
+export const PROTEIN_TINT: Record<Recipe["protein_category"], string> = { pork: "bg-p-pork", chicken: "bg-p-chicken", beef: "bg-p-beef", fish: "bg-p-fish", vegetable: "bg-p-vegetable" };
 
 /** Spells out when a dish goes on the stove ("Cook first · Slow braise") instead of an opaque "P1". */
 export function StoveOrder({ priority, long = false }: { priority: Recipe["stove_priority"]; long?: boolean }) {
   const rank = STOVE_RANK[priority];
   const o = STOVE_ORDER[rank];
   return (
-    <Tag icon={Flame} tone={STOVE_TONE[rank]} data-testid="stove-badge" data-rank={rank}>
+    <Tag icon={Flame} tone="accent" data-testid="stove-badge" data-rank={rank}>
       {long ? `${o.long} · ${o.how}` : o.short}
     </Tag>
   );
@@ -87,10 +82,10 @@ export function StoveOrder({ priority, long = false }: { priority: Recipe["stove
 
 export function Stepper({ label, value, min = 1, max = 30, disabled, onChange }: { label: string; value: number; min?: number; max?: number; disabled?: boolean; onChange: (n: number) => void }) {
   return (
-    <div className="inline-flex items-center gap-1 rounded-xl bg-sunken p-1" role="group" aria-label={label}>
-      <IconButton icon={Minus} label={`Decrease ${label}`} disabled={disabled || value <= min} onClick={() => onChange(value - 1)} />
-      <output aria-label={label} className="min-w-9 text-center text-lg font-semibold tabular-nums">{value}</output>
-      <IconButton icon={Plus} label={`Increase ${label}`} disabled={disabled || value >= max} onClick={() => onChange(value + 1)} />
+    <div className="inline-flex items-center gap-1" role="group" aria-label={label}>
+      <IconButton icon={Minus} variant="secondary" label={`Decrease ${label}`} disabled={disabled || value <= min} onClick={() => onChange(value - 1)} />
+      <output aria-label={label} className="min-w-12 text-center font-display text-3xl font-extrabold tabular-nums">{value}</output>
+      <IconButton icon={Plus} variant="secondary" label={`Increase ${label}`} disabled={disabled || value >= max} onClick={() => onChange(value + 1)} />
     </div>
   );
 }
@@ -98,29 +93,29 @@ export function Stepper({ label, value, min = 1, max = 30, disabled, onChange }:
 type SegOption<T extends string> = { id: T; label: string; icon?: LucideIcon; href?: string };
 
 /**
- * Flat two-to-four way switch with a sliding highlight (never a wizard). Options with `href` are real links
- * (aria-current); the rest are toggle buttons (aria-pressed).
+ * Flat tab row with a sliding orange underline (never a wizard). Options with `href` are real links (aria-current);
+ * the rest are toggle buttons (aria-pressed).
  */
 export function Segmented<T extends string>({ value, options, onChange, label, className }: { value: T; options: SegOption<T>[]; onChange?: (v: T) => void; label: string; className?: string }) {
   const uid = useId();
   return (
-    <div className={cx("flex gap-1 rounded-2xl bg-sunken p-1", className)} role="group" aria-label={label}>
+    <div className={cx("flex gap-7 border-b border-line", className)} role="group" aria-label={label}>
       {options.map((o) => {
         const on = value === o.id;
         const inner = (
           <>
-            {on && <m.span layoutId={`seg-${uid}`} className="absolute inset-0 rounded-xl bg-raised shadow-card" transition={{ type: "spring", stiffness: 500, damping: 38 }} />}
-            <span className={cx("relative z-10 inline-flex items-center gap-1.5", on ? "text-ink" : "text-muted")}>
+            <span className="inline-flex items-center gap-1.5">
               {o.icon && <o.icon aria-hidden className="size-4" strokeWidth={2.25} />}
               {o.label}
             </span>
+            {on && <m.span layoutId={`seg-${uid}`} className="absolute inset-x-0 -bottom-px h-[3px] rounded-full bg-accent" transition={{ type: "spring", stiffness: 500, damping: 40 }} />}
           </>
         );
-        const cls = "relative inline-flex min-h-[44px] flex-1 items-center justify-center rounded-xl px-3 text-sm font-semibold transition-colors duration-150 hover:text-ink";
+        const cls = cx("relative inline-flex min-h-[44px] min-w-[44px] items-center justify-center text-[15px] font-semibold transition-colors duration-150", on ? "text-ink" : "text-muted hover:text-ink");
         return o.href ? (
           <a key={o.id} href={o.href} aria-current={on ? "page" : undefined} className={cls}>{inner}</a>
         ) : (
-          <button key={o.id} type="button" aria-pressed={on} className={cls} onClick={() => onChange?.(o.id)}>{inner}</button>
+          <button key={o.id} type="button" aria-pressed={on} className={cx(cls, "aria-pressed:bg-transparent aria-pressed:text-ink")} onClick={() => onChange?.(o.id)}>{inner}</button>
         );
       })}
     </div>
@@ -130,17 +125,17 @@ export function Segmented<T extends string>({ value, options, onChange, label, c
 /** A tick row: the whole row is the label, so the tap target is the full width. */
 export function CheckRow({ checked, onChange, label, children, className }: { checked: boolean; onChange: (v: boolean) => void; label?: string; children: ReactNode; className?: string }) {
   return (
-    <label className={cx("flex min-h-[44px] cursor-pointer items-center gap-3 rounded-xl py-1.5", className)}>
+    <label className={cx("flex min-h-[44px] cursor-pointer items-center gap-3.5 py-2", className)}>
       <input type="checkbox" className="check" checked={checked} aria-label={label} onChange={(e) => onChange(e.target.checked)} />
-      <span className={cx("min-w-0 flex-1 transition-colors duration-150", checked && "text-muted line-through")}>{children}</span>
+      <span className={cx("min-w-0 flex-1 transition-colors duration-150", checked && "text-muted line-through decoration-1")}>{children}</span>
     </label>
   );
 }
 
 const BANNER = {
   danger: { cls: "bg-danger-soft text-danger", icon: CircleAlert },
-  warn: { cls: "bg-warn-soft text-warn", icon: TriangleAlert },
-  ok: { cls: "bg-accent-soft text-accent", icon: CircleCheck },
+  warn: { cls: "bg-warn-soft text-ink", icon: TriangleAlert },
+  ok: { cls: "bg-accent-soft text-ink", icon: CircleCheck },
 } as const;
 
 export function Banner({ tone = "danger", children, title, onDismiss }: { tone?: keyof typeof BANNER; children: ReactNode; title?: string; onDismiss?: () => void }) {
@@ -151,35 +146,36 @@ export function Banner({ tone = "danger", children, title, onDismiss }: { tone?:
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -6 }}
       role={tone === "ok" ? "status" : "alert"}
-      className={cx("flex items-start gap-3 rounded-2xl p-3.5 text-sm", cls)}
+      className={cx("flex items-start gap-3 rounded-2xl p-4 text-[15px]", cls)}
     >
-      <Icon aria-hidden className="mt-0.5 size-5 shrink-0" />
+      <Icon aria-hidden className={cx("mt-0.5 size-5 shrink-0", tone !== "danger" && "text-accent")} />
       <div className="min-w-0 flex-1">
         {title && <p className="font-semibold">{title}</p>}
-        <div className={title ? "mt-0.5 opacity-90" : "font-medium"}>{children}</div>
+        <div className={title ? "mt-0.5 opacity-85" : "font-medium"}>{children}</div>
       </div>
       {onDismiss && <IconButton icon={X} label="Dismiss" className="-my-2 -mr-2 text-current" onClick={onDismiss} />}
     </m.div>
   );
 }
 
+/** Empty state: one plain sentence in the display face, and the next thing to do. No decorative box. */
 export function Empty({ icon: Icon, children, action }: { icon?: LucideIcon; children: ReactNode; action?: ReactNode }) {
   return (
-    <div className="mt-6 flex flex-col items-center gap-3 rounded-3xl border border-dashed border-line px-6 py-10 text-center">
-      {Icon && <span className="grid size-12 place-items-center rounded-2xl bg-sunken text-muted"><Icon aria-hidden className="size-6" /></span>}
-      <p className="max-w-xs text-muted">{children}</p>
-      {action}
+    <div className="mt-12 max-w-sm">
+      {Icon && <Icon aria-hidden className="mb-3 size-8 text-accent" strokeWidth={2} />}
+      <p className="font-display text-2xl font-bold leading-tight">{children}</p>
+      {action && <div className="mt-5">{action}</div>}
     </div>
   );
 }
 
-/** Page heading: one h1 per view, with an optional one-line hint. */
+/** Page heading: one h1 per view, big and left-aligned, with an optional one-line hint. */
 export function PageTitle({ title, hint, children }: { title: string; hint?: ReactNode; children?: ReactNode }) {
   return (
-    <div className="flex items-end justify-between gap-3">
+    <div className="flex items-end justify-between gap-4">
       <div className="min-w-0">
-        <h1 className="text-2xl font-semibold">{title}</h1>
-        {hint && <p className="mt-1 text-sm text-muted">{hint}</p>}
+        <h1 className="font-display text-[2.6rem] font-extrabold leading-[0.95] tracking-tight">{title}</h1>
+        {hint && <p className="mt-2 text-[15px] text-muted">{hint}</p>}
       </div>
       {children}
     </div>
@@ -188,12 +184,12 @@ export function PageTitle({ title, hint, children }: { title: string; hint?: Rea
 
 export function SectionHead({ icon: Icon, title, aside }: { icon?: LucideIcon; title: string; aside?: ReactNode }) {
   return (
-    <h2 className="sticky top-[var(--header-h,3.5rem)] z-10 -mx-4 flex items-center justify-between gap-2 bg-surface/90 px-4 py-2.5 text-base font-semibold backdrop-blur">
+    <h2 className="sticky top-[var(--header-h,3.5rem)] z-10 flex items-baseline justify-between gap-2 border-b-2 border-ink bg-surface pb-1.5 pt-3 font-display text-xl font-bold">
       <span className="flex items-center gap-2">
-        {Icon && <Icon aria-hidden className="size-[1.1rem] text-muted" />}
+        {Icon && <Icon aria-hidden className="size-[1.05rem] text-accent" strokeWidth={2.5} />}
         {title}
       </span>
-      {aside && <span className="text-sm font-normal text-muted">{aside}</span>}
+      {aside && <span className="font-sans text-sm font-medium text-muted">{aside}</span>}
     </h2>
   );
 }
@@ -247,17 +243,17 @@ export function Modal({ title, onClose, children, wide = false }: { title: strin
         aria-modal="true"
         aria-labelledby={titleId}
         className={cx(
-          "relative flex max-h-[92dvh] w-full flex-col overflow-hidden bg-raised shadow-lift outline-none",
-          "rounded-t-3xl sm:rounded-3xl",
+          "relative flex max-h-[92dvh] w-full flex-col overflow-hidden bg-surface shadow-float outline-none",
+          "rounded-t-[1.75rem] sm:rounded-[1.75rem]",
           wide ? "sm:max-w-2xl" : "sm:max-w-lg",
         )}
         initial={desktop ? { opacity: 0, scale: 0.96, y: 12 } : { y: "100%" }}
         animate={desktop ? { opacity: 1, scale: 1, y: 0 } : { y: 0 }}
         exit={desktop ? { opacity: 0, scale: 0.97, y: 8 } : { y: "100%" }}
       >
-        {!desktop && <span aria-hidden className="mx-auto mt-2 h-1 w-10 rounded-full bg-line" />}
+        {!desktop && <span aria-hidden className="mx-auto mt-2 h-1 w-10 rounded-full bg-ink/20" />}
         <div className="flex items-center justify-between gap-2 px-5 pb-1 pt-3 sm:pt-5">
-          <h2 id={titleId} className="text-lg font-semibold">{title}</h2>
+          <h2 id={titleId} className="font-display text-2xl font-extrabold">{title}</h2>
           <IconButton icon={X} label="Close dialog" className="-mr-2" onClick={onClose} />
         </div>
         <div className="overflow-y-auto overscroll-contain px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-2">{children}</div>

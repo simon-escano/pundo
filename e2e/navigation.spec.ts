@@ -1,14 +1,32 @@
 import { test, expect } from "@playwright/test";
-import { assertLayout, goto, isNarrow, openFixture } from "./helpers";
+import { assertLayout, isNarrow, openFixture } from "./helpers";
 
 test.describe("navigation and overlays", () => {
-  test("the main nav has exactly four stages; Recipes is a header button", async ({ page }) => {
+  test("the stage bar floats at the bottom centre, offset from the edge, and every stage is a direct link", async ({ page }) => {
     await openFixture(page, "plan", "locked");
     const nav = page.getByRole("navigation", { name: "Main" });
-    await expect(nav.getByRole("link")).toHaveText(["Plan", "Grocery", "Prep", "Cook"]);
+    await expect(nav.getByRole("link")).toHaveCount(4);
+    for (const name of ["Plan", "Grocery", "Prep", "Cook"]) await expect(nav.getByRole("link", { name, exact: true })).toBeVisible();
     await expect(nav.getByRole("link", { name: "Plan" })).toHaveAttribute("aria-current", "page");
-    await goto(page, "recipes");
-    await expect(page.getByRole("link", { name: "Back to plan" })).toBeVisible();
+    const vp = page.viewportSize()!;
+    const box = (await nav.boundingBox())!;
+    expect(Math.abs(box.x + box.width / 2 - vp.width / 2)).toBeLessThan(2); // centred
+    expect(vp.height - (box.y + box.height)).toBeGreaterThan(8); // floating, not docked
+    // jump straight to the last stage, then straight back to the first: no next/next needed
+    await nav.getByRole("link", { name: "Cook", exact: true }).click();
+    await expect(page.locator("main")).toHaveAttribute("data-route", "cook");
+    await nav.getByRole("link", { name: "Plan", exact: true }).click();
+    await expect(page.locator("main")).toHaveAttribute("data-route", "plan");
+  });
+
+  test("Recipes is a labelled header button, not an icon alone", async ({ page }) => {
+    await openFixture(page, "plan", "locked");
+    const link = page.getByRole("banner").getByRole("link", { name: "Recipes", exact: true });
+    await expect(link).toBeVisible();
+    await expect(link).toContainText("Recipes");
+    await link.click();
+    await expect(page.locator("main")).toHaveAttribute("data-route", "recipes");
+    await expect(link).toHaveAttribute("aria-current", "page");
   });
 
   test("the old #/day-1 route redirects to Prep › Day 1", async ({ page }) => {

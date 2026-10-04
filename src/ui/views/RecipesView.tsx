@@ -5,7 +5,7 @@ import { PROTEIN_LABEL, SAUCE_LABEL, TIER_LABEL } from "../lib/format";
 import { useApp } from "../app-context";
 import { SpotlightCard } from "../components/bits/SpotlightCard";
 import { AddRecipeModal } from "../components/AddRecipeModal";
-import { Banner, Button, cx, Empty, IconButton, PageTitle, PROTEIN_ICON, StoveOrder, Tag } from "../components/ui";
+import { Banner, Button, cx, Empty, IconButton, PageTitle, PROTEIN_ICON, PROTEIN_TINT, StoveOrder, Tag } from "../components/ui";
 
 // The raw JSON editor is rarely opened, so it loads on demand.
 const JsonEditorModal = lazy(() => import("../components/JsonEditorModal").then((m) => ({ default: m.JsonEditorModal })));
@@ -22,42 +22,37 @@ export function RecipesView() {
 
   return (
     <div>
-      <PageTitle title="Recipes" hint={<span data-testid="recipe-count">{active}</span>} />
-      <div className="relative mt-4">
-        <Search aria-hidden className="pointer-events-none absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-muted" />
-        <input type="search" aria-label="Search recipes" placeholder="Search recipes…" autoComplete="off" className="field !pl-11" value={query} onChange={(e) => setQuery(e.target.value)} />
+      <PageTitle title="Recipes" hint={<><span data-testid="recipe-count">{active}</span> in your library</>}>
+        <Button variant="primary" icon={Plus} className="shrink-0" onClick={() => setAdding(true)}>Add recipe</Button>
+      </PageTitle>
+      <div className="relative mt-6">
+        <Search aria-hidden className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted" />
+        <input type="search" aria-label="Search recipes" placeholder="Search recipes…" autoComplete="off" className="field !rounded-full !pl-12" value={query} onChange={(e) => setQuery(e.target.value)} />
       </div>
-      <div className="mt-3 flex flex-col gap-3">
-        <AnimatePresence>{saved && <Banner tone="ok" onDismiss={() => setSaved(null)}>{saved}</Banner>}</AnimatePresence>
-      </div>
+      <AnimatePresence>{saved && <div className="mt-4"><Banner tone="ok" onDismiss={() => setSaved(null)}>{saved}</Banner></div>}</AnimatePresence>
 
-      <ul className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-3" aria-label="Recipe library">
+      <ul className="mt-6 grid gap-3 md:grid-cols-2 lg:grid-cols-3" aria-label="Recipe library">
         {shown.map(({ recipe: r, deleted }) => {
           const Icon = PROTEIN_ICON[r.protein_category];
           return (
-            <SpotlightCard as="li" key={r.id} className={cx("flex flex-col rounded-2xl border border-line bg-raised p-4 shadow-card transition-opacity duration-200", deleted && "opacity-60")} data-testid="recipe-row" data-recipe={r.id}>
-              <span className="inline-flex items-center gap-1 text-xs font-medium text-muted"><Icon aria-hidden className="size-3.5" />{PROTEIN_LABEL[r.protein_category]}</span>
-              <h3 className="mt-1.5 font-semibold leading-snug">{r.name}{deleted && <Tag tone="danger">Deleted</Tag>}</h3>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                <Tag tone={r.perishability_tier === "TIER_2_HARDY" ? "accent" : "neutral"}>{TIER_LABEL[r.perishability_tier]}</Tag>
-                <Tag>{SAUCE_LABEL[r.sauce_base]}</Tag>
+            <SpotlightCard as="li" key={r.id} className={cx("flex min-h-40 flex-col rounded-2xl p-4 transition-opacity duration-200", PROTEIN_TINT[r.protein_category], deleted && "opacity-55")} data-testid="recipe-row" data-recipe={r.id}>
+              <span className="inline-flex items-center gap-1 text-xs font-semibold text-ink/70"><Icon aria-hidden className="size-4" strokeWidth={2.25} />{PROTEIN_LABEL[r.protein_category]}</span>
+              <h3 className="mt-2 font-display text-xl font-bold leading-[1.1]">{r.name}{deleted && <> <Tag tone="danger">Deleted</Tag></>}</h3>
+              <p className="mt-2 text-sm text-ink/75">{TIER_LABEL[r.perishability_tier]} · {SAUCE_LABEL[r.sauce_base]}</p>
+              <div className="mt-auto flex items-end justify-between gap-2 pt-4">
                 <StoveOrder priority={r.stove_priority} />
-              </div>
-              <div className="mt-3 flex items-center justify-end gap-1 pt-1">
-                <IconButton icon={FileJson} label={`Edit JSON for ${r.name}`} onClick={() => setEditing(r.id)} />
-                {deleted
-                  ? <Button icon={Undo2} onClick={() => run(() => s.recipes.restore(r.id))}>Restore</Button>
-                  : <IconButton icon={Trash2} label={`Delete ${r.name}`} className="text-danger" onClick={() => run(() => s.recipes.remove(r.id))} />}
+                <div className="flex items-center gap-1">
+                  <IconButton icon={FileJson} variant="secondary" label={`Edit JSON for ${r.name}`} onClick={() => setEditing(r.id)} />
+                  {deleted
+                    ? <Button icon={Undo2} onClick={() => run(() => s.recipes.restore(r.id))}>Restore</Button>
+                    : <IconButton icon={Trash2} variant="secondary" label={`Delete ${r.name}`} className="text-danger" onClick={() => run(() => s.recipes.remove(r.id))} />}
+                </div>
               </div>
             </SpotlightCard>
           );
         })}
       </ul>
       {shown.length === 0 && <Empty icon={Search}>No recipes match “{query}”.</Empty>}
-
-      <Button variant="primary" icon={Plus} className="fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-4 z-20 h-14 rounded-2xl px-5 shadow-lift md:bottom-6" onClick={() => setAdding(true)}>
-        Add recipe
-      </Button>
 
       <AnimatePresence>{adding && <AddRecipeModal onClose={() => setAdding(false)} onSaved={setSaved} />}</AnimatePresence>
       <AnimatePresence>

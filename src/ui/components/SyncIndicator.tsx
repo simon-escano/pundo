@@ -12,7 +12,7 @@ const ICON: Record<IndicatorState, LucideIcon> = {
   auth: LogIn, offline: CloudOff, syncing: RefreshCw, synced: CloudCheck, pending: Cloud, unreachable: CloudOff, blocked: Clock, error: TriangleAlert, local: Cloud,
 };
 const TONE: Record<IndicatorTone, string> = {
-  ok: "text-accent", info: "text-info", warn: "text-warn", danger: "text-danger", muted: "text-muted",
+  ok: "text-ok", info: "text-accent", warn: "text-accent", danger: "text-danger", muted: "text-muted",
 };
 
 /** Online / offline / syncing state from useOnline(), the Dexie outbox count and the sync engine. */
@@ -38,7 +38,7 @@ export function SyncIndicator({ onSignIn }: { onSignIn: () => void }) {
         aria-expanded={ind.state === "auth" ? undefined : open}
         title={ind.detail}
         onClick={() => (ind.state === "auth" ? onSignIn() : setOpen((o) => !o))}
-        className={cx("inline-flex min-h-[44px] max-w-[11.5rem] items-center gap-1.5 rounded-xl px-2.5 text-xs font-medium transition-colors duration-150 hover:bg-sunken", TONE[ind.tone])}
+        className={cx("inline-flex min-h-[44px] max-w-[8.5rem] items-center gap-1.5 rounded-full px-2.5 text-xs font-semibold transition-colors duration-150 hover:bg-sunken", TONE[ind.tone])}
       >
         <Icon aria-hidden className={cx("size-4 shrink-0", ind.state === "syncing" && "animate-spin")} />
         <span className="truncate">{ind.label}</span>
@@ -50,7 +50,7 @@ export function SyncIndicator({ onSignIn }: { onSignIn: () => void }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.97 }}
             transition={{ duration: 0.14 }}
-            className="absolute right-0 top-full z-50 mt-1 w-60 rounded-2xl border border-line bg-raised p-3 text-sm shadow-lift"
+            className="absolute right-0 top-full z-50 mt-1 w-60 rounded-2xl bg-raised p-4 text-sm shadow-float"
           >
             <p className="font-semibold">{ind.label}</p>
             <p className="mt-1 text-muted">{ind.detail}</p>

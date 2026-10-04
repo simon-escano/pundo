@@ -21,16 +21,16 @@ export function PantryPanel() {
   const nameOf = (id: string) => world.registry[id]?.display_name ?? id;
 
   return (
-    <section className="mt-3 rounded-2xl border border-line bg-raised shadow-card" aria-label="Pantry stock">
-      <button type="button" className="flex min-h-12 w-full items-center gap-3 px-4 text-left font-semibold" aria-expanded={open} onClick={() => setOpen(!open)}>
-        <Refrigerator aria-hidden className="size-5 text-muted" />
+    <section className="mt-6 border-y border-line" aria-label="Pantry stock">
+      <button type="button" className="flex min-h-[52px] w-full items-center gap-3 text-left text-[17px] font-semibold" aria-expanded={open} onClick={() => setOpen(!open)}>
+        <Refrigerator aria-hidden className="size-5 text-accent" />
         <span className="flex-1">Pantry stock ({world.pantry.length})</span>
         <ChevronDown aria-hidden className={cx("size-5 text-muted transition-transform duration-200", open && "rotate-180")} />
       </button>
       <AnimatePresence initial={false}>
         {open && (
           <m.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-            <div className="flex flex-col gap-3 px-4 pb-4">
+            <div className="flex flex-col gap-3 pb-4">
               {world.pantry.length === 0 && <p className="text-sm text-muted">Nothing here yet. Add what you already have and it comes off the buy list.</p>}
               <ul className="flex flex-col" data-testid="pantry-list">
                 {world.pantry.map((p) => (

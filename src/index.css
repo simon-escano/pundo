@@ -7,48 +7,60 @@
  */
 :root {
   color-scheme: light dark;
-  --surface: #f6f7f8;
+  --surface: #faf7f2;
   --raised: #ffffff;
-  --sunken: #eceef0;
-  --ink: #17181b;
-  --muted: #565b64;
-  --line: #dfe2e6;
-  --accent: #157a3e;
+  --sunken: #f1ece3;
+  --ink: #1f1a16;
+  --muted: #6a6158;
+  --line: #e4ddd2;
+  --accent: #b45309; /* the pundo orange */
   --accent-ink: #ffffff;
-  --accent-soft: #e0f3e7;
-  --danger: #b4231c;
-  --danger-soft: #fdeceb;
-  --warn: #8a5300;
-  --warn-soft: #fdf3dd;
-  --info: #1d5fb8;
-  --info-soft: #e5eefb;
-  --shadow-ambient: 0 1px 2px rgb(23 24 27 / 0.05), 0 4px 12px rgb(23 24 27 / 0.05);
-  --shadow-lift: 0 2px 4px rgb(23 24 27 / 0.06), 0 12px 32px rgb(23 24 27 / 0.12);
+  --accent-soft: #fbe8d3;
+  --hot: #ea6a12; /* decoration only: never carries text */
+  --ok: #2d7a4b;
+  --danger: #b3261e;
+  --danger-soft: #fbe5e2;
+  --warn-soft: #fcefd2;
+  --bar: #1f1a16;
+  --bar-ink: #faf7f2;
+  /* ingredient colours: each protein owns a flat tint, so dishes are readable at a glance */
+  --p-beef: #f0d3c9;
+  --p-pork: #f5d9de;
+  --p-chicken: #f6e3a8;
+  --p-fish: #cfe3ee;
+  --p-vegetable: #d6e6c3;
+  --shadow-float: 0 2px 6px rgb(31 26 22 / 0.12), 0 18px 40px rgb(31 26 22 / 0.22);
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --surface: #0d0e10;
-    --raised: #17191c;
-    --sunken: #1f2226;
-    --ink: #f2f3f4;
-    --muted: #9aa0a9;
-    --line: #2b2f35;
-    --accent: #52c97b;
-    --accent-ink: #06210f;
-    --accent-soft: #14301f;
-    --danger: #ff8a82;
-    --danger-soft: #3a1917;
-    --warn: #f0b955;
-    --warn-soft: #382a0e;
-    --info: #7fb2f5;
-    --info-soft: #172840;
-    --shadow-ambient: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 12px rgb(0 0 0 / 0.25);
-    --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.4), 0 12px 32px rgb(0 0 0 / 0.5);
+    --surface: #15110e;
+    --raised: #201a16;
+    --sunken: #271f1a;
+    --ink: #f5efe8;
+    --muted: #a49a8f;
+    --line: #362e27;
+    --accent: #f08a24;
+    --accent-ink: #1a0e03;
+    --accent-soft: #3b2412;
+    --hot: #ff8a2a;
+    --ok: #6cc58d;
+    --danger: #ff9188;
+    --danger-soft: #3d1b18;
+    --warn-soft: #3a2a10;
+    --bar: #2b241f;
+    --bar-ink: #f5efe8;
+    --p-beef: #432720;
+    --p-pork: #42262d;
+    --p-chicken: #43381a;
+    --p-fish: #1b303d;
+    --p-vegetable: #243319;
+    --shadow-float: 0 2px 6px rgb(0 0 0 / 0.4), 0 18px 40px rgb(0 0 0 / 0.55);
   }
 }
 
 @theme inline {
   --font-sans: "Geist Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Bricolage Grotesque Variable", "Geist Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
   --color-surface: var(--surface);
@@ -60,17 +72,20 @@
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --color-accent-soft: var(--accent-soft);
+  --color-hot: var(--hot);
+  --color-ok: var(--ok);
   --color-danger: var(--danger);
   --color-danger-soft: var(--danger-soft);
-  --color-warn: var(--warn);
   --color-warn-soft: var(--warn-soft);
-  --color-info: var(--info);
-  --color-info-soft: var(--info-soft);
+  --color-bar: var(--bar);
+  --color-bar-ink: var(--bar-ink);
+  --color-p-beef: var(--p-beef);
+  --color-p-pork: var(--p-pork);
+  --color-p-chicken: var(--p-chicken);
+  --color-p-fish: var(--p-fish);
+  --color-p-vegetable: var(--p-vegetable);
 
-  --shadow-card: var(--shadow-ambient);
-  --shadow-lift: var(--shadow-lift);
-  --radius-card: 1rem;
-  --radius-inner: 0.625rem;
+  --shadow-float: var(--shadow-float);
 }
 
 @layer base {
@@ -89,7 +104,7 @@
     -webkit-font-smoothing: antialiased;
     touch-action: manipulation;
   }
-  h1, h2, h3 { line-height: 1.2; text-wrap: balance; letter-spacing: -0.01em; }
+  h1, h2, h3 { font-family: var(--font-display); line-height: 1.1; text-wrap: balance; letter-spacing: -0.02em; font-weight: 700; }
   p { text-wrap: pretty; }
   /* 44px minimum tap targets everywhere (kitchen / one-handed use). Inputs stay >= 16px so iOS never zooms. */
   button, select, summary, textarea, input:not([type="checkbox"]):not([type="radio"]) { min-height: 44px; }
@@ -102,28 +117,28 @@
 @layer components {
   .field {
     min-height: 44px; width: 100%; padding: 0 0.75rem; background: var(--raised); color: var(--ink);
-    border: 1px solid var(--line); border-radius: var(--radius-inner); font-size: 1rem;
+    border: 1.5px solid var(--line); border-radius: 0.875rem; font-size: 1rem;
     transition: border-color 150ms ease, box-shadow 150ms ease;
   }
   .field:hover { border-color: var(--muted); }
-  .field:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-  .field[aria-invalid="true"] { border-color: var(--danger); box-shadow: 0 0 0 3px var(--danger-soft); }
+  .field:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+  .field[aria-invalid="true"] { border-color: var(--danger); box-shadow: 0 0 0 4px var(--danger-soft); }
   textarea.field { padding: 0.625rem 0.75rem; font-family: var(--font-mono); font-size: 0.8125rem; line-height: 1.5; }
   select.field { color-scheme: light dark; }
 
   /* Native checkbox, restyled. Its tap target is the surrounding label (see CheckRow). */
   .check {
-    appearance: none; flex: none; width: 1.75rem; height: 1.75rem; margin: 0; cursor: pointer;
-    border: 2px solid var(--muted); border-radius: 0.5rem; background: var(--raised) center / 70% no-repeat;
+    appearance: none; flex: none; width: 1.6rem; height: 1.6rem; margin: 0; cursor: pointer;
+    border: 2px solid var(--muted); border-radius: 9999px; background: transparent center / 70% no-repeat;
     transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
   }
   .check:checked {
     border-color: var(--accent); background-color: var(--accent);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E");
   }
   .check:active { transform: scale(0.9); }
 
-  .scrim { background: rgb(8 9 11 / 0.5); }
+  .scrim { background: rgb(20 14 8 / 0.55); }
 }
 
 /* Motion is feedback, never decoration: honour the OS setting for CSS transitions too. */

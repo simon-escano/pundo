@@ -1,4 +1,4 @@
-import { Droplets, ListChecks, Soup, Snowflake } from "lucide-react";
+import { ArrowRight, Droplets, ListChecks, Soup, Snowflake } from "lucide-react";
 import { AnimatePresence, m } from "motion/react";
 import { buildDay1Protocol, type Day1Task } from "../../domain/engines/freezerProtocol";
 import { buildMiseEnPlace, formatGroup, formatStaging } from "../../domain/engines/miseEnPlace";
@@ -8,7 +8,7 @@ import { useChecklist } from "../hooks/useChecklist";
 import { useWakeLock } from "../hooks/useWakeLock";
 import { useApp } from "../app-context";
 import { routeHref, useRoute } from "../router";
-import { CheckRow, Empty, PageTitle, SectionHead, Segmented, Tag } from "../components/ui";
+import { CheckRow, Empty, PageTitle, SectionHead, Segmented } from "../components/ui";
 import { ClickSpark } from "../components/bits/ClickSpark";
 import { LinkButton } from "../components/ui";
 
@@ -72,12 +72,12 @@ function Day1Tasks() {
 function TaskGroup({ icon, title, items, checked, toggle }: { icon: typeof Snowflake; title: string; items: Day1Task[]; checked: ReadonlySet<string>; toggle: (id: string) => void }) {
   if (items.length === 0) return null;
   return (
-    <section className="mt-4" aria-label={title}>
+    <section className="mt-6" aria-label={title}>
       <SectionHead icon={icon} title={title} />
-      <ul className="mt-1 flex flex-col gap-2">
+      <ul>
         {items.map((t) => (
-          <li key={t.id} className="rounded-2xl border border-line bg-raised px-3 py-1 shadow-card" data-testid="day1-task">
-            <CheckRow checked={checked.has(t.id)} onChange={() => toggle(t.id)}>{t.text}</CheckRow>
+          <li key={t.id} className="border-b border-line" data-testid="day1-task">
+            <CheckRow checked={checked.has(t.id)} onChange={() => toggle(t.id)} className="py-3"><span className="text-base">{t.text}</span></CheckRow>
           </li>
         ))}
       </ul>
@@ -97,46 +97,47 @@ function CookDayPrep({ week }: { week: 1 | 2 }) {
   const allDone = everyTick.length > 0 && everyTick.every((id) => checked.has(id));
 
   return (
-    <div className="relative flex flex-col gap-3">
+    <div className="relative">
       <ClickSpark fire={allDone} />
       {groups.map((g) => {
         const { name, detail } = splitGroupHeading(g.heading);
-        const on = checked.has(g.id);
         return (
-          <section key={g.id} className="rounded-2xl border border-line bg-raised p-3 shadow-card" data-testid="prep-group" data-ingredient={g.id}>
-            <CheckRow checked={on} onChange={() => toggle(g.id)} label={`Done: ${name}`}>
-              <h2 className="text-base font-semibold">{name}</h2>
+          <section key={g.id} className="border-b border-line py-4" data-testid="prep-group" data-ingredient={g.id}>
+            <CheckRow checked={checked.has(g.id)} onChange={() => toggle(g.id)} label={`Done: ${name}`} className="items-start">
+              <h2 className="font-display text-2xl font-bold leading-tight">{name}</h2>
               {detail && <span className="block text-sm font-normal text-muted">{detail}</span>}
             </CheckRow>
-            {g.surface && (
-              <p className="mt-1 flex items-start gap-2 pl-10 text-sm" data-testid="surface-prep">
-                <Droplets aria-hidden className="mt-0.5 size-4 shrink-0 text-info" />
-                {g.surface}
-              </p>
-            )}
-            <ul className="mt-2 flex flex-col gap-2 pl-10">
-              {g.rows.map((r, i) => (
-                <li key={`${r.recipeId}-${r.cut}-${i}`} className="rounded-xl bg-sunken px-3 py-2 text-sm" data-testid="cut-row" data-cut={r.cut}>
-                  <p className="font-semibold">
-                    {CUT_LABELS[r.cut].label}
-                    {r.size && <span className="font-normal text-muted"> · {r.size}</span>}
-                  </p>
-                  <p className="text-muted">{r.text}</p>
-                  <Tag tone="accent" icon={Soup}>{`Into ${bowl(r.bowl)}`}</Tag>
-                </li>
-              ))}
-            </ul>
+            <div className="pl-[2.6rem]">
+              {g.surface && (
+                <p className="mt-1 flex items-start gap-2 text-sm font-medium text-accent" data-testid="surface-prep">
+                  <Droplets aria-hidden className="mt-0.5 size-4 shrink-0" />
+                  {g.surface}
+                </p>
+              )}
+              <ul className="mt-3 flex flex-col gap-3">
+                {g.rows.map((r, i) => (
+                  <li key={`${r.recipeId}-${r.cut}-${i}`} className="text-sm" data-testid="cut-row" data-cut={r.cut}>
+                    <p className="text-base font-semibold">
+                      {CUT_LABELS[r.cut].label}
+                      {r.size && <span className="font-normal text-muted"> · {r.size}</span>}
+                    </p>
+                    <p className="text-muted">{r.text}</p>
+                    <p className="mt-0.5 flex items-center gap-1 font-semibold"><ArrowRight aria-hidden className="size-3.5 text-accent" strokeWidth={3} />{`Into ${bowl(r.bowl)}`}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </section>
         );
       })}
       {staging.length > 0 && (
-        <section className="rounded-2xl border border-line bg-raised p-3 shadow-card" aria-label="Cans and sauces" data-testid="staging">
-          <h2 className="text-base font-semibold">Set out cans and sauces</h2>
-          <ul className="mt-1 flex flex-col">
+        <section className="mt-6 border-t-2 border-ink pt-3" aria-label="Cans and sauces" data-testid="staging">
+          <h2 className="font-display text-2xl font-bold">Set out cans and sauces</h2>
+          <ul className="mt-1">
             {staging.map((s) => (
               <li key={s.id} className="border-b border-line last:border-0">
-                <CheckRow checked={checked.has(`staging:${s.id}`)} onChange={() => toggle(`staging:${s.id}`)}>
-                  <span className="text-sm">{s.text}</span>
+                <CheckRow checked={checked.has(`staging:${s.id}`)} onChange={() => toggle(`staging:${s.id}`)} className="py-3">
+                  <span className="text-base">{s.text}</span>
                   <span className="block text-sm text-muted">Into {s.stations.map(bowl).join(", ")}</span>
                 </CheckRow>
               </li>
