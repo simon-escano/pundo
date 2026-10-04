@@ -72,7 +72,7 @@ function Shell() {
               href={routeHref("recipes")}
               aria-current={route.id === "recipes" ? "page" : undefined}
               className={cx(
-                "sheen relative inline-flex min-h-[44px] items-center gap-2 overflow-hidden whitespace-nowrap rounded-full px-3.5 text-[15px] font-semibold transition-[translate,scale,background-color] duration-200 hover:-translate-y-px active:translate-y-0 active:scale-[0.96]",
+                "inline-flex min-h-[44px] items-center gap-2 whitespace-nowrap rounded-full px-3.5 text-[15px] font-semibold transition-[scale,background-color] duration-300 active:scale-[0.97]",
                 route.id === "recipes" ? "bg-ink text-surface" : "glass-ctl text-ink",
               )}
             >
@@ -126,7 +126,7 @@ function StageBar({ active }: { active: RouteId }) {
           const finished = done[i] && !on;
           return (
             <li key={st.id} className="group/stage relative flex-1">
-              {!on && <span aria-hidden className="absolute inset-0 rounded-full bg-ink/[0.06] opacity-0 transition-opacity duration-200 group-hover/stage:opacity-100" />}
+              {!on && <span aria-hidden className="absolute inset-0 rounded-full bg-ink/[0.06] opacity-0 transition-opacity duration-300 group-hover/stage:opacity-100" />}
               {on && <m.span layoutId="stage-lens" className="glass-lens absolute inset-0 rounded-full" transition={{ type: "spring", stiffness: 420, damping: 34 }} />}
               {i < STAGES.length - 1 && (
                 <span aria-hidden className="absolute left-[calc(50%+22px)] right-[calc(-50%+22px)] top-[21px] h-[2px] overflow-hidden rounded-full bg-ink/12">

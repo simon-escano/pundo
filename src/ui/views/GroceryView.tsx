@@ -89,7 +89,7 @@ function LineItem({ line, hasStock, cycleId }: { line: GroceryLine; hasStock: bo
   const week = line.bucket === "cycle" ? null : line.bucket === "w1" ? 1 : 2;
   const label = line.display_name + (week ? ` (Week ${week})` : "");
   return (
-    <li className="border-b border-line transition-colors duration-150 hover:bg-ink/[0.03]" data-testid="grocery-line" data-ingredient={line.ingredient_id} data-unit={line.unitLabel} data-aisle={line.aisle}>
+    <li className="border-b border-line transition-colors duration-300 hover:bg-ink/[0.025]" data-testid="grocery-line" data-ingredient={line.ingredient_id} data-unit={line.unitLabel} data-aisle={line.aisle}>
       <label className="flex cursor-pointer items-start gap-3.5 pb-1 pt-3.5">
         <input type="checkbox" className="check mt-0.5" checked={line.bought} aria-label={`Bought: ${label}`} onChange={(e) => run(() => s.groceryState.setBought(cycleId, line.key, e.target.checked))} />
         <span className={cx("flex min-w-0 flex-1 items-start justify-between gap-3 transition-opacity duration-200", line.bought && "opacity-45")}>

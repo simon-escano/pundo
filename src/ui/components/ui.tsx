@@ -13,13 +13,13 @@ export const cx = (...parts: (string | false | null | undefined)[]) => parts.fil
 
 type Variant = "primary" | "secondary" | "ghost" | "danger";
 const VARIANT: Record<Variant, string> = {
-  primary: "bg-accent text-accent-ink shadow-[inset_0_1px_0_rgb(255_255_255/0.35),0_6px_18px_color-mix(in_srgb,var(--accent)_32%,transparent)] hover:brightness-110 hover:shadow-[inset_0_1px_0_rgb(255_255_255/0.45),0_10px_26px_color-mix(in_srgb,var(--accent)_45%,transparent)]",
+  primary: "bg-accent text-accent-ink shadow-[inset_0_1px_0_rgb(255_255_255/0.35),0_6px_18px_color-mix(in_srgb,var(--accent)_32%,transparent)] hover:brightness-110",
   secondary: "glass-ctl text-ink",
-  ghost: "text-ink hover:bg-ink/[0.07]",
+  ghost: "text-ink hover:bg-ink/[0.06]",
   danger: "glass-ctl text-danger",
 };
 const BTN =
-  "sheen relative inline-flex min-h-[44px] items-center justify-center gap-2 overflow-hidden rounded-full px-5 text-[15px] font-semibold transition-[background-color,filter,translate,scale,opacity] duration-200 ease-out hover:-translate-y-px active:translate-y-0 active:scale-[0.96] disabled:pointer-events-none disabled:opacity-40 aria-pressed:bg-ink aria-pressed:text-surface aria-pressed:ring-0";
+  "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full px-5 text-[15px] font-semibold transition-[background-color,filter,scale,opacity,box-shadow] duration-300 ease-out active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40 aria-pressed:bg-ink aria-pressed:text-surface aria-pressed:ring-0";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant; icon?: LucideIcon };
 
@@ -140,7 +140,7 @@ export function Segmented<T extends string>({ value, options, onChange, label, c
               {o.icon && <o.icon aria-hidden className="size-4" strokeWidth={2.25} />}
               {o.label}
             </span>
-            {!on && <span aria-hidden className="absolute inset-x-0 -bottom-px h-[3px] origin-center scale-x-0 rounded-full bg-ink/20 transition-transform duration-200 group-hover/tab:scale-x-100" />}
+            {!on && <span aria-hidden className="absolute inset-x-0 -bottom-px h-[3px] origin-center scale-x-0 rounded-full bg-ink/20 transition-transform duration-300 group-hover/tab:scale-x-100" />}
             {on && <m.span layoutId={`seg-${uid}`} className="absolute inset-x-0 -bottom-px h-[3px] rounded-full bg-accent" transition={{ type: "spring", stiffness: 500, damping: 40 }} />}
           </>
         );
@@ -158,7 +158,7 @@ export function Segmented<T extends string>({ value, options, onChange, label, c
 /** A tick row: the whole row is the label, so the tap target is the full width. */
 export function CheckRow({ checked, onChange, label, children, className }: { checked: boolean; onChange: (v: boolean) => void; label?: string; children: ReactNode; className?: string }) {
   return (
-    <label className={cx("flex min-h-[44px] cursor-pointer items-center gap-3.5 rounded-xl py-2 transition-colors duration-150 hover:bg-ink/[0.04]", className)}>
+    <label className={cx("flex min-h-[44px] cursor-pointer items-center gap-3.5 rounded-xl py-2 transition-colors duration-300 hover:bg-ink/[0.035]", className)}>
       <input type="checkbox" className="check" checked={checked} aria-label={label} onChange={(e) => onChange(e.target.checked)} />
       <span className={cx("min-w-0 flex-1 transition-colors duration-150", checked && "text-muted line-through decoration-1")}>{children}</span>
     </label>

@@ -37,7 +37,7 @@ export function RecipesView() {
         {shown.map(({ recipe: r, deleted }) => {
           const Icon = PROTEIN_ICON[r.protein_category];
           return (
-            <SpotlightCard as="li" key={r.id} className={cx("squircle flex min-h-40 cursor-pointer flex-col rounded-2xl p-4 transition-[translate,scale,box-shadow,opacity] duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_16px_34px_rgb(31_26_22/0.16)] active:translate-y-0 active:scale-[0.985]", PROTEIN_TINT[r.protein_category], deleted && "opacity-55")} data-testid="recipe-row" data-recipe={r.id} onClick={(e) => { if (!(e.target as HTMLElement).closest("button")) setViewing(r.id); }}>
+            <SpotlightCard as="li" key={r.id} className={cx("squircle flex min-h-40 cursor-pointer flex-col rounded-2xl p-4 transition-[translate,scale,box-shadow,opacity] duration-500 ease-out hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgb(31_26_22/0.1)] active:translate-y-0 active:scale-[0.99]", PROTEIN_TINT[r.protein_category], deleted && "opacity-55")} data-testid="recipe-row" data-recipe={r.id} onClick={(e) => { if (!(e.target as HTMLElement).closest("button")) setViewing(r.id); }}>
               <span className="inline-flex items-center gap-1 text-xs font-semibold text-ink/70"><Icon aria-hidden className="size-4" strokeWidth={2.25} />{PROTEIN_LABEL[r.protein_category]}</span>
               <h3 className="mt-2 font-display text-xl font-bold leading-[1.1]">
                 <button type="button" aria-label={`View recipe: ${r.name}`} className="rounded-md text-left" onClick={() => setViewing(r.id)}>{r.name}</button>
