@@ -1,0 +1,116 @@
+{
+  "id": "pork-menudo",
+  "name": "Pork Menudo",
+  "default_portions": 10,
+  "protein_category": "pork",
+  "sauce_base": "tomato",
+  "perishability_tier": "TIER_2_HARDY",
+  "stove_priority": "PRIORITY_1_SLOW_BRAISE",
+  "estimated_base_cost_php": 470,
+  "videos": [],
+  "prep_items": [
+    {
+      "ingredient_id": "pork_shoulder",
+      "display_name": "Pork shoulder",
+      "cut_technique": "MEDIUM_DICE",
+      "cut_note": "Ask for menudo strips",
+      "granularity": "discrete",
+      "pieces_per_portion": 4,
+      "quantity_per_portion": 80,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "potato",
+      "display_name": "Potato",
+      "cut_technique": "MEDIUM_DICE",
+      "cut_note": null,
+      "granularity": "discrete",
+      "pieces_per_portion": 2,
+      "quantity_per_portion": 35,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "carrot",
+      "display_name": "Carrot",
+      "cut_technique": "MEDIUM_DICE",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 25,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "red_onion",
+      "display_name": "Red onion",
+      "cut_technique": "MEDIUM_DICE",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 15,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "garlic",
+      "display_name": "Garlic",
+      "cut_technique": "MINCED",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 3,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "tomato_sauce",
+      "display_name": "Tomato sauce",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 20,
+      "unit": "g",
+      "packaging": {
+        "retail_unit": "250 g pouch",
+        "pack_size": 250,
+        "snap_to_whole_pack": true
+      }
+    },
+    {
+      "ingredient_id": "soy_sauce",
+      "display_name": "Soy sauce",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 8,
+      "unit": "ml",
+      "packaging": {
+        "retail_unit": "385 mL bottle",
+        "pack_size": 385,
+        "snap_to_whole_pack": true
+      }
+    },
+    {
+      "ingredient_id": "cooking_oil",
+      "display_name": "Cooking oil",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 3,
+      "unit": "ml",
+      "packaging": {
+        "retail_unit": "1 L bottle",
+        "pack_size": 1000,
+        "snap_to_whole_pack": true
+      }
+    }
+  ],
+  "cook_steps": [
+    "Sear pork in smoking oil until browned; set aside.",
+    "Sauté onions until glassy, then garlic until golden.",
+    "Return pork with tomato sauce, soy sauce and water.",
+    "Cover and braise on low until the pork is fork-tender.",
+    "Add potatoes and carrots; simmer until easily pierced."
+  ],
+  "pack_step": "Fill solids first, sauce after."
+}

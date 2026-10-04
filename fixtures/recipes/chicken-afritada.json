@@ -1,0 +1,111 @@
+{
+  "id": "chicken-afritada",
+  "name": "Chicken Afritada",
+  "default_portions": 10,
+  "protein_category": "chicken",
+  "sauce_base": "tomato",
+  "perishability_tier": "TIER_2_HARDY",
+  "stove_priority": "PRIORITY_1_SLOW_BRAISE",
+  "estimated_base_cost_php": 510,
+  "videos": [],
+  "prep_items": [
+    {
+      "ingredient_id": "chicken_cutup",
+      "display_name": "Chicken cut-up",
+      "cut_technique": "WHOLE",
+      "cut_note": "Ask for a cut-up chicken, bone-in",
+      "granularity": "discrete",
+      "pieces_per_portion": 1,
+      "quantity_per_portion": 150,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "potato",
+      "display_name": "Potato",
+      "cut_technique": "LARGE_DICE",
+      "cut_note": null,
+      "granularity": "discrete",
+      "pieces_per_portion": 2,
+      "quantity_per_portion": 40,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "carrot",
+      "display_name": "Carrot",
+      "cut_technique": "ROLL_CUT",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 25,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "bell_pepper",
+      "display_name": "Bell pepper",
+      "cut_technique": "LARGE_DICE",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 20,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "red_onion",
+      "display_name": "Red onion",
+      "cut_technique": "MEDIUM_DICE",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 15,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "garlic",
+      "display_name": "Garlic",
+      "cut_technique": "MINCED",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 3,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "tomato_sauce",
+      "display_name": "Tomato sauce",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 25,
+      "unit": "g",
+      "packaging": {
+        "retail_unit": "250 g pouch",
+        "pack_size": 250,
+        "snap_to_whole_pack": true
+      }
+    },
+    {
+      "ingredient_id": "cooking_oil",
+      "display_name": "Cooking oil",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 3,
+      "unit": "ml",
+      "packaging": {
+        "retail_unit": "1 L bottle",
+        "pack_size": 1000,
+        "snap_to_whole_pack": true
+      }
+    }
+  ],
+  "cook_steps": [
+    "Brown chicken in smoking oil on all sides; set aside.",
+    "Sauté onion until glassy, then garlic until golden.",
+    "Return chicken with tomato sauce and water; cover and simmer until tender.",
+    "Add potatoes and carrots; simmer until easily pierced.",
+    "Fold in peppers and cook until just softened."
+  ],
+  "pack_step": "Fill solids first, sauce after."
+}

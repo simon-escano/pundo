@@ -1,0 +1,100 @@
+{
+  "id": "ginisang-sayote-ground-pork",
+  "name": "Ginisang Sayote with Ground Pork",
+  "default_portions": 10,
+  "protein_category": "pork",
+  "sauce_base": "clear_broth",
+  "perishability_tier": "TIER_1_FRESH",
+  "stove_priority": "PRIORITY_2_FAST_SAUTE",
+  "estimated_base_cost_php": 390,
+  "videos": [],
+  "prep_items": [
+    {
+      "ingredient_id": "ground_pork",
+      "display_name": "Ground pork",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 60,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "sayote",
+      "display_name": "Sayote",
+      "cut_technique": "JULIENNE",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 80,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "red_onion",
+      "display_name": "Red onion",
+      "cut_technique": "SMALL_DICE",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 15,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "garlic",
+      "display_name": "Garlic",
+      "cut_technique": "MINCED",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 3,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "tomato",
+      "display_name": "Tomato",
+      "cut_technique": "MEDIUM_DICE",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 20,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "fish_sauce",
+      "display_name": "Fish sauce",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 8,
+      "unit": "ml",
+      "packaging": {
+        "retail_unit": "350 mL bottle",
+        "pack_size": 350,
+        "snap_to_whole_pack": true
+      }
+    },
+    {
+      "ingredient_id": "cooking_oil",
+      "display_name": "Cooking oil",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 3,
+      "unit": "ml",
+      "packaging": {
+        "retail_unit": "1 L bottle",
+        "pack_size": 1000,
+        "snap_to_whole_pack": true
+      }
+    }
+  ],
+  "cook_steps": [
+    "Sauté garlic, onion and tomato until soft and fragrant.",
+    "Crumble in ground pork; stir until no pink remains.",
+    "Add sayote and a splash of water; cover and steam until tender-crisp.",
+    "Season with fish sauce and finish uncovered until the liquid thickens."
+  ],
+  "pack_step": "Fill solids first, sauce after."
+}

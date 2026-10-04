@@ -1,0 +1,95 @@
+{
+  "id": "ginisang-munggo",
+  "name": "Ginisang Munggo",
+  "default_portions": 10,
+  "protein_category": "vegetable",
+  "sauce_base": "clear_broth",
+  "perishability_tier": "TIER_2_HARDY",
+  "stove_priority": "PRIORITY_1_SLOW_BRAISE",
+  "estimated_base_cost_php": 220,
+  "videos": [],
+  "prep_items": [
+    {
+      "ingredient_id": "mung_beans",
+      "display_name": "Mung beans",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 30,
+      "unit": "g",
+      "packaging": {
+        "retail_unit": "500 g pack",
+        "pack_size": 500,
+        "snap_to_whole_pack": true
+      }
+    },
+    {
+      "ingredient_id": "red_onion",
+      "display_name": "Red onion",
+      "cut_technique": "SMALL_DICE",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 15,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "garlic",
+      "display_name": "Garlic",
+      "cut_technique": "MINCED",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 3,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "tomato",
+      "display_name": "Tomato",
+      "cut_technique": "MEDIUM_DICE",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 20,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "fish_sauce",
+      "display_name": "Fish sauce",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 8,
+      "unit": "ml",
+      "packaging": {
+        "retail_unit": "350 mL bottle",
+        "pack_size": 350,
+        "snap_to_whole_pack": true
+      }
+    },
+    {
+      "ingredient_id": "cooking_oil",
+      "display_name": "Cooking oil",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 3,
+      "unit": "ml",
+      "packaging": {
+        "retail_unit": "1 L bottle",
+        "pack_size": 1000,
+        "snap_to_whole_pack": true
+      }
+    }
+  ],
+  "cook_steps": [
+    "Boil mung beans until soft and splitting.",
+    "Sauté onion, garlic and tomato until jammy.",
+    "Stir the sauté into the beans; simmer until thick and creamy.",
+    "Season with fish sauce until savory."
+  ],
+  "pack_step": "Fill solids first, sauce after."
+}

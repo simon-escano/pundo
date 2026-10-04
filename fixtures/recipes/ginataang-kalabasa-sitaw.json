@@ -1,0 +1,100 @@
+{
+  "id": "ginataang-kalabasa-sitaw",
+  "name": "Ginataang Kalabasa at Sitaw",
+  "default_portions": 10,
+  "protein_category": "vegetable",
+  "sauce_base": "coconut",
+  "perishability_tier": "TIER_1_FRESH",
+  "stove_priority": "PRIORITY_3_FINISH_LAST",
+  "estimated_base_cost_php": 155,
+  "videos": [],
+  "prep_items": [
+    {
+      "ingredient_id": "kalabasa",
+      "display_name": "Kalabasa",
+      "cut_technique": "LARGE_DICE",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 60,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "sitaw",
+      "display_name": "Sitaw",
+      "cut_technique": "ROUGH_CHOP",
+      "cut_note": "Cut into finger lengths",
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 40,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "coconut_milk",
+      "display_name": "Coconut milk",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 40,
+      "unit": "ml",
+      "packaging": {
+        "retail_unit": "400 mL can",
+        "pack_size": 400,
+        "snap_to_whole_pack": true
+      }
+    },
+    {
+      "ingredient_id": "red_onion",
+      "display_name": "Red onion",
+      "cut_technique": "SMALL_DICE",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 10,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "garlic",
+      "display_name": "Garlic",
+      "cut_technique": "MINCED",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 2,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "ginger",
+      "display_name": "Ginger",
+      "cut_technique": "MINCED",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 3,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "fish_sauce",
+      "display_name": "Fish sauce",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 8,
+      "unit": "ml",
+      "packaging": {
+        "retail_unit": "350 mL bottle",
+        "pack_size": 350,
+        "snap_to_whole_pack": true
+      }
+    }
+  ],
+  "cook_steps": [
+    "Simmer coconut milk with onion, garlic and ginger until fragrant.",
+    "Add kalabasa; simmer until easily pierced.",
+    "Add sitaw; cook until bright green and just tender.",
+    "Season with fish sauce and finish until the sauce coats the vegetables."
+  ],
+  "pack_step": "Fill solids first, sauce after."
+}

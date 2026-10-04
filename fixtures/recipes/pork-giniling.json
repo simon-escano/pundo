@@ -1,0 +1,100 @@
+{
+  "id": "pork-giniling",
+  "name": "Pork Giniling",
+  "default_portions": 10,
+  "protein_category": "pork",
+  "sauce_base": "tomato",
+  "perishability_tier": "TIER_2_HARDY",
+  "stove_priority": "PRIORITY_2_FAST_SAUTE",
+  "estimated_base_cost_php": 505,
+  "videos": [],
+  "prep_items": [
+    {
+      "ingredient_id": "ground_pork",
+      "display_name": "Ground pork",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 100,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "potato",
+      "display_name": "Potato",
+      "cut_technique": "SMALL_DICE",
+      "cut_note": "Cubitos",
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 45,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "carrot",
+      "display_name": "Carrot",
+      "cut_technique": "SMALL_DICE",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 25,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "red_onion",
+      "display_name": "Red onion",
+      "cut_technique": "SMALL_DICE",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 25,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "garlic",
+      "display_name": "Garlic",
+      "cut_technique": "MINCED",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 3,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "tomato_sauce",
+      "display_name": "Tomato sauce",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 20,
+      "unit": "g",
+      "packaging": {
+        "retail_unit": "250 g pouch",
+        "pack_size": 250,
+        "snap_to_whole_pack": true
+      }
+    },
+    {
+      "ingredient_id": "cooking_oil",
+      "display_name": "Cooking oil",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 3,
+      "unit": "ml",
+      "packaging": {
+        "retail_unit": "1 L bottle",
+        "pack_size": 1000,
+        "snap_to_whole_pack": true
+      }
+    }
+  ],
+  "cook_steps": [
+    "Sauté onion and garlic in hot oil until glassy and fragrant.",
+    "Crumble in ground pork; stir until no pink remains.",
+    "Pour in tomato sauce and a splash of water; simmer until thickened.",
+    "Fold in potatoes and carrots; cover and simmer until easily pierced."
+  ],
+  "pack_step": "Fill solids first, sauce after."
+}

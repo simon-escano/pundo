@@ -1,0 +1,101 @@
+{
+  "id": "sinigang-baboy",
+  "name": "Sinigang na Baboy",
+  "default_portions": 10,
+  "protein_category": "pork",
+  "sauce_base": "clear_broth",
+  "perishability_tier": "TIER_1_FRESH",
+  "stove_priority": "PRIORITY_1_SLOW_BRAISE",
+  "estimated_base_cost_php": 505,
+  "videos": [],
+  "prep_items": [
+    {
+      "ingredient_id": "pork_belly",
+      "display_name": "Pork belly",
+      "cut_technique": "LARGE_DICE",
+      "cut_note": "Ask for 1-inch cuts with some bone",
+      "granularity": "discrete",
+      "pieces_per_portion": 3,
+      "quantity_per_portion": 100,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "radish",
+      "display_name": "Radish",
+      "cut_technique": "SLICED_ROUNDS",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 30,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "kangkong",
+      "display_name": "Kangkong",
+      "cut_technique": "ROUGH_CHOP",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 0.1,
+      "unit": "pack"
+    },
+    {
+      "ingredient_id": "tomato",
+      "display_name": "Tomato",
+      "cut_technique": "QUARTERED",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 20,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "red_onion",
+      "display_name": "Red onion",
+      "cut_technique": "QUARTERED",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 15,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "sinigang_mix",
+      "display_name": "Sinigang mix",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 4,
+      "unit": "g",
+      "packaging": {
+        "retail_unit": "40 g sachet",
+        "pack_size": 40,
+        "snap_to_whole_pack": true
+      }
+    },
+    {
+      "ingredient_id": "fish_sauce",
+      "display_name": "Fish sauce",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 8,
+      "unit": "ml",
+      "packaging": {
+        "retail_unit": "350 mL bottle",
+        "pack_size": 350,
+        "snap_to_whole_pack": true
+      }
+    }
+  ],
+  "cook_steps": [
+    "Boil pork with onion and tomato; skim until the broth runs clear.",
+    "Cover and simmer on low until the pork is fork-tender.",
+    "Stir in sinigang mix until the broth turns pleasantly sour.",
+    "Add radish; simmer until easily pierced.",
+    "Drop in kangkong and turn off the heat once wilted."
+  ],
+  "pack_step": "Fill solids first, sauce after."
+}

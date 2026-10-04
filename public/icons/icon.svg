@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Meal Prep Engine">
+  <rect width="512" height="512" fill="#b45309"/>
+  <!-- steam -->
+  <g fill="none" stroke="#fff7ed" stroke-width="22" stroke-linecap="round" opacity=".9">
+    <path d="M196 150c-18 22 18 38 0 62"/>
+    <path d="M256 128c-18 22 18 38 0 62"/>
+    <path d="M316 150c-18 22 18 38 0 62"/>
+  </g>
+  <!-- pot -->
+  <path d="M104 262h304v34c0 74-60 134-134 134h-36c-74 0-134-60-134-134z" fill="#fff7ed"/>
+  <rect x="84" y="244" width="344" height="28" rx="14" fill="#1c1917"/>
+  <rect x="52" y="292" width="44" height="22" rx="11" fill="#1c1917"/>
+  <rect x="416" y="292" width="44" height="22" rx="11" fill="#1c1917"/>
+</svg>

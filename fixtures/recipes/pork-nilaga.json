@@ -1,0 +1,75 @@
+{
+  "id": "pork-nilaga",
+  "name": "Pork Nilaga",
+  "default_portions": 10,
+  "protein_category": "pork",
+  "sauce_base": "clear_broth",
+  "perishability_tier": "TIER_2_HARDY",
+  "stove_priority": "PRIORITY_1_SLOW_BRAISE",
+  "estimated_base_cost_php": 435,
+  "videos": [],
+  "prep_items": [
+    {
+      "ingredient_id": "pork_hock",
+      "display_name": "Pork hock",
+      "cut_technique": "LARGE_DICE",
+      "cut_note": "Ask for hock cut into chunks",
+      "granularity": "discrete",
+      "pieces_per_portion": 3,
+      "quantity_per_portion": 100,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "potato",
+      "display_name": "Potato",
+      "cut_technique": "QUARTERED",
+      "cut_note": null,
+      "granularity": "discrete",
+      "pieces_per_portion": 2,
+      "quantity_per_portion": 45,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "cabbage",
+      "display_name": "Cabbage",
+      "cut_technique": "ROUGH_CHOP",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 0.1,
+      "unit": "head"
+    },
+    {
+      "ingredient_id": "red_onion",
+      "display_name": "Red onion",
+      "cut_technique": "QUARTERED",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 20,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "fish_sauce",
+      "display_name": "Fish sauce",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 8,
+      "unit": "ml",
+      "packaging": {
+        "retail_unit": "350 mL bottle",
+        "pack_size": 350,
+        "snap_to_whole_pack": true
+      }
+    }
+  ],
+  "cook_steps": [
+    "Boil pork with onion until scum rises; skim and discard.",
+    "Cover and simmer on low until the pork is fork-tender.",
+    "Add potatoes; simmer until easily pierced.",
+    "Season with fish sauce, then lay in cabbage until just wilted."
+  ],
+  "pack_step": "Fill solids first, sauce after."
+}

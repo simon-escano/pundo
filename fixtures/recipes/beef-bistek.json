@@ -1,0 +1,95 @@
+{
+  "id": "beef-bistek",
+  "name": "Beef Bistek Tagalog",
+  "default_portions": 10,
+  "protein_category": "beef",
+  "sauce_base": "soy_vinegar",
+  "perishability_tier": "TIER_2_HARDY",
+  "stove_priority": "PRIORITY_2_FAST_SAUTE",
+  "estimated_base_cost_php": 860,
+  "videos": [],
+  "prep_items": [
+    {
+      "ingredient_id": "beef_sirloin",
+      "display_name": "Beef sirloin",
+      "cut_technique": "SLICED_THIN",
+      "cut_note": "Ask for thin steak slices against the grain",
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 130,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "red_onion",
+      "display_name": "Red onion",
+      "cut_technique": "SLICED_RINGS",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 30,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "garlic",
+      "display_name": "Garlic",
+      "cut_technique": "MINCED",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 2,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "soy_sauce",
+      "display_name": "Soy sauce",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 25,
+      "unit": "ml",
+      "packaging": {
+        "retail_unit": "385 mL bottle",
+        "pack_size": 385,
+        "snap_to_whole_pack": true
+      }
+    },
+    {
+      "ingredient_id": "vinegar",
+      "display_name": "Vinegar",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 8,
+      "unit": "ml",
+      "packaging": {
+        "retail_unit": "385 mL bottle",
+        "pack_size": 385,
+        "snap_to_whole_pack": true
+      }
+    },
+    {
+      "ingredient_id": "cooking_oil",
+      "display_name": "Cooking oil",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 3,
+      "unit": "ml",
+      "packaging": {
+        "retail_unit": "1 L bottle",
+        "pack_size": 1000,
+        "snap_to_whole_pack": true
+      }
+    }
+  ],
+  "cook_steps": [
+    "Marinate beef in soy sauce and calamansi until the surface looks glossy.",
+    "Sear beef in smoking oil until browned; transfer to plate.",
+    "Sauté onion rings until just wilted, then return beef.",
+    "Simmer in the marinade until the sauce turns syrupy and the beef feels tender."
+  ],
+  "pack_step": "Fill solids first, sauce after."
+}

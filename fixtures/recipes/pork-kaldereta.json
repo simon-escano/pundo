@@ -1,0 +1,126 @@
+{
+  "id": "pork-kaldereta",
+  "name": "Pork Kaldereta",
+  "default_portions": 10,
+  "protein_category": "pork",
+  "sauce_base": "tomato",
+  "perishability_tier": "TIER_2_HARDY",
+  "stove_priority": "PRIORITY_1_SLOW_BRAISE",
+  "estimated_base_cost_php": 540,
+  "videos": [],
+  "prep_items": [
+    {
+      "ingredient_id": "pork_shoulder",
+      "display_name": "Pork shoulder",
+      "cut_technique": "LARGE_DICE",
+      "cut_note": "Ask for 1-inch adobo cuts",
+      "granularity": "discrete",
+      "pieces_per_portion": 3,
+      "quantity_per_portion": 90,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "potato",
+      "display_name": "Potato",
+      "cut_technique": "LARGE_DICE",
+      "cut_note": null,
+      "granularity": "discrete",
+      "pieces_per_portion": 2,
+      "quantity_per_portion": 45,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "carrot",
+      "display_name": "Carrot",
+      "cut_technique": "ROLL_CUT",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 30,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "red_onion",
+      "display_name": "Red onion",
+      "cut_technique": "MEDIUM_DICE",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 15,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "bell_pepper",
+      "display_name": "Bell pepper",
+      "cut_technique": "LARGE_DICE",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 20,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "garlic",
+      "display_name": "Garlic",
+      "cut_technique": "MINCED",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 3,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "tomato_sauce",
+      "display_name": "Tomato sauce",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 18,
+      "unit": "g",
+      "packaging": {
+        "retail_unit": "250 g pouch",
+        "pack_size": 250,
+        "snap_to_whole_pack": true
+      }
+    },
+    {
+      "ingredient_id": "liver_spread",
+      "display_name": "Liver spread",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 8.5,
+      "unit": "g",
+      "packaging": {
+        "retail_unit": "85 g can",
+        "pack_size": 85,
+        "snap_to_whole_pack": true
+      }
+    },
+    {
+      "ingredient_id": "cooking_oil",
+      "display_name": "Cooking oil",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 3,
+      "unit": "ml",
+      "packaging": {
+        "retail_unit": "1 L bottle",
+        "pack_size": 1000,
+        "snap_to_whole_pack": true
+      }
+    }
+  ],
+  "cook_steps": [
+    "Sear pork in smoking oil until browned on all edges; transfer to plate.",
+    "Sauté prepped onions on medium until glassy, followed by garlic until golden.",
+    "Add tomato sauce, liver spread, browned pork, and water.",
+    "Drop heat to low, cover, and braise until fork-tender.",
+    "Add prepped potatoes, carrots and peppers; simmer covered until easily pierced."
+  ],
+  "pack_step": "Fill solids first, sauce after."
+}

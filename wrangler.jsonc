@@ -1,0 +1,23 @@
+{
+  // Cloudflare Worker: static PWA assets + /api (Hono) + D1.
+  // `database_id` is a placeholder: run `npx wrangler d1 create meal-prep-engine` and paste the real id.
+  // Local dev and tests use an in-memory D1 and ignore it.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "meal-prep-engine",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-08-22",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "meal-prep-engine",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ]
+}

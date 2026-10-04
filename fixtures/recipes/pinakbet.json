@@ -1,0 +1,120 @@
+{
+  "id": "pinakbet",
+  "name": "Pinakbet",
+  "default_portions": 10,
+  "protein_category": "vegetable",
+  "sauce_base": "shrimp_paste",
+  "perishability_tier": "TIER_1_FRESH",
+  "stove_priority": "PRIORITY_3_FINISH_LAST",
+  "estimated_base_cost_php": 295,
+  "videos": [],
+  "prep_items": [
+    {
+      "ingredient_id": "kalabasa",
+      "display_name": "Kalabasa",
+      "cut_technique": "LARGE_DICE",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 50,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "okra",
+      "display_name": "Okra",
+      "cut_technique": "HALVED",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 30,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "eggplant",
+      "display_name": "Eggplant",
+      "cut_technique": "SLICED_ROUNDS",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 40,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "ampalaya",
+      "display_name": "Ampalaya",
+      "cut_technique": "SLICED_ROUNDS",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 30,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "sitaw",
+      "display_name": "Sitaw",
+      "cut_technique": "ROUGH_CHOP",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 30,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "tomato",
+      "display_name": "Tomato",
+      "cut_technique": "MEDIUM_DICE",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 20,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "bagoong",
+      "display_name": "Shrimp paste (bagoong)",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 10,
+      "unit": "g",
+      "packaging": {
+        "retail_unit": "250 g jar",
+        "pack_size": 250,
+        "snap_to_whole_pack": true
+      }
+    },
+    {
+      "ingredient_id": "garlic",
+      "display_name": "Garlic",
+      "cut_technique": "MINCED",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 2,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "cooking_oil",
+      "display_name": "Cooking oil",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 3,
+      "unit": "ml",
+      "packaging": {
+        "retail_unit": "1 L bottle",
+        "pack_size": 1000,
+        "snap_to_whole_pack": true
+      }
+    }
+  ],
+  "cook_steps": [
+    "Sauté garlic and tomato until jammy.",
+    "Stir in bagoong until fragrant.",
+    "Layer kalabasa first, then the other vegetables; cover and steam until tender-crisp.",
+    "Toss gently once and finish until the vegetables glisten."
+  ],
+  "pack_step": "Fill solids first, sauce after."
+}

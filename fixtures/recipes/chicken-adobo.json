@@ -1,0 +1,85 @@
+{
+  "id": "chicken-adobo",
+  "name": "Chicken Adobo",
+  "default_portions": 10,
+  "protein_category": "chicken",
+  "sauce_base": "soy_vinegar",
+  "perishability_tier": "TIER_2_HARDY",
+  "stove_priority": "PRIORITY_1_SLOW_BRAISE",
+  "estimated_base_cost_php": 410,
+  "videos": [],
+  "prep_items": [
+    {
+      "ingredient_id": "chicken_thigh",
+      "display_name": "Chicken thigh",
+      "cut_technique": "WHOLE",
+      "cut_note": "Ask for bone-in thighs, skin on",
+      "granularity": "discrete",
+      "pieces_per_portion": 1,
+      "quantity_per_portion": 150,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "garlic",
+      "display_name": "Garlic",
+      "cut_technique": "MINCED",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 6,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "soy_sauce",
+      "display_name": "Soy sauce",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 30,
+      "unit": "ml",
+      "packaging": {
+        "retail_unit": "385 mL bottle",
+        "pack_size": 385,
+        "snap_to_whole_pack": true
+      }
+    },
+    {
+      "ingredient_id": "vinegar",
+      "display_name": "Vinegar",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 25,
+      "unit": "ml",
+      "packaging": {
+        "retail_unit": "385 mL bottle",
+        "pack_size": 385,
+        "snap_to_whole_pack": true
+      }
+    },
+    {
+      "ingredient_id": "bay_leaf",
+      "display_name": "Bay leaf",
+      "cut_technique": "WHOLE",
+      "cut_note": null,
+      "granularity": "discrete",
+      "pieces_per_portion": 1,
+      "quantity_per_portion": 0.2,
+      "unit": "pc",
+      "packaging": {
+        "retail_unit": "pack of 20 leaves",
+        "pack_size": 20,
+        "snap_to_whole_pack": true
+      }
+    }
+  ],
+  "cook_steps": [
+    "Combine chicken, soy sauce, vinegar, garlic and bay leaf; rest until well coated.",
+    "Bring to a simmer, then cover and cook until the juices run clear.",
+    "Uncover and reduce until the sauce turns glossy.",
+    "Sear skin side in a dry pan until browned and crisp."
+  ],
+  "pack_step": "Fill solids first, sauce after."
+}

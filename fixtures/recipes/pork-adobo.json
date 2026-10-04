@@ -1,0 +1,85 @@
+{
+  "id": "pork-adobo",
+  "name": "Pork Adobo",
+  "default_portions": 10,
+  "protein_category": "pork",
+  "sauce_base": "soy_vinegar",
+  "perishability_tier": "TIER_2_HARDY",
+  "stove_priority": "PRIORITY_1_SLOW_BRAISE",
+  "estimated_base_cost_php": 460,
+  "videos": [],
+  "prep_items": [
+    {
+      "ingredient_id": "pork_belly",
+      "display_name": "Pork belly",
+      "cut_technique": "LARGE_DICE",
+      "cut_note": "Ask for 1-inch adobo cuts",
+      "granularity": "discrete",
+      "pieces_per_portion": 3,
+      "quantity_per_portion": 100,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "garlic",
+      "display_name": "Garlic",
+      "cut_technique": "MINCED",
+      "cut_note": null,
+      "granularity": "granular",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 6,
+      "unit": "g"
+    },
+    {
+      "ingredient_id": "soy_sauce",
+      "display_name": "Soy sauce",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 30,
+      "unit": "ml",
+      "packaging": {
+        "retail_unit": "385 mL bottle",
+        "pack_size": 385,
+        "snap_to_whole_pack": true
+      }
+    },
+    {
+      "ingredient_id": "vinegar",
+      "display_name": "Vinegar",
+      "cut_technique": "NONE",
+      "cut_note": null,
+      "granularity": "continuous",
+      "pieces_per_portion": null,
+      "quantity_per_portion": 25,
+      "unit": "ml",
+      "packaging": {
+        "retail_unit": "385 mL bottle",
+        "pack_size": 385,
+        "snap_to_whole_pack": true
+      }
+    },
+    {
+      "ingredient_id": "bay_leaf",
+      "display_name": "Bay leaf",
+      "cut_technique": "WHOLE",
+      "cut_note": null,
+      "granularity": "discrete",
+      "pieces_per_portion": 1,
+      "quantity_per_portion": 0.2,
+      "unit": "pc",
+      "packaging": {
+        "retail_unit": "pack of 20 leaves",
+        "pack_size": 20,
+        "snap_to_whole_pack": true
+      }
+    }
+  ],
+  "cook_steps": [
+    "Combine pork, soy sauce, vinegar, garlic and bay leaf; rest until well coated.",
+    "Bring to a simmer without stirring until the vinegar smell mellows.",
+    "Braise covered on low until the pork is fork-tender.",
+    "Uncover and reduce until the sauce clings and glistens."
+  ],
+  "pack_step": "Fill solids first, sauce after."
+}

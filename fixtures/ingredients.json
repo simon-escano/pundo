@@ -1,0 +1,591 @@
+{
+  "registry": {
+    "pork_belly": {
+      "ingredient_id": "pork_belly",
+      "display_name": "Pork belly",
+      "price_per_unit": 380,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "pork_shoulder": {
+      "ingredient_id": "pork_shoulder",
+      "display_name": "Pork shoulder",
+      "price_per_unit": 320,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "ground_pork": {
+      "ingredient_id": "ground_pork",
+      "display_name": "Ground pork",
+      "price_per_unit": 300,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "pork_hock": {
+      "ingredient_id": "pork_hock",
+      "display_name": "Pork hock",
+      "price_per_unit": 280,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "beef_chuck": {
+      "ingredient_id": "beef_chuck",
+      "display_name": "Beef chuck",
+      "price_per_unit": 450,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "beef_sirloin": {
+      "ingredient_id": "beef_sirloin",
+      "display_name": "Beef sirloin",
+      "price_per_unit": 520,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "beef_shank": {
+      "ingredient_id": "beef_shank",
+      "display_name": "Beef shank",
+      "price_per_unit": 400,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "chicken_thigh": {
+      "ingredient_id": "chicken_thigh",
+      "display_name": "Chicken thigh",
+      "price_per_unit": 220,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "chicken_cutup": {
+      "ingredient_id": "chicken_cutup",
+      "display_name": "Chicken cut-up",
+      "price_per_unit": 190,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "potato": {
+      "ingredient_id": "potato",
+      "display_name": "Potato",
+      "price_per_unit": 90,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "carrot": {
+      "ingredient_id": "carrot",
+      "display_name": "Carrot",
+      "price_per_unit": 80,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "red_onion": {
+      "ingredient_id": "red_onion",
+      "display_name": "Red onion",
+      "price_per_unit": 120,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "garlic": {
+      "ingredient_id": "garlic",
+      "display_name": "Garlic",
+      "price_per_unit": 160,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "ginger": {
+      "ingredient_id": "ginger",
+      "display_name": "Ginger",
+      "price_per_unit": 140,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "bell_pepper": {
+      "ingredient_id": "bell_pepper",
+      "display_name": "Bell pepper",
+      "price_per_unit": 180,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "tomato": {
+      "ingredient_id": "tomato",
+      "display_name": "Tomato",
+      "price_per_unit": 100,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "sayote": {
+      "ingredient_id": "sayote",
+      "display_name": "Sayote",
+      "price_per_unit": 60,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "kalabasa": {
+      "ingredient_id": "kalabasa",
+      "display_name": "Kalabasa",
+      "price_per_unit": 45,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "sitaw": {
+      "ingredient_id": "sitaw",
+      "display_name": "Sitaw",
+      "price_per_unit": 100,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "radish": {
+      "ingredient_id": "radish",
+      "display_name": "Radish",
+      "price_per_unit": 60,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "cabbage": {
+      "ingredient_id": "cabbage",
+      "display_name": "Cabbage",
+      "price_per_unit": 60,
+      "pricing_unit": "head",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "kangkong": {
+      "ingredient_id": "kangkong",
+      "display_name": "Kangkong",
+      "price_per_unit": 20,
+      "pricing_unit": "pack",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "malunggay": {
+      "ingredient_id": "malunggay",
+      "display_name": "Malunggay leaves",
+      "price_per_unit": 15,
+      "pricing_unit": "pack",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "okra": {
+      "ingredient_id": "okra",
+      "display_name": "Okra",
+      "price_per_unit": 90,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "eggplant": {
+      "ingredient_id": "eggplant",
+      "display_name": "Eggplant",
+      "price_per_unit": 80,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "ampalaya": {
+      "ingredient_id": "ampalaya",
+      "display_name": "Ampalaya",
+      "price_per_unit": 90,
+      "pricing_unit": "kg",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "tomato_sauce": {
+      "ingredient_id": "tomato_sauce",
+      "display_name": "Tomato sauce",
+      "price_per_unit": 22,
+      "pricing_unit": "pouch",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "liver_spread": {
+      "ingredient_id": "liver_spread",
+      "display_name": "Liver spread",
+      "price_per_unit": 18,
+      "pricing_unit": "can",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "coconut_milk": {
+      "ingredient_id": "coconut_milk",
+      "display_name": "Coconut milk",
+      "price_per_unit": 38,
+      "pricing_unit": "can",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "soy_sauce": {
+      "ingredient_id": "soy_sauce",
+      "display_name": "Soy sauce",
+      "price_per_unit": 28,
+      "pricing_unit": "bottle",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "vinegar": {
+      "ingredient_id": "vinegar",
+      "display_name": "Vinegar",
+      "price_per_unit": 25,
+      "pricing_unit": "bottle",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "fish_sauce": {
+      "ingredient_id": "fish_sauce",
+      "display_name": "Fish sauce",
+      "price_per_unit": 30,
+      "pricing_unit": "bottle",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "bagoong": {
+      "ingredient_id": "bagoong",
+      "display_name": "Shrimp paste (bagoong)",
+      "price_per_unit": 45,
+      "pricing_unit": "bottle",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "peanut_butter": {
+      "ingredient_id": "peanut_butter",
+      "display_name": "Peanut butter",
+      "price_per_unit": 70,
+      "pricing_unit": "bottle",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "mung_beans": {
+      "ingredient_id": "mung_beans",
+      "display_name": "Mung beans",
+      "price_per_unit": 55,
+      "pricing_unit": "pack",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "sinigang_mix": {
+      "ingredient_id": "sinigang_mix",
+      "display_name": "Sinigang mix",
+      "price_per_unit": 18,
+      "pricing_unit": "pack",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "bay_leaf": {
+      "ingredient_id": "bay_leaf",
+      "display_name": "Bay leaf",
+      "price_per_unit": 15,
+      "pricing_unit": "pack",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "cooking_oil": {
+      "ingredient_id": "cooking_oil",
+      "display_name": "Cooking oil",
+      "price_per_unit": 90,
+      "pricing_unit": "bottle",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    },
+    "re250_container": {
+      "ingredient_id": "re250_container",
+      "display_name": "RE-250 container",
+      "price_per_unit": 4,
+      "pricing_unit": "piece",
+      "last_updated": "2026-10-04T00:00:00.000Z"
+    }
+  },
+  "meta": {
+    "pork_belly": {
+      "ingredient_id": "pork_belly",
+      "aisle": "fresh_meat",
+      "storage_class": "fresh_meat",
+      "surface_prep": null,
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "pork_shoulder": {
+      "ingredient_id": "pork_shoulder",
+      "aisle": "fresh_meat",
+      "storage_class": "fresh_meat",
+      "surface_prep": null,
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "ground_pork": {
+      "ingredient_id": "ground_pork",
+      "aisle": "fresh_meat",
+      "storage_class": "fresh_meat",
+      "surface_prep": null,
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "pork_hock": {
+      "ingredient_id": "pork_hock",
+      "aisle": "fresh_meat",
+      "storage_class": "fresh_meat",
+      "surface_prep": null,
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "beef_chuck": {
+      "ingredient_id": "beef_chuck",
+      "aisle": "fresh_meat",
+      "storage_class": "fresh_meat",
+      "surface_prep": null,
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "beef_sirloin": {
+      "ingredient_id": "beef_sirloin",
+      "aisle": "fresh_meat",
+      "storage_class": "fresh_meat",
+      "surface_prep": null,
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "beef_shank": {
+      "ingredient_id": "beef_shank",
+      "aisle": "fresh_meat",
+      "storage_class": "fresh_meat",
+      "surface_prep": null,
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "chicken_thigh": {
+      "ingredient_id": "chicken_thigh",
+      "aisle": "fresh_meat",
+      "storage_class": "fresh_meat",
+      "surface_prep": null,
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "chicken_cutup": {
+      "ingredient_id": "chicken_cutup",
+      "aisle": "fresh_meat",
+      "storage_class": "fresh_meat",
+      "surface_prep": null,
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "potato": {
+      "ingredient_id": "potato",
+      "aisle": "produce",
+      "storage_class": "loose_produce",
+      "surface_prep": "Wash and peel",
+      "avg_unit_mass_g": 150,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "carrot": {
+      "ingredient_id": "carrot",
+      "aisle": "produce",
+      "storage_class": "loose_produce",
+      "surface_prep": "Wash and peel",
+      "avg_unit_mass_g": 100,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "red_onion": {
+      "ingredient_id": "red_onion",
+      "aisle": "produce",
+      "storage_class": "loose_produce",
+      "surface_prep": "Peel",
+      "avg_unit_mass_g": 110,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "garlic": {
+      "ingredient_id": "garlic",
+      "aisle": "produce",
+      "storage_class": "loose_produce",
+      "surface_prep": "Peel",
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "ginger": {
+      "ingredient_id": "ginger",
+      "aisle": "produce",
+      "storage_class": "loose_produce",
+      "surface_prep": "Wash and peel",
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "bell_pepper": {
+      "ingredient_id": "bell_pepper",
+      "aisle": "produce",
+      "storage_class": "loose_produce",
+      "surface_prep": "Wash and seed",
+      "avg_unit_mass_g": 150,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "tomato": {
+      "ingredient_id": "tomato",
+      "aisle": "produce",
+      "storage_class": "loose_produce",
+      "surface_prep": "Wash",
+      "avg_unit_mass_g": 90,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "sayote": {
+      "ingredient_id": "sayote",
+      "aisle": "produce",
+      "storage_class": "loose_produce",
+      "surface_prep": "Wash and peel",
+      "avg_unit_mass_g": 250,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "kalabasa": {
+      "ingredient_id": "kalabasa",
+      "aisle": "produce",
+      "storage_class": "loose_produce",
+      "surface_prep": "Wash, seed and peel",
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "sitaw": {
+      "ingredient_id": "sitaw",
+      "aisle": "produce",
+      "storage_class": "loose_produce",
+      "surface_prep": "Wash and trim",
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "radish": {
+      "ingredient_id": "radish",
+      "aisle": "produce",
+      "storage_class": "loose_produce",
+      "surface_prep": "Wash and peel",
+      "avg_unit_mass_g": 200,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "cabbage": {
+      "ingredient_id": "cabbage",
+      "aisle": "produce",
+      "storage_class": "loose_produce",
+      "surface_prep": "Wash",
+      "avg_unit_mass_g": 900,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "kangkong": {
+      "ingredient_id": "kangkong",
+      "aisle": "produce",
+      "storage_class": "loose_produce",
+      "surface_prep": "Wash",
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "malunggay": {
+      "ingredient_id": "malunggay",
+      "aisle": "produce",
+      "storage_class": "loose_produce",
+      "surface_prep": "Wash and strip",
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "okra": {
+      "ingredient_id": "okra",
+      "aisle": "produce",
+      "storage_class": "loose_produce",
+      "surface_prep": "Wash and trim",
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "eggplant": {
+      "ingredient_id": "eggplant",
+      "aisle": "produce",
+      "storage_class": "loose_produce",
+      "surface_prep": "Wash",
+      "avg_unit_mass_g": 200,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "ampalaya": {
+      "ingredient_id": "ampalaya",
+      "aisle": "produce",
+      "storage_class": "loose_produce",
+      "surface_prep": "Wash and seed",
+      "avg_unit_mass_g": 250,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "tomato_sauce": {
+      "ingredient_id": "tomato_sauce",
+      "aisle": "canned_dry",
+      "storage_class": "perishable_once_opened",
+      "surface_prep": null,
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "liver_spread": {
+      "ingredient_id": "liver_spread",
+      "aisle": "canned_dry",
+      "storage_class": "shelf_stable_sealed",
+      "surface_prep": null,
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "coconut_milk": {
+      "ingredient_id": "coconut_milk",
+      "aisle": "canned_dry",
+      "storage_class": "shelf_stable_sealed",
+      "surface_prep": null,
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "soy_sauce": {
+      "ingredient_id": "soy_sauce",
+      "aisle": "canned_dry",
+      "storage_class": "shelf_stable_sealed",
+      "surface_prep": null,
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "vinegar": {
+      "ingredient_id": "vinegar",
+      "aisle": "canned_dry",
+      "storage_class": "shelf_stable_sealed",
+      "surface_prep": null,
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "fish_sauce": {
+      "ingredient_id": "fish_sauce",
+      "aisle": "canned_dry",
+      "storage_class": "shelf_stable_sealed",
+      "surface_prep": null,
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "bagoong": {
+      "ingredient_id": "bagoong",
+      "aisle": "canned_dry",
+      "storage_class": "perishable_once_opened",
+      "surface_prep": null,
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "peanut_butter": {
+      "ingredient_id": "peanut_butter",
+      "aisle": "canned_dry",
+      "storage_class": "shelf_stable_sealed",
+      "surface_prep": null,
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "mung_beans": {
+      "ingredient_id": "mung_beans",
+      "aisle": "canned_dry",
+      "storage_class": "shelf_stable_sealed",
+      "surface_prep": null,
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "sinigang_mix": {
+      "ingredient_id": "sinigang_mix",
+      "aisle": "canned_dry",
+      "storage_class": "shelf_stable_sealed",
+      "surface_prep": null,
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "bay_leaf": {
+      "ingredient_id": "bay_leaf",
+      "aisle": "canned_dry",
+      "storage_class": "shelf_stable_sealed",
+      "surface_prep": null,
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "cooking_oil": {
+      "ingredient_id": "cooking_oil",
+      "aisle": "canned_dry",
+      "storage_class": "shelf_stable_sealed",
+      "surface_prep": null,
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    },
+    "re250_container": {
+      "ingredient_id": "re250_container",
+      "aisle": "disposable",
+      "storage_class": "disposable",
+      "surface_prep": null,
+      "avg_unit_mass_g": null,
+      "updated_at": "2026-10-04T00:00:00.000Z"
+    }
+  }
+}

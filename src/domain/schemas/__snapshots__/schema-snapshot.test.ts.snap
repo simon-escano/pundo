@@ -1,0 +1,251 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`schema drift snapshots > IngredientPriceRecordSchema JSON Schema 1`] = `
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "display_name": {
+      "type": "string",
+    },
+    "ingredient_id": {
+      "type": "string",
+    },
+    "last_updated": {
+      "type": "string",
+    },
+    "price_per_unit": {
+      "type": "number",
+    },
+    "pricing_unit": {
+      "enum": [
+        "kg",
+        "piece",
+        "can",
+        "pouch",
+        "pack",
+        "head",
+        "bottle",
+      ],
+      "type": "string",
+    },
+  },
+  "required": [
+    "ingredient_id",
+    "display_name",
+    "price_per_unit",
+    "pricing_unit",
+    "last_updated",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`schema drift snapshots > RecipeSchema JSON Schema 1`] = `
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "cook_steps": {
+      "items": {
+        "type": "string",
+      },
+      "type": "array",
+    },
+    "default_portions": {
+      "const": 10,
+      "type": "number",
+    },
+    "estimated_base_cost_php": {
+      "type": "number",
+    },
+    "id": {
+      "type": "string",
+    },
+    "name": {
+      "type": "string",
+    },
+    "pack_step": {
+      "default": "Fill solids first, sauce after.",
+      "type": "string",
+    },
+    "perishability_tier": {
+      "enum": [
+        "TIER_1_FRESH",
+        "TIER_2_HARDY",
+      ],
+      "type": "string",
+    },
+    "prep_items": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "cut_note": {
+            "type": [
+              "string",
+              "null",
+            ],
+          },
+          "cut_technique": {
+            "enum": [
+              "WHOLE",
+              "HALVED",
+              "QUARTERED",
+              "WEDGES",
+              "LARGE_DICE",
+              "MEDIUM_DICE",
+              "SMALL_DICE",
+              "BRUNOISE",
+              "MINCED",
+              "SLICED_ROUNDS",
+              "SLICED_RINGS",
+              "SLICED_THIN",
+              "BATONNET",
+              "JULIENNE",
+              "ROLL_CUT",
+              "CHIFFONADE_SHRED",
+              "CRUSHED_SMASHED",
+              "ROUGH_CHOP",
+              "NONE",
+              "CUSTOM",
+            ],
+            "type": "string",
+          },
+          "display_name": {
+            "type": "string",
+          },
+          "granularity": {
+            "enum": [
+              "discrete",
+              "granular",
+              "continuous",
+            ],
+            "type": "string",
+          },
+          "ingredient_id": {
+            "type": "string",
+          },
+          "packaging": {
+            "additionalProperties": false,
+            "properties": {
+              "pack_size": {
+                "type": "number",
+              },
+              "retail_unit": {
+                "type": "string",
+              },
+              "snap_to_whole_pack": {
+                "type": "boolean",
+              },
+            },
+            "required": [
+              "retail_unit",
+              "pack_size",
+              "snap_to_whole_pack",
+            ],
+            "type": "object",
+          },
+          "pieces_per_portion": {
+            "type": [
+              "number",
+              "null",
+            ],
+          },
+          "quantity_per_portion": {
+            "type": "number",
+          },
+          "unit": {
+            "type": "string",
+          },
+        },
+        "required": [
+          "ingredient_id",
+          "display_name",
+          "cut_technique",
+          "cut_note",
+          "granularity",
+          "pieces_per_portion",
+          "quantity_per_portion",
+          "unit",
+        ],
+        "type": "object",
+      },
+      "type": "array",
+    },
+    "protein_category": {
+      "enum": [
+        "pork",
+        "chicken",
+        "beef",
+        "fish",
+        "vegetable",
+      ],
+      "type": "string",
+    },
+    "sauce_base": {
+      "enum": [
+        "tomato",
+        "soy_vinegar",
+        "coconut",
+        "clear_broth",
+        "peanut",
+        "shrimp_paste",
+      ],
+      "type": "string",
+    },
+    "stove_priority": {
+      "enum": [
+        "PRIORITY_1_SLOW_BRAISE",
+        "PRIORITY_2_FAST_SAUTE",
+        "PRIORITY_3_FINISH_LAST",
+      ],
+      "type": "string",
+    },
+    "videos": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "platform": {
+            "enum": [
+              "instagram_reel",
+              "tiktok",
+              "youtube_shorts",
+              "direct_mp4",
+            ],
+            "type": "string",
+          },
+          "title": {
+            "type": "string",
+          },
+          "url": {
+            "format": "uri",
+            "type": "string",
+          },
+        },
+        "required": [
+          "title",
+          "platform",
+          "url",
+        ],
+        "type": "object",
+      },
+      "type": "array",
+    },
+  },
+  "required": [
+    "id",
+    "name",
+    "default_portions",
+    "protein_category",
+    "sauce_base",
+    "perishability_tier",
+    "stove_priority",
+    "estimated_base_cost_php",
+    "videos",
+    "prep_items",
+    "cook_steps",
+    "pack_step",
+  ],
+  "type": "object",
+}
+`;
