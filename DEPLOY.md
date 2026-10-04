@@ -143,7 +143,17 @@ npx wrangler d1 time-travel info pundo    # D1 point-in-time restore window / bo
 ## Known limitations of this deployment
 
 - **Access session expiry:** when the Access session expires the API answers 401 or redirects to the login page.
-  The app shows **"Sign in again"** in the header, keeps every change on the device, and resumes syncing after you
-  reload the page and log in.
+  The app shows a full-screen **"You're signed out"** page (the header pill also says "Sign in again"). Every change
+  stays on the device. **Sign in** goes to `/cdn-cgi/access/login/<hostname>?redirect_url=<current page>`, Cloudflare's
+  own login, and returns to the same screen; **Keep working offline** dismisses it. The service worker never
+  intercepts `/cdn-cgi/*` (`navigateFallbackDenylist`), otherwise the cached shell would swallow the redirect.
+  That login path only exists once the Access application's destination matches the hostname you are on.
+
+## Branding the Access login page (optional)
+
+The login page itself is hosted by Cloudflare, so it is branded in the dashboard, not in the app:
+Zero Trust → Settings → Custom pages / Authentication → Login page: set the name to **pundo**, the accent colour
+to `#157a3e`, and a logo. The logo URL must be reachable *before* login, so either host `public/icons/icon-512.png`
+somewhere public or add an Access **Bypass** policy limited to the path `/icons/*`.
 - **Clock skew:** the server refuses changes stamped more than 60 s ahead of its own clock. A device whose
   clock is wrong shows **"Check device clock"**; its changes stay queued until the clock is fixed.

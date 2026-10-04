@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { Save } from "lucide-react";
 import type { GroceryList } from "../../domain/engines/grocery";
 import { applyCalibration } from "../lib/actions";
 import { formatMoney } from "../lib/format";
 import { useApp } from "../app-context";
-import { Modal } from "./ui";
+import { Button, Modal } from "./ui";
 
 /** Post-shopping calibration: one receipt total (spread by ratio) OR per-item paid prices. Both are optional. */
 export function CalibrationModal({ grocery, onClose }: { grocery: GroceryList; onClose: () => void }) {
@@ -23,22 +24,22 @@ export function CalibrationModal({ grocery, onClose }: { grocery: GroceryList; o
     });
 
   return (
-    <Modal title="Mark groceries as bought" onClose={onClose}>
-      <p className="muted mb-3 text-sm">Optional: tell the app what you actually paid so prices stay accurate. Enter a receipt total <em>or</em> item prices (item prices win).</p>
-      <label className="block text-sm font-bold" htmlFor="receipt-total">Receipt total (₱)</label>
-      <input id="receipt-total" className="field" type="number" inputMode="decimal" min="0" step="any" placeholder={`Estimated ${formatMoney(grocery.estimate.total)}`} value={receipt} disabled={anyPaid} onChange={(e) => setReceipt(e.target.value)} />
-      <h3 className="mb-1 mt-4 text-sm font-extrabold">Or paid per item</h3>
+    <Modal title="Enter receipt" onClose={onClose}>
+      <p className="mb-4 text-sm text-muted">Optional. What you paid keeps future estimates accurate. Item prices win over the total.</p>
+      <label className="block text-sm font-medium" htmlFor="receipt-total">Receipt total (₱)</label>
+      <input id="receipt-total" className="field mt-1" type="number" inputMode="decimal" min="0" step="any" placeholder={`Estimated ${formatMoney(grocery.estimate.total)}`} value={receipt} disabled={anyPaid} onChange={(e) => setReceipt(e.target.value)} />
+      <h3 className="mb-2 mt-5 text-sm font-semibold">Or price each item</h3>
       <ul className="flex flex-col gap-2">
         {buyLines.map((l) => (
-          <li key={l.key} className="flex items-center justify-between gap-2">
-            <label htmlFor={`paid-${l.key}`} className="flex-1 text-sm font-semibold">{l.display_name}</label>
+          <li key={l.key} className="flex items-center justify-between gap-3">
+            <label htmlFor={`paid-${l.key}`} className="flex-1 text-sm">{l.display_name}</label>
             <input id={`paid-${l.key}`} className="field !w-28" type="number" inputMode="decimal" min="0" step="any" placeholder={l.estimatedCost !== null ? formatMoney(l.estimatedCost) : "₱"} value={paid[l.key] ?? ""} onChange={(e) => setPaid({ ...paid, [l.key]: e.target.value })} />
           </li>
         ))}
       </ul>
-      <div className="mt-4 flex flex-wrap gap-2">
-        <button className="btn btn-primary flex-1" onClick={save}>Save &amp; mark bought</button>
-        <button className="btn" onClick={onClose}>Cancel</button>
+      <div className="mt-5 flex gap-2">
+        <Button variant="primary" icon={Save} className="flex-1" onClick={save}>Save receipt</Button>
+        <Button variant="ghost" onClick={onClose}>Cancel</Button>
       </div>
     </Modal>
   );

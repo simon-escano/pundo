@@ -21,8 +21,8 @@ export default defineConfig({
         scope: "/",
         display: "standalone",
         orientation: "portrait",
-        background_color: "#fafaf9",
-        theme_color: "#1c1917",
+        background_color: "#f6f7f8",
+        theme_color: "#157a3e",
         icons: [
           { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
           { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
@@ -31,9 +31,9 @@ export default defineConfig({
       },
       workbox: {
         // App shell + every JS/CSS chunk (including the lazy views and the bundled fixtures) + icons.
-        globPatterns: ["**/*.{js,css,html,svg,png,webmanifest}"],
+        globPatterns: ["**/*.{js,css,html,svg,png,webmanifest,woff2}"],
         navigateFallback: "/index.html",
-        navigateFallbackDenylist: [/^\/api\//], // the sync API is never served from cache
+        navigateFallbackDenylist: [/^\/api\//, /^\/cdn-cgi\//], // the sync API and the Access login are never served from cache
         cleanupOutdatedCaches: true,
         clientsClaim: true, // the very first load is already controlled, so it can go offline immediately
       },
@@ -46,6 +46,7 @@ export default defineConfig({
         codeSplitting: {
           groups: [
             { name: "vendor-react", test: /node_modules[\\/](react|react-dom|scheduler)[\\/]/, priority: 30 },
+            { name: "vendor-motion", test: /node_modules[\\/](motion|motion-dom|motion-utils|framer-motion)[\\/]/, priority: 25 },
             { name: "vendor-zod", test: /node_modules[\\/]zod[\\/]/, priority: 20 },
             { name: "vendor-dexie", test: /node_modules[\\/](dexie|dexie-react-hooks)[\\/]/, priority: 10 },
           ],

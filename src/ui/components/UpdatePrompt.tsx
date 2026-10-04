@@ -1,14 +1,28 @@
+import { RotateCw, X } from "lucide-react";
+import { AnimatePresence, m } from "motion/react";
 import { useRegisterSW } from "virtual:pwa-register/react";
+import { Button, IconButton } from "./ui";
 
 /** Service-worker lifecycle: "ready offline" notice once, and a Reload button when a new version is waiting. */
 export function UpdatePrompt() {
   const { offlineReady: [offlineReady, setOfflineReady], needRefresh: [needRefresh, setNeedRefresh], updateServiceWorker } = useRegisterSW();
-  if (!offlineReady && !needRefresh) return null;
+  const show = offlineReady || needRefresh;
   return (
-    <div role="status" data-testid="pwa-prompt" className="mx-auto mt-2 flex max-w-5xl items-center gap-2 rounded-lg border-2 border-ink bg-white px-3 py-2 text-sm font-semibold">
-      <span className="flex-1">{needRefresh ? "A new version is ready." : "Ready to work offline."}</span>
-      {needRefresh && <button className="btn btn-primary" onClick={() => void updateServiceWorker(true)}>Reload</button>}
-      <button className="btn" aria-label="Dismiss" onClick={() => { setOfflineReady(false); setNeedRefresh(false); }}>✕</button>
-    </div>
+    <AnimatePresence>
+      {show && (
+        <m.div
+          initial={{ opacity: 0, y: -16 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -16 }}
+          role="status"
+          data-testid="pwa-prompt"
+          className="fixed inset-x-4 top-[calc(3.75rem+env(safe-area-inset-top))] z-40 mx-auto flex max-w-md items-center gap-2 rounded-2xl border border-line bg-raised py-1.5 pl-4 pr-1.5 text-sm font-medium shadow-lift"
+        >
+          <span className="flex-1">{needRefresh ? "A new version is ready." : "Ready to work offline."}</span>
+          {needRefresh && <Button variant="primary" icon={RotateCw} onClick={() => void updateServiceWorker(true)}>Reload</Button>}
+          <IconButton icon={X} label="Dismiss" onClick={() => { setOfflineReady(false); setNeedRefresh(false); }} />
+        </m.div>
+      )}
+    </AnimatePresence>
   );
 }

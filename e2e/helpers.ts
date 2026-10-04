@@ -1,6 +1,6 @@
-import { expect, type Page } from "@playwright/test";
+import { expect, type Locator, type Page } from "@playwright/test";
 
-export const ROUTES = ["plan", "grocery", "day-1", "prep", "cook", "recipes"] as const;
+export const ROUTES = ["plan", "grocery", "prep", "prep/day-1", "cook", "recipes"] as const;
 export type Route = (typeof ROUTES)[number];
 
 /** Open the deterministic dev fixture (fresh DB, fixed clock + seed). `locked` = rolled + locked + pantry stock. */
@@ -11,13 +11,36 @@ export async function openFixture(page: Page, route: Route = "plan", state: "dra
   await page.evaluate(() => document.fonts.ready);
 }
 
-const labelFor = (r: Route) => ({ plan: "Plan", grocery: "Grocery", "day-1": "Day 1", prep: "Prep", cook: "Cook", recipes: "Recipes" })[r];
+const STAGE_LABEL = { plan: "Plan", grocery: "Grocery", prep: "Prep", cook: "Cook" } as const;
 
+/** Navigate like a user: the main nav for the four stages, the header button for Recipes, the sub-tab for Day 1. */
 export const goto = async (page: Page, route: Route) => {
-  await page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: labelFor(route), exact: true }).click();
-  await expect(page.locator("main")).toHaveAttribute("data-route", route);
+  const stage = route.split("/")[0] as keyof typeof STAGE_LABEL | "recipes";
+  if (stage === "recipes") await page.getByRole("link", { name: "Recipes", exact: true }).click();
+  else await page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: STAGE_LABEL[stage], exact: true }).click();
+  if (route === "prep/day-1") await page.getByRole("group", { name: "Prep section" }).getByRole("link", { name: "Day 1" }).click();
+  await expect(page.locator("main")).toHaveAttribute("data-route", stage);
   await expect(page.getByTestId("view-loading")).toHaveCount(0);
 };
+
+/** Phones show dishes as compact tiles; their controls live in a sheet. Tablet and up show full cards. */
+export const isNarrow = (page: Page) => (page.viewportSize()?.width ?? 1280) < 768;
+
+/** The element that holds one dish's controls: the card itself, or the sheet opened from its tile. */
+export async function openDish(page: Page, index = 0): Promise<Locator> {
+  const card = page.getByTestId("dish-card").nth(index);
+  if (!isNarrow(page)) return card;
+  await card.getByRole("button", { name: /^Open / }).click();
+  const sheet = page.getByRole("dialog");
+  await expect(sheet).toBeVisible();
+  return sheet;
+}
+
+export async function closeDish(page: Page) {
+  if (!isNarrow(page)) return;
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toBeHidden();
+}
 
 export const money = (t: string | null) => Number((t ?? "").replace(/[^\d.]/g, ""));
 

@@ -4,7 +4,7 @@ import { makeHarness } from "../../storage/testing/harness";
 import { applyCalibration, ensureCycle, lockWeek, randomSeed, rerollOne, rollPlan, todayIso } from "./actions";
 import { planCalibration } from "./calibration";
 import { derive } from "./derive";
-import { describeBuy, describeNeed, formatMoney, formatQuantity } from "./format";
+import { describeBuy, describeNeed, formatMoney, formatQuantity, splitGroupHeading, STATUS_LABEL, STOVE_ORDER, TIER_LABEL } from "./format";
 import { loadWorld } from "./world";
 
 const line = (over: Partial<GroceryLine>): GroceryLine => ({
@@ -27,6 +27,19 @@ describe("format", () => {
     expect(describeBuy(line({ purchaseQuantity: 0, netQuantity: 0 }))).toBe("Covered by stock");
     expect(describeNeed(line({}))).toBe("Need 1 kg");
     expect(describeNeed(line({ deductedQuantity: 200 }))).toBe("Need 1 kg − 200 g stock");
+  });
+});
+
+describe("plain-language labels", () => {
+  it("spells out stove order, tiers and status instead of codes", () => {
+    expect(STOVE_ORDER[1]).toEqual({ short: "1st on stove", long: "Cook first", how: "Slow braise" });
+    expect(STOVE_ORDER[3].short).toBe("Cook last");
+    expect(TIER_LABEL.TIER_2_HARDY).toBe("Keeps 2 wks");
+    expect(STATUS_LABEL.draft).toBe("Planning");
+  });
+  it("splitGroupHeading turns the domain's uppercase heading into a name and a detail", () => {
+    expect(splitGroupHeading("RED ONION (5 medium total / ~450g)")).toEqual({ name: "Red onion", detail: "5 medium total / ~450g" });
+    expect(splitGroupHeading("GARLIC")).toEqual({ name: "Garlic", detail: null });
   });
 });
 

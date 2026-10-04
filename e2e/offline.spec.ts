@@ -47,10 +47,10 @@ test("offline-first: the app works without a network, keeps changes on the devic
   expect(installabilityErrors, JSON.stringify(installabilityErrors)).toEqual([]);
 
   // Build a plan while online, lock it, and let it sync.
-  await page.getByRole("button", { name: "Roll Cycle", exact: true }).click();
+  await page.getByRole("button", { name: "Roll dishes", exact: true }).click();
   await expect(page.getByTestId("dish-card")).toHaveCount(6);
-  await page.getByRole("button", { name: "Lock Plan → Grocery" }).click();
-  await expect(page.getByTestId("cycle-status")).toHaveText("Plan locked");
+  await page.getByRole("button", { name: "Lock plan" }).click();
+  await expect(page.getByTestId("cycle-status")).toHaveText("Locked");
   await expect(indicator(page)).toHaveAttribute("data-state", "synced", { timeout: 20_000 });
   expect((await idb(page)).outbox).toBe(0);
 
@@ -61,14 +61,13 @@ test("offline-first: the app works without a network, keeps changes on the devic
   await page.reload();
   await expect(page.locator("main[data-route]")).toBeVisible(); // app shell served from the precache
   await expect(page.getByTestId("dish-card")).toHaveCount(6); // data served from IndexedDB
-  await expect(page.getByTestId("cycle-status")).toHaveText("Plan locked");
+  await expect(page.getByTestId("cycle-status")).toHaveText("Locked");
 
   // Split-out (lazy) views are precached too: they open offline.
   await go(page, "recipes");
-  await expect(page.getByRole("heading", { name: /Library \(15\)/ })).toBeVisible();
+  await expect(page.getByTestId("recipe-count")).toHaveText("15");
   await go(page, "cook");
   await expect(page.getByTestId("cook-card").first()).toBeVisible();
-  await page.getByRole("button", { name: /Reel/ }).first().count(); // (no videos in production data: drawer is simply absent)
   await go(page, "prep");
   await expect(page.getByTestId("prep-group").first()).toBeVisible();
 

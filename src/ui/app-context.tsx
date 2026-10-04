@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
+import { AnimatePresence } from "motion/react";
 import type { Cycle } from "../domain/schemas/app";
 import { createStorage, type Storage } from "../storage";
 import type { SyncEngine } from "../storage/sync";
@@ -9,6 +10,8 @@ import { derive, type Derived } from "./lib/derive";
 import { loadWorld, type World } from "./lib/world";
 import { createFixtureStorage, fixtureFromLocation } from "./fixture";
 import { requestPersistentStorage } from "./persist";
+import { Banner } from "./components/ui";
+import { LogoMark } from "./components/Logo";
 
 let storagePromise: Promise<Storage> | null = null;
 let syncEngine: SyncEngine | null = null;
@@ -72,8 +75,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  if (fatal) return <p role="alert" className="p-4 font-bold text-danger">Storage failed to open: {fatal}</p>;
-  if (!s) return <p className="p-4" aria-busy="true">Loading…</p>;
+  if (fatal) return <div className="mx-auto max-w-md p-6"><Banner title="Storage failed to open">{fatal}</Banner></div>;
+  if (!s) return <Splash />;
   return (
     <WorldProvider s={s} error={error} setError={setError}>
       {children}
@@ -96,16 +99,22 @@ function WorldProvider({ s, error, setError, children }: { s: Storage; error: st
     },
     [setError],
   );
-  if (!world || !derived || !world.cycle) return <p className="p-4" aria-busy="true">Loading…</p>;
+  if (!world || !derived || !world.cycle) return <Splash />;
   return (
     <Ctx.Provider value={{ s, sync: syncEngine, world, derived, cycle: world.cycle, run }}>
-      {error && (
-        <div role="alert" className="mx-3 mt-3 flex items-start gap-2 rounded-lg border-2 border-danger bg-red-50 p-3 text-sm font-semibold text-danger">
-          <span className="flex-1">{error}</span>
-          <button className="btn" onClick={() => setError(null)} aria-label="Dismiss error">✕</button>
-        </div>
-      )}
+      <div className="fixed inset-x-4 top-[calc(4rem+env(safe-area-inset-top))] z-50 mx-auto max-w-xl">
+        <AnimatePresence>{error && <Banner onDismiss={() => setError(null)}>{error}</Banner>}</AnimatePresence>
+      </div>
       {children}
     </Ctx.Provider>
+  );
+}
+
+/** First paint while IndexedDB opens: the mark, so the page is never blank. */
+function Splash() {
+  return (
+    <div role="status" aria-busy="true" aria-label="Loading" className="grid min-h-dvh place-items-center">
+      <LogoMark className="size-14 animate-pulse" />
+    </div>
   );
 }
