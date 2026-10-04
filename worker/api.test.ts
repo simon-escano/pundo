@@ -420,3 +420,18 @@ describe("GET /api/sync/pull", () => {
     expect(await cursor()).toBe(seqs[1]);
   });
 });
+
+describe("GET /api/login (sign-in bounce)", () => {
+  const loc = async (next?: string) => {
+    const res = await call(next === undefined ? "/api/login" : `/api/login?next=${encodeURIComponent(next)}`, { redirect: "manual" });
+    expect(res.status).toBe(302);
+    return res.headers.get("location");
+  };
+  it("returns to the same-origin page the user was on, hash included", async () => {
+    expect(await loc("/prep/day-1?x=1#/prep/day-1")).toBe("/prep/day-1?x=1#/prep/day-1");
+    expect(await loc()).toBe("/");
+  });
+  it("never redirects off-site", async () => {
+    for (const bad of ["//evil.example", "/\\evil.example", "https://evil.example", "evil"]) expect(await loc(bad)).toBe("/");
+  });
+});

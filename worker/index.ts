@@ -54,6 +54,16 @@ app.get("/api/health", async (c) => {
   return c.json({ ok: true, service: "pundo", schema: 1, cursor, auth: c.get("auth") });
 });
 
+/**
+ * Sign-in bounce. The signed-out screen navigates here: /api/* is outside the service worker's navigation fallback, so the
+ * request reaches Cloudflare's edge and Access issues its login redirect. After login Access returns here, and we send the
+ * user back to the page they were on (same-origin paths only, so this is not an open redirect).
+ */
+app.get("/api/login", (c) => {
+  const next = c.req.query("next") ?? "/";
+  return c.redirect(/^\/(?![/\\])/.test(next) ? next : "/", 302);
+});
+
 app.post("/api/sync/push", async (c) => {
   let body: unknown;
   try {

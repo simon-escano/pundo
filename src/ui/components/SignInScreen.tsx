@@ -4,9 +4,12 @@ import { createPortal } from "react-dom";
 import { LogoMark } from "./Logo";
 import { Button, useModalBehavior } from "./ui";
 
-/** Where Cloudflare Access hosts the login for this app; it returns the user to the page they were on. */
-export const accessLoginUrl = (loc: Pick<Location, "hostname" | "pathname" | "search" | "hash">) =>
-  `/cdn-cgi/access/login/${loc.hostname}?redirect_url=${encodeURIComponent(`${loc.pathname}${loc.search}${loc.hash}`)}`;
+/**
+ * A protected Worker route that Access intercepts at the edge (the cached app shell would not be), then bounces back to
+ * the page the user was on. Access's own /cdn-cgi/access/login path is not served on Workers-scoped apps.
+ */
+export const accessLoginUrl = (loc: Pick<Location, "pathname" | "search" | "hash">) =>
+  `/api/login?next=${encodeURIComponent(`${loc.pathname}${loc.search}${loc.hash}`)}`;
 
 /**
  * Full-screen "signed out" page, in the pundo orange. The login itself is Cloudflare's (the app never sees a password);
