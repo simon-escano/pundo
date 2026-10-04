@@ -38,7 +38,7 @@ export function SyncIndicator({ onSignIn }: { onSignIn: () => void }) {
         aria-expanded={ind.state === "auth" ? undefined : open}
         title={ind.detail}
         onClick={() => (ind.state === "auth" ? onSignIn() : setOpen((o) => !o))}
-        className={cx("inline-flex min-h-[44px] max-w-[8.5rem] items-center gap-1.5 glass-ctl rounded-full px-3 max-[420px]:min-w-[44px] max-[420px]:justify-center text-xs font-semibold transition-[scale] duration-300 active:scale-[0.97]", TONE[ind.tone])}
+        className={cx("inline-flex min-h-[44px] max-w-[8.5rem] items-center gap-1.5 glass-ctl rounded-full px-3 max-[420px]:min-w-[44px] max-[420px]:justify-center text-xs font-semibold transition-[scale,background-color,box-shadow] duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-[0.97]", TONE[ind.tone])}
       >
         <Icon aria-hidden className={cx("size-4 shrink-0", ind.state === "syncing" && "animate-spin")} />
         <span className="max-[420px]:sr-only truncate">{ind.label}</span>

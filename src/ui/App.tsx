@@ -72,7 +72,7 @@ function Shell() {
               href={routeHref("recipes")}
               aria-current={route.id === "recipes" ? "page" : undefined}
               className={cx(
-                "inline-flex min-h-[44px] items-center gap-2 whitespace-nowrap rounded-full px-3.5 text-[15px] font-semibold transition-[scale,background-color] duration-300 active:scale-[0.97]",
+                "inline-flex min-h-[44px] items-center gap-2 whitespace-nowrap rounded-full px-3.5 text-[15px] font-semibold transition-[scale,background-color,box-shadow] duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-[0.97]",
                 route.id === "recipes" ? "bg-ink text-surface" : "glass-ctl text-ink",
               )}
             >

@@ -19,7 +19,7 @@ const VARIANT: Record<Variant, string> = {
   danger: "glass-ctl text-danger",
 };
 const BTN =
-  "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full px-5 text-[15px] font-semibold transition-[background-color,filter,scale,opacity,box-shadow] duration-300 ease-out active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40 aria-pressed:bg-ink aria-pressed:text-surface aria-pressed:ring-0";
+  "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full px-5 text-[15px] font-semibold transition-[background-color,filter,scale,opacity,box-shadow] duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40 aria-pressed:bg-ink aria-pressed:text-surface aria-pressed:ring-0";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant; icon?: LucideIcon };
 
