@@ -68,7 +68,7 @@ export function PlanView() {
         const locked = hasDishes && weekLocked(week);
         return (
           <section key={week} aria-label={`Week ${week}`} data-testid={`week-${week}`}>
-            <div className="flex items-start justify-between gap-3 border-t-2 border-ink pt-2.5">
+            <div className="flex items-start justify-between gap-3 border-t border-line pt-3">
               <div className="min-w-0">
                 <h2 className="flex flex-wrap items-baseline gap-x-3 font-display text-3xl font-extrabold">
                   Week {week}
@@ -112,7 +112,7 @@ function DishCell({ view, onRollError }: { view: SlotView; onRollError: (e: Roll
           exit={{ opacity: 0, scale: 0.94, transition: { duration: 0.12 } }}
         >
           {!view.recipe || !view.dish ? (
-            <div data-testid="dish-empty" className="grid min-h-44 place-items-center rounded-2xl border-2 border-dashed border-ink/20 p-2 text-center text-sm font-medium text-muted">
+            <div data-testid="dish-empty" className="grid min-h-44 place-items-center rounded-2xl border-2 border-dashed border-ink/15 p-2 text-center text-sm font-medium text-muted">
               Dish {view.slot + 1}
             </div>
           ) : wide ? (
@@ -148,7 +148,7 @@ function DishTile({ view, onRollError }: { view: SlotView; onRollError: (e: Roll
         type="button"
         aria-label={`Open ${recipe!.name}`}
         onClick={() => setOpen(true)}
-        className={cx("flex h-full min-h-44 w-full flex-col items-start gap-2 rounded-2xl p-3 text-left transition-transform duration-150 active:scale-[0.97]", PROTEIN_TINT[recipe!.protein_category])}
+        className={cx("squircle flex h-full min-h-44 w-full flex-col items-start gap-2 rounded-2xl p-3 text-left transition-transform duration-150 active:scale-[0.97]", PROTEIN_TINT[recipe!.protein_category])}
       >
         <span className="flex w-full items-center justify-between">
           <ProteinTag view={view} />
@@ -178,7 +178,7 @@ function DishCard({ view, onRollError }: { view: SlotView; onRollError: (e: Roll
   const draft = cycle.status === "draft";
   const { recipe, dish, week, slot, portions } = view;
   return (
-    <article {...dishAttrs(view)} className={cx("flex h-full flex-col rounded-3xl p-5", PROTEIN_TINT[recipe!.protein_category])}>
+    <article {...dishAttrs(view)} className={cx("squircle flex h-full flex-col rounded-3xl p-5", PROTEIN_TINT[recipe!.protein_category])}>
       <div className="flex items-center justify-between gap-2">
         <ProteinTag view={view} />
         {dish!.locked && <Lock aria-label="Locked" className="size-4" strokeWidth={2.5} />}

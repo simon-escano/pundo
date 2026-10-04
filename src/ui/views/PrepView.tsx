@@ -131,7 +131,7 @@ function CookDayPrep({ week }: { week: 1 | 2 }) {
         );
       })}
       {staging.length > 0 && (
-        <section className="mt-6 border-t-2 border-ink pt-3" aria-label="Cans and sauces" data-testid="staging">
+        <section className="mt-10" aria-label="Cans and sauces" data-testid="staging">
           <h2 className="font-display text-2xl font-bold">Set out cans and sauces</h2>
           <ul className="mt-1">
             {staging.map((s) => (

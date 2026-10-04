@@ -33,7 +33,7 @@ export function CookView() {
           Roll and lock your plan to see your cooking order.
         </Empty>
       ) : (
-        <div className="mt-8 flex flex-col gap-12">
+        <div className="mt-8 flex flex-col gap-14">
           {dishes.map((d, i) => <CookCard key={d.id} dish={d.dish} order={i + 1} />)}
         </div>
       )}
@@ -47,7 +47,7 @@ function CookCard({ dish, order }: { dish: ScaledDish; order: number }) {
   const { checked, toggle } = useChecklist(`cook:${cycle.id}:${dish.recipe.id}`);
   const r = dish.recipe;
   return (
-    <article className="border-t-2 border-ink pt-4" data-testid="cook-card" data-priority={STOVE_RANK[r.stove_priority]} data-recipe={r.id}>
+    <article className="pt-2" data-testid="cook-card" data-priority={STOVE_RANK[r.stove_priority]} data-recipe={r.id}>
       <div className="flex items-start gap-4">
         <span aria-hidden className="-mt-1 font-display text-[4.5rem] font-extrabold leading-[0.85] tabular-nums text-hot">{order}</span>
         <div className="min-w-0 flex-1 pt-1">

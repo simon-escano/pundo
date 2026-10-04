@@ -13,10 +13,10 @@ export const cx = (...parts: (string | false | null | undefined)[]) => parts.fil
 
 type Variant = "primary" | "secondary" | "ghost" | "danger";
 const VARIANT: Record<Variant, string> = {
-  primary: "bg-accent text-accent-ink hover:brightness-110",
-  secondary: "text-ink ring-[1.5px] ring-inset ring-ink/35 hover:bg-ink/5",
+  primary: "bg-accent text-accent-ink shadow-[inset_0_1px_0_rgb(255_255_255/0.35),0_6px_18px_color-mix(in_srgb,var(--accent)_32%,transparent)] hover:brightness-110",
+  secondary: "glass-ctl text-ink hover:brightness-105",
   ghost: "text-ink hover:bg-sunken",
-  danger: "text-danger ring-1 ring-inset ring-danger/40 hover:bg-danger-soft",
+  danger: "glass-ctl text-danger hover:brightness-105",
 };
 const BTN =
   "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full px-5 text-[15px] font-semibold transition-[background-color,filter,transform,opacity] duration-150 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40 aria-pressed:bg-ink aria-pressed:text-surface aria-pressed:ring-0";
@@ -184,7 +184,7 @@ export function PageTitle({ title, hint, children }: { title: string; hint?: Rea
 
 export function SectionHead({ icon: Icon, title, aside }: { icon?: LucideIcon; title: string; aside?: ReactNode }) {
   return (
-    <h2 className="sticky top-[var(--header-h,3.5rem)] z-10 flex items-baseline justify-between gap-2 border-b-2 border-ink bg-surface pb-1.5 pt-3 font-display text-xl font-bold">
+    <h2 className="sticky top-[var(--header-h,3.5rem)] z-10 flex items-baseline justify-between gap-2 border-b border-line bg-surface/75 pb-1.5 pt-3 backdrop-blur-lg font-display text-xl font-bold">
       <span className="flex items-center gap-2">
         {Icon && <Icon aria-hidden className="size-[1.05rem] text-accent" strokeWidth={2.5} />}
         {title}
@@ -243,7 +243,7 @@ export function Modal({ title, onClose, children, wide = false }: { title: strin
         aria-modal="true"
         aria-labelledby={titleId}
         className={cx(
-          "relative flex max-h-[92dvh] w-full flex-col overflow-hidden bg-surface shadow-float outline-none",
+          "glass-strong squircle relative flex max-h-[92dvh] w-full flex-col overflow-hidden outline-none",
           "rounded-t-[1.75rem] sm:rounded-[1.75rem]",
           wide ? "sm:max-w-2xl" : "sm:max-w-lg",
         )}

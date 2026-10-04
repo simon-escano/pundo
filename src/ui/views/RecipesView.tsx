@@ -35,7 +35,7 @@ export function RecipesView() {
         {shown.map(({ recipe: r, deleted }) => {
           const Icon = PROTEIN_ICON[r.protein_category];
           return (
-            <SpotlightCard as="li" key={r.id} className={cx("flex min-h-40 flex-col rounded-2xl p-4 transition-opacity duration-200", PROTEIN_TINT[r.protein_category], deleted && "opacity-55")} data-testid="recipe-row" data-recipe={r.id}>
+            <SpotlightCard as="li" key={r.id} className={cx("squircle flex min-h-40 flex-col rounded-2xl p-4 transition-opacity duration-200", PROTEIN_TINT[r.protein_category], deleted && "opacity-55")} data-testid="recipe-row" data-recipe={r.id}>
               <span className="inline-flex items-center gap-1 text-xs font-semibold text-ink/70"><Icon aria-hidden className="size-4" strokeWidth={2.25} />{PROTEIN_LABEL[r.protein_category]}</span>
               <h3 className="mt-2 font-display text-xl font-bold leading-[1.1]">{r.name}{deleted && <> <Tag tone="danger">Deleted</Tag></>}</h3>
               <p className="mt-2 text-sm text-ink/75">{TIER_LABEL[r.perishability_tier]} · {SAUCE_LABEL[r.sauce_base]}</p>

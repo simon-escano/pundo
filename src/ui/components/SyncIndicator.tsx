@@ -38,10 +38,10 @@ export function SyncIndicator({ onSignIn }: { onSignIn: () => void }) {
         aria-expanded={ind.state === "auth" ? undefined : open}
         title={ind.detail}
         onClick={() => (ind.state === "auth" ? onSignIn() : setOpen((o) => !o))}
-        className={cx("inline-flex min-h-[44px] max-w-[8.5rem] items-center gap-1.5 rounded-full px-2.5 text-xs font-semibold transition-colors duration-150 hover:bg-sunken", TONE[ind.tone])}
+        className={cx("inline-flex min-h-[44px] max-w-[8.5rem] items-center gap-1.5 glass-ctl rounded-full px-3 max-[420px]:min-w-[44px] max-[420px]:justify-center text-xs font-semibold transition-[filter] duration-150 hover:brightness-105", TONE[ind.tone])}
       >
         <Icon aria-hidden className={cx("size-4 shrink-0", ind.state === "syncing" && "animate-spin")} />
-        <span className="truncate">{ind.label}</span>
+        <span className="max-[420px]:sr-only truncate">{ind.label}</span>
       </button>
       <AnimatePresence>
         {open && (
@@ -50,7 +50,7 @@ export function SyncIndicator({ onSignIn }: { onSignIn: () => void }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.97 }}
             transition={{ duration: 0.14 }}
-            className="absolute right-0 top-full z-50 mt-1 w-60 rounded-2xl bg-raised p-4 text-sm shadow-float"
+            className="absolute right-0 top-full z-50 mt-1 w-60 glass-strong squircle rounded-2xl p-4 text-sm"
           >
             <p className="font-semibold">{ind.label}</p>
             <p className="mt-1 text-muted">{ind.detail}</p>
