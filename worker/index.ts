@@ -51,7 +51,7 @@ app.use("/api/*", async (c, next) => {
 
 app.get("/api/health", async (c) => {
   const cursor = await currentCursor(c.env.DB);
-  return c.json({ ok: true, service: "meal-prep-engine", schema: 1, cursor, auth: c.get("auth") });
+  return c.json({ ok: true, service: "pundo", schema: 1, cursor, auth: c.get("auth") });
 });
 
 app.post("/api/sync/push", async (c) => {

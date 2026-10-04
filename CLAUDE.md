@@ -1,6 +1,6 @@
-# Meal Prep Engine
+# pundo
 
-Spec: `product_blueprint_deterministic_meal_prep_grocery_engine.md`. Approved plan: `~/.claude/plans/pasted-content-id-68e2-read-and-joyful-curry.md`.
+Spec: `product_blueprint_pundo.md`. Approved plan: `~/.claude/plans/pasted-content-id-68e2-read-and-joyful-curry.md`.
 
 ## Invariants
 - **Zero LLM runtime.** `src/domain` is pure deterministic TS: no `Math.random`, `Date.now`, `new Date()`, `localeCompare`, and no dexie/react/storage/ui/worker imports. ESLint enforces this (`tests/lint-gate.test.ts`).
@@ -50,4 +50,4 @@ Spec: `product_blueprint_deterministic_meal_prep_grocery_engine.md`. Approved pl
 - Deploying: see `DEPLOY.md` (exact wrangler commands; nothing is run automatically).
 
 ## Status
-M1-M6 complete. Not done / known: nothing deployed yet (`database_id` is still a placeholder); a device whose clock was stamped far in the future keeps those changes queued until server time catches up (they are never dropped).
+M1-M6 complete. Deployed (see memory `deployment-state`): live at https://pundo.gitlore.workers.dev (Access app destination still to be pointed at the new hostname by the user); remote D1 `pundo` migrated; Access vars set; old `meal-prep-engine` D1 kept as a safety copy until the user confirms (see memory deployment-state). Not done / known: a device whose clock was stamped far in the future keeps those changes queued until server time catches up (they are never dropped).

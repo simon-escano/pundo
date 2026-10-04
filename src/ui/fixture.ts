@@ -6,7 +6,7 @@ import { rollPlan } from "./lib/actions";
 // fixed cycle seed, so Playwright captures and flow tests are exactly reproducible.
 export const FIXTURE_NOW = Date.UTC(2026, 9, 4, 8, 0, 0);
 export const FIXTURE_SEED = 20261004;
-export const FIXTURE_DB = "meal-prep-fixture";
+export const FIXTURE_DB = "pundo-fixture";
 export type FixtureState = "draft" | "locked";
 
 export function fixtureFromLocation(loc: Pick<Location, "search">): FixtureState | null {

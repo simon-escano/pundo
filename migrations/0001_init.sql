@@ -1,4 +1,4 @@
--- Meal Prep Engine: edge schema (Cloudflare D1 / SQLite).
+-- pundo: edge schema (Cloudflare D1 / SQLite).
 -- Mirrors the blueprint Zod schemas: every enum below must equal its Zod enum (worker/ddl.test.ts enforces this).
 -- Sync columns (`hlc` / `updated_at`) hold Hybrid Logical Clock stamps: lexicographic order = causal order.
 -- Cycle status TRANSITIONS are validated by the client; the DB constrains the set of states only (a trigger

@@ -34,7 +34,7 @@ export type SyncMetaRow =
   | { key: "seedVersion"; value: number }
   | { key: "pullCursor"; value: number };
 
-export class MealPrepDB extends Dexie {
+export class PundoDB extends Dexie {
   // `declare` (not `!`) so class-field semantics never overwrite the tables Dexie installs.
   declare recipes: Table<RecipeRow, string>;
   declare priceRegistry: Table<RegistryRow, string>;

@@ -14,8 +14,8 @@ export default defineConfig({
       includeAssets: ["icons/icon.svg", "icons/apple-touch-icon.png"],
       manifest: {
         id: "/",
-        name: "Meal Prep Engine",
-        short_name: "MealPrep",
+        name: "pundo",
+        short_name: "pundo",
         description: "Deterministic 2-week meal prep and grocery planner that works offline.",
         start_url: "/",
         scope: "/",

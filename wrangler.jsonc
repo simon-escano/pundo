@@ -1,9 +1,8 @@
 {
   // Cloudflare Worker: static PWA assets + /api (Hono) + D1.
-  // `database_id` is a placeholder: run `npx wrangler d1 create meal-prep-engine` and paste the real id.
-  // Local dev and tests use an in-memory D1 and ignore it.
+  // `database_id` is the real remote D1 database. Local dev and tests use an in-memory D1 and ignore it.
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "meal-prep-engine",
+  "name": "pundo",
   "main": "worker/index.ts",
   "compatibility_date": "2026-08-22",
   "assets": {
@@ -17,14 +16,14 @@
   //   ACCESS_AUD:         Zero Trust -> Access -> Applications -> your app -> Overview -> Application Audience (AUD) Tag
   // Local dev bypass is NOT configured here on purpose: use `npm run worker:dev` (passes --var ACCESS_DEV_BYPASS:true).
   "vars": {
-    "ACCESS_TEAM_DOMAIN": "",
-    "ACCESS_AUD": ""
+    "ACCESS_TEAM_DOMAIN": "lingering-dew-04bc.cloudflareaccess.com",
+    "ACCESS_AUD": "ecffea3a0fd6050dc72f23290175a828e2b5f656f6111ccb6f1540045a3cd1d6"
   },
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "meal-prep-engine",
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_name": "pundo",
+      "database_id": "85054d03-d16a-4276-85b5-b2e95b62d91a",
       "migrations_dir": "migrations"
     }
   ]

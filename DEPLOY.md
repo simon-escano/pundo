@@ -1,4 +1,4 @@
-# Deploying Meal Prep Engine to Cloudflare
+# Deploying pundo to Cloudflare
 
 One Worker serves everything: the PWA (static assets from `dist/`), the sync API (`/api/*`, Hono) and
 the D1 database. **Nothing below has been run for you.** Every command is run by you, in order.
@@ -17,7 +17,7 @@ npx wrangler whoami         # confirm the right account
 The Worker **validates the `Cf-Access-Jwt-Assertion` header itself** (RS256, standard Web Crypto, against your
 team's public keys) and **fails closed**: with Access unconfigured, every `/api/*` request answers
 `500 {"error":"access not configured"}`. So Access is not optional, and you need two values from it (step 1b).
-Your `workers.dev` hostname is predictable: `meal-prep-engine.<your-account-subdomain>.workers.dev`
+Your `workers.dev` hostname is predictable: `pundo.<your-account-subdomain>.workers.dev`
 (Dashboard → Workers & Pages → the subdomain shown on the right).
 
 Dashboard → **Zero Trust → Access → Applications → Add → Self-hosted**
@@ -52,20 +52,20 @@ Access policy is later loosened by mistake.
 ## 2. Create the remote D1 database and bind the real `database_id`
 
 ```bash
-npx wrangler d1 create meal-prep-engine --location apac
+npx wrangler d1 create pundo --location apac
 ```
 (`--location` is a hint: `wnam enam weur eeur apac oc`. Pick the closest to you; `apac` for the Philippines.)
 
 The command prints something like:
 ```
-database_name = "meal-prep-engine"
+database_name = "pundo"
 database_id   = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 ```
 Edit `wrangler.jsonc` and replace the placeholder (keep `binding` as `DB`):
 ```jsonc
 "d1_databases": [{
   "binding": "DB",
-  "database_name": "meal-prep-engine",
+  "database_name": "pundo",
   "database_id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",   // <- paste here
   "migrations_dir": "migrations"
 }]
@@ -76,12 +76,12 @@ file and drop the comments, so editing by hand is the safer route.)
 ## 3. Apply the migrations to the REMOTE database
 
 ```bash
-npx wrangler d1 migrations apply meal-prep-engine --remote
+npx wrangler d1 migrations apply pundo --remote
 ```
 This applies `0001_init.sql` (schema) and `0002_seed.sql` (the 15 fixture recipes, 39 ingredients and
 their seed prices). Confirm:
 ```bash
-npx wrangler d1 execute meal-prep-engine --remote \
+npx wrangler d1 execute pundo --remote \
   --command "SELECT (SELECT COUNT(*) FROM recipes) AS recipes, (SELECT COUNT(*) FROM price_registry) AS ingredients, (SELECT COUNT(*) FROM change_log) AS changes"
 # expected: recipes 15, ingredients 39, changes 0
 ```
@@ -100,15 +100,15 @@ npx wrangler deploy --dry-run  # local only: bundles the Worker and lists bindin
 ```bash
 npx wrangler deploy
 ```
-Output ends with the live URL, e.g. `https://meal-prep-engine.<subdomain>.workers.dev`.
+Output ends with the live URL, e.g. `https://pundo.<subdomain>.workers.dev`.
 
 ## 6. Smoke test
 
 ```bash
-curl -s https://meal-prep-engine.<subdomain>.workers.dev/api/health
+curl -s https://pundo.<subdomain>.workers.dev/api/health
 # Without a valid Access session: {"error":"unauthorized"}  (HTTP 401) -- that is the correct answer.
 # Open the URL in a browser, log in, then visit /api/health there. Expect:
-# {"ok":true,"service":"meal-prep-engine","schema":1,"cursor":0,"auth":"access"}
+# {"ok":true,"service":"pundo","schema":1,"cursor":0,"auth":"access"}
 # ("auth":"dev-bypass" in production would be a serious misconfiguration; it cannot occur on a real hostname.)
 npx wrangler tail              # live Worker logs while you tap around
 ```
@@ -121,7 +121,7 @@ and the header dot should say **Offline**. Turn the network back on: it should r
 | Change | What to do |
 |---|---|
 | App/Worker code only | `npm run build && npx wrangler deploy`. Users see "A new version is ready" with a Reload button. |
-| Database schema | Add `migrations/0003_<name>.sql`, run `npx wrangler d1 migrations apply meal-prep-engine --remote` **before** deploying the Worker that needs it. |
+| Database schema | Add `migrations/0003_<name>.sql`, run `npx wrangler d1 migrations apply pundo --remote` **before** deploying the Worker that needs it. |
 | Fixture data (new bundled recipes) | **Never edit `0002_seed.sql` once applied remotely.** Write a new migration; `tests/seed-sql.test.ts` guards the file against the fixtures for local development. |
 
 ## Rollback
@@ -129,7 +129,7 @@ and the header dot should say **Offline**. Turn the network back on: it should r
 ```bash
 npx wrangler versions list                 # find the previous Worker version
 npx wrangler rollback                      # roll the Worker back (add a version id to pick one)
-npx wrangler d1 time-travel info meal-prep-engine    # D1 point-in-time restore window / bookmark
+npx wrangler d1 time-travel info pundo    # D1 point-in-time restore window / bookmark
 ```
 
 ## Troubleshooting the API gate

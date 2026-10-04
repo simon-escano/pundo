@@ -9,7 +9,7 @@ const idb = (page: Page): Promise<Counts> =>
   page.evaluate(
     () =>
       new Promise<Counts>((resolve, reject) => {
-        const open = indexedDB.open("meal-prep-engine");
+        const open = indexedDB.open("pundo");
         open.onerror = () => reject(open.error);
         open.onsuccess = () => {
           const db = open.result;
@@ -130,7 +130,7 @@ test("the sync API is never served from the service-worker cache", async ({ page
   await page.goto("/");
   await expect.poll(() => page.evaluate(() => !!navigator.serviceWorker.controller)).toBe(true);
   const health = await page.evaluate(async () => (await fetch("/api/health")).json());
-  expect(health).toMatchObject({ ok: true, service: "meal-prep-engine" });
+  expect(health).toMatchObject({ ok: true, service: "pundo" });
   const direct = await request.get("/api/nope");
   expect(direct.status()).toBe(404); // the Worker answers (JSON), not the SPA fallback
   const body = await page.evaluate(async () => { const r = await fetch("/api/nope"); return { status: r.status, type: r.headers.get("content-type") }; });

@@ -246,14 +246,14 @@ describe("config and dev-bypass rules", () => {
   it("the bypass needs the explicit opt-in AND a loopback host", () => {
     const on = { ACCESS_DEV_BYPASS: "true" };
     for (const u of ["http://localhost:8787/api/x", "http://127.0.0.1:8787/api/x", "http://[::1]:8787/api/x"]) expect(devBypassActive(on, u), u).toBe(true);
-    for (const u of ["https://meal-prep-engine.acme.workers.dev/api/x", "https://localhost.evil.com/api/x", "http://10.0.0.5/api/x", "not a url"]) expect(devBypassActive(on, u), u).toBe(false);
+    for (const u of ["https://pundo.acme.workers.dev/api/x", "https://localhost.evil.com/api/x", "http://10.0.0.5/api/x", "not a url"]) expect(devBypassActive(on, u), u).toBe(false);
     for (const v of [undefined, "", "false", "1", "TRUE", "yes"]) expect(devBypassActive({ ACCESS_DEV_BYPASS: v }, "http://localhost/api/x"), String(v)).toBe(false);
   });
 });
 
 describe("the Hono middleware, end to end (no bypass)", () => {
   const baseEnv = (over: Record<string, unknown> = {}) => ({ DB: env.DB, ACCESS_TEAM_DOMAIN: TEAM, ACCESS_AUD: AUD, ...over }) as never;
-  const req = (path: string, headers: Record<string, string> = {}, host = "https://meal-prep-engine.acme.workers.dev", init: RequestInit = {}) => new Request(`${host}${path}`, { ...init, headers });
+  const req = (path: string, headers: Record<string, string> = {}, host = "https://pundo.acme.workers.dev", init: RequestInit = {}) => new Request(`${host}${path}`, { ...init, headers });
   const realClaims = () => { const t = Date.now() / 1000; return claims({ iat: t - 5, nbf: t - 5, exp: t + 3600 }); };
   let stub: ReturnType<typeof vi.fn>;
   const withJwks = async <T>(fn: () => Promise<T>) => {
@@ -316,9 +316,9 @@ describe("the Hono middleware, end to end (no bypass)", () => {
   });
 
   it("the bypass is NOT honoured on a real hostname even if the var leaks into production", async () => {
-    const res = await app.fetch(req("/api/health", {}, "https://meal-prep-engine.acme.workers.dev"), baseEnv({ ACCESS_DEV_BYPASS: "true" }));
+    const res = await app.fetch(req("/api/health", {}, "https://pundo.acme.workers.dev"), baseEnv({ ACCESS_DEV_BYPASS: "true" }));
     expect(res.status).toBe(401);
-    const unconfigured = await app.fetch(req("/api/health", {}, "https://meal-prep-engine.acme.workers.dev"), baseEnv({ ACCESS_DEV_BYPASS: "true", ACCESS_TEAM_DOMAIN: "", ACCESS_AUD: "" }));
+    const unconfigured = await app.fetch(req("/api/health", {}, "https://pundo.acme.workers.dev"), baseEnv({ ACCESS_DEV_BYPASS: "true", ACCESS_TEAM_DOMAIN: "", ACCESS_AUD: "" }));
     expect(unconfigured.status).toBe(500); // still fail-closed, never open
   });
 

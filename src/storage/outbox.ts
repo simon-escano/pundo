@@ -1,9 +1,9 @@
 import type { Table } from "dexie";
-import type { Entity, MealPrepDB } from "./db";
+import type { Entity, PundoDB } from "./db";
 import type { HlcClock } from "./hlc";
 
 export type Ctx = {
-  db: MealPrepDB;
+  db: PundoDB;
   clock: HlcClock;
   newId: () => string;
   nowIso: () => string;

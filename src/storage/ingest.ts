@@ -3,7 +3,7 @@ import type { Aisle, IngredientMeta, StorageClass } from "../domain/schemas/app"
 import { ingestRecipe, type IngestIssue } from "../domain/ingest/parse";
 import { reconcileRegistry, suggestPricingUnit } from "../domain/ingest/reconcile";
 import type { MissingIngredient } from "../domain/ingest/reconcile";
-import type { MealPrepDB } from "./db";
+import type { PundoDB } from "./db";
 import { writeTx, type Ctx } from "./outbox";
 import type { metaRepo } from "./repositories/meta";
 import type { recipesRepo } from "./repositories/recipes";
@@ -59,7 +59,7 @@ function buildActions(recipe: Recipe, missing: readonly MissingIngredient[], kno
  * registry and ingredient meta. `preview` is read-only and returns the action items the UI must
  * collect; `commit` writes recipe + registry + meta + outbox in ONE transaction (all or nothing).
  */
-export function ingestPipeline(ctx: Ctx, db: MealPrepDB, repos: Repos) {
+export function ingestPipeline(ctx: Ctx, db: PundoDB, repos: Repos) {
   async function preview(text: string): Promise<IngestPreview> {
     const res = ingestRecipe(text);
     if (!res.ok) return res;

@@ -4,7 +4,7 @@ import { useCallback, useSyncExternalStore } from "react";
 // because private windows and blocked storage can throw. The UI works identically without persistence.
 const cache = new Map<string, readonly string[]>();
 const listeners = new Set<() => void>();
-const KEY = (k: string) => `mpe:check:${k}`;
+const KEY = (k: string) => `pundo:check:${k}`;
 
 function read(key: string): readonly string[] {
   const hit = cache.get(key);

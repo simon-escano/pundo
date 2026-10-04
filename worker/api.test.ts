@@ -59,7 +59,7 @@ describe("health and routing", () => {
     const res = await call("/api/health");
     expect(res.status).toBe(200);
     expect(res.headers.get("cache-control")).toBe("no-store");
-    expect(await res.json()).toMatchObject({ ok: true, service: "meal-prep-engine", cursor: expect.any(Number) });
+    expect(await res.json()).toMatchObject({ ok: true, service: "pundo", cursor: expect.any(Number) });
   });
   it("unknown routes return JSON 404", async () => {
     const res = await call("/api/nope");

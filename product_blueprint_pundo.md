@@ -1,4 +1,4 @@
-# Product Blueprint: Deterministic Meal Prep & Grocery Engine
+# Product Blueprint: pundo
 
 ## 1. System Overview & Core Principles
 

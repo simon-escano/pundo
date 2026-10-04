@@ -1,4 +1,4 @@
-import { MealPrepDB } from "./db";
+import { PundoDB } from "./db";
 import { HlcClock } from "./hlc";
 import { cryptoRandomBytes, uuidv7 } from "./ids";
 import { loadFixtureData, type SeedData } from "./fixtures";
@@ -25,7 +25,7 @@ export type StorageOptions = {
 /** Composition root: opens the database, restores device id + HLC, bootstraps on first run, wires repositories. */
 export async function createStorage(opts: StorageOptions = {}) {
   const now = opts.now ?? Date.now;
-  const db = new MealPrepDB(opts.name ?? "meal-prep-engine", {
+  const db = new PundoDB(opts.name ?? "pundo", {
     ...(opts.indexedDB ? { indexedDB: opts.indexedDB } : {}),
     ...(opts.IDBKeyRange ? { IDBKeyRange: opts.IDBKeyRange } : {}),
   });
