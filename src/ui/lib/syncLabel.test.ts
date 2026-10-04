@@ -3,7 +3,7 @@ import type { SyncStatus } from "../../storage/sync";
 import { requestPersistentStorage } from "../persist";
 import { describeSync } from "./syncLabel";
 
-const st = (over: Partial<SyncStatus> = {}): SyncStatus => ({ state: "idle", pending: 0, lastSyncAt: "2026-10-04T08:00:00.000Z", lastError: null, failures: 0, blocked: null, rejected: 0, ...over });
+const st = (over: Partial<SyncStatus> = {}): SyncStatus => ({ state: "idle", pending: 0, lastSyncAt: "2026-10-04T08:00:00.000Z", lastError: null, failures: 0, blocked: null, auth: false, rejected: 0, ...over });
 
 describe("describeSync (header indicator)", () => {
   it("offline always wins, and shows what is queued on the device", () => {
@@ -29,6 +29,13 @@ describe("describeSync (header indicator)", () => {
     expect(describeSync({ online: true, pending: 0, status: st({ state: "offline", lastError: null }) }).detail).toBe("Will retry automatically.");
     expect(describeSync({ online: true, pending: 0, status: st({ state: "error", lastError: "server returned HTTP 500" }) })).toMatchObject({ state: "error", label: "Sync error", tone: "danger", detail: "server returned HTTP 500" });
     expect(describeSync({ online: true, pending: 0, status: st({ state: "error" }) }).detail).toBe("The server reported a problem.");
+  });
+
+  it("an expired Access session says 'Sign in again' and outranks the generic error", () => {
+    const i = describeSync({ online: true, pending: 2, status: st({ state: "error", auth: true, lastError: "sign-in required: reload" }) });
+    expect(i).toMatchObject({ state: "auth", label: "Sign in again · 2 changes queued", tone: "danger", detail: "sign-in required: reload" });
+    expect(describeSync({ online: true, pending: 0, status: st({ auth: true }) }).detail).toBe("Your session expired.");
+    expect(describeSync({ online: false, pending: 0, status: st({ auth: true }) }).state).toBe("offline"); // no network: offline wins
   });
 
   it("a server hold for clock skew tells the user what to fix", () => {

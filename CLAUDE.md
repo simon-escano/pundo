@@ -46,7 +46,8 @@ Spec: `product_blueprint_deterministic_meal_prep_grocery_engine.md`. Approved pl
 - The sync engine also pushes ~1.5 s after any local write (debounced outbox hook), not only on the poll.
 - Worker clock-skew guard: stamps > 60 s ahead of server time are held (`retry`, never written or logged), surfaced to the client as `status.blocked`.
 - `e2e/offline.spec.ts` runs the `offline` Playwright project against `npm run e2e:offline-server` (production build + `wrangler dev` + fresh local D1 on :8787). Other projects ignore it. Selector tip: the header indicator and banners are all `role="status"`, so scope `getByRole("status")` with `.filter({ hasText })`.
+- **Access gate** (`worker/access.ts`, middleware in `worker/index.ts`): all `/api/*` requires a valid `Cf-Access-Jwt-Assertion` (RS256 pinned, iss/aud/exp checked, JWKS cached with cooldown'd refetch). Fails closed (500) if `ACCESS_TEAM_DOMAIN`/`ACCESS_AUD` are unset. Local dev bypass needs BOTH `--var ACCESS_DEV_BYPASS:true` (CLI only, never in wrangler.jsonc; `npm run worker:dev`, `e2e:offline-server`, and the workerd test config set it) AND a loopback hostname. Worker tests use `http://localhost`; to test the real gate call `app.fetch(req, customEnv)` (see `worker/access.test.ts`). Client shows "Sign in again" on 401/403/login-redirect (`status.auth`).
 - Deploying: see `DEPLOY.md` (exact wrangler commands; nothing is run automatically).
 
 ## Status
-M1-M6 complete. Not done / known: no Worker-side Cloudflare Access JWT validation; nothing deployed yet (`database_id` is still a placeholder); a device whose clock was stamped far in the future keeps those changes queued until server time catches up (they are never dropped).
+M1-M6 complete. Not done / known: nothing deployed yet (`database_id` is still a placeholder); a device whose clock was stamped far in the future keeps those changes queued until server time catches up (they are never dropped).

@@ -12,7 +12,7 @@ import { writeTx } from "../src/storage/outbox";
 const RUN = Date.now().toString(36);
 let clients = 0; // every client instance is a distinct device (a fresh IndexedDB always gets a fresh device id)
 const T0 = Date.now() - 6 * 3_600_000; // realistic, and well behind the server's clock-skew guard
-const edge = (url: string, init?: RequestInit) => exports.default.fetch(new Request(`http://edge.test${url}`, init));
+const edge = (url: string, init?: RequestInit) => exports.default.fetch(new Request(`http://localhost${url}`, init));
 const first = <T>(sql: string, ...p: unknown[]) => env.DB.prepare(sql).bind(...p).first<T>();
 const all = async <T>(sql: string, ...p: unknown[]) => (await env.DB.prepare(sql).bind(...p).all<T>()).results;
 

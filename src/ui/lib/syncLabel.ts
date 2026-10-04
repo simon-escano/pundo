@@ -1,6 +1,6 @@
 import type { SyncStatus } from "../../storage/sync";
 
-export type IndicatorState = "offline" | "syncing" | "synced" | "pending" | "unreachable" | "blocked" | "error" | "local";
+export type IndicatorState = "auth" | "offline" | "syncing" | "synced" | "pending" | "unreachable" | "blocked" | "error" | "local";
 export type IndicatorTone = "ok" | "info" | "warn" | "danger" | "muted";
 export type Indicator = { state: IndicatorState; label: string; tone: IndicatorTone; detail: string };
 
@@ -15,6 +15,7 @@ export function describeSync(input: { online: boolean; pending: number; status: 
   const queued = pending > 0 ? ` · ${plural(pending, "change")} queued` : "";
   if (!online) return { state: "offline", label: `Offline${queued}`, tone: "warn", detail: "No connection. Everything still works and is saved on this device." };
   if (!status) return { state: "local", label: "Local only", tone: "muted", detail: "Sync is off in this build. Data is saved on this device." };
+  if (status.auth) return { state: "auth", label: `Sign in again${queued}`, tone: "danger", detail: status.lastError ?? "Your session expired." };
   if (status.blocked) {
     return { state: "blocked", label: `Check device clock${queued}`, tone: "danger", detail: status.blocked };
   }

@@ -27,6 +27,7 @@ export type SyncStatus = {
   lastError: string | null;
   failures: number; // consecutive failed runs (drives backoff)
   blocked: string | null; // why queued changes are being held by the server (e.g. clock skew), else null
+  auth: boolean; // the session needs renewing (Cloudflare Access returned 401/403 or a login redirect)
   rejected: number; // mutations the server permanently refused (dropped, logged)
 };
 export type SyncResult = { ok: boolean; pushed: number; pulled: number; rejected: number; error?: string };
@@ -72,7 +73,7 @@ export function browserEnv(): SyncEnv {
 }
 
 class SyncError extends Error {
-  constructor(message: string, readonly network = false) {
+  constructor(message: string, readonly network = false, readonly auth = false) {
     super(message);
   }
 }
@@ -219,7 +220,7 @@ export function createSyncEngine(ctx: Ctx, opts: SyncOptions = {}) {
   const backoffMax = opts.backoffMaxMs ?? 5 * 60_000;
   const log = opts.log ?? console;
 
-  let status: SyncStatus = { state: "idle", pending: 0, lastSyncAt: null, lastError: null, failures: 0, blocked: null, rejected: 0 };
+  let status: SyncStatus = { state: "idle", pending: 0, lastSyncAt: null, lastError: null, failures: 0, blocked: null, auth: false, rejected: 0 };
   const listeners = new Set<(s: SyncStatus) => void>();
   if (opts.onStatus) listeners.add(opts.onStatus);
   const set = (patch: Partial<SyncStatus>) => {
@@ -235,9 +236,14 @@ export function createSyncEngine(ctx: Ctx, opts: SyncOptions = {}) {
   async function request<T>(path: string, init: RequestInit | undefined, parse: (x: unknown) => T | null): Promise<T> {
     let res: Response;
     try {
-      res = await fetchImpl(`${base}${path}`, init);
+      // `manual`: an expired Cloudflare Access session answers with a redirect to a cross-origin login page, which
+      // fetch would otherwise report as an opaque network failure. We want to recognise it and say so.
+      res = await fetchImpl(`${base}${path}`, { ...init, redirect: "manual" });
     } catch (e) {
       throw new SyncError(`network unreachable (${e instanceof Error ? e.message : String(e)})`, true);
+    }
+    if (res.type === "opaqueredirect" || res.status === 401 || res.status === 403) {
+      throw new SyncError("sign-in required: reload the page and log in again (your data is safe on this device)", false, true);
     }
     if (!res.ok) throw new SyncError(`server returned HTTP ${res.status}`);
     let body: unknown;
@@ -312,12 +318,12 @@ export function createSyncEngine(ctx: Ctx, opts: SyncOptions = {}) {
         if (blocked) warnOnce(`changes are being held: ${blocked}`);
         const pulled = await pullPhase();
         lastWarned = blocked ? `changes are being held: ${blocked}` : ""; // keep warning once while the hold persists
-        set({ state: "idle", failures: 0, blocked, lastError: null, lastSyncAt: ctx.nowIso(), pending: await db.outbox.count(), rejected: status.rejected + rejected });
+        set({ state: "idle", failures: 0, blocked, auth: false, lastError: null, lastSyncAt: ctx.nowIso(), pending: await db.outbox.count(), rejected: status.rejected + rejected });
         return { ok: true, pushed, pulled, rejected };
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e);
         warnOnce(msg);
-        set({ state: e instanceof SyncError && e.network ? "offline" : "error", failures: status.failures + 1, lastError: msg, pending: await db.outbox.count().catch(() => status.pending) });
+        set({ state: e instanceof SyncError && e.network ? "offline" : "error", auth: e instanceof SyncError && e.auth, failures: status.failures + 1, lastError: msg, pending: await db.outbox.count().catch(() => status.pending) });
         return { ok: false, pushed: 0, pulled: 0, rejected: 0, error: msg };
       } finally {
         inflight = null;

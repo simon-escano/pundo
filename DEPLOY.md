@@ -12,9 +12,11 @@ npx wrangler login          # opens a browser to authorise wrangler
 npx wrangler whoami         # confirm the right account
 ```
 
-## 1. Put Cloudflare Access in front FIRST (recommended)
+## 1. Put Cloudflare Access in front FIRST (required)
 
-The API has no login of its own. Until Access is on, anyone who knows the URL can read and write.
+The Worker **validates the `Cf-Access-Jwt-Assertion` header itself** (RS256, standard Web Crypto, against your
+team's public keys) and **fails closed**: with Access unconfigured, every `/api/*` request answers
+`500 {"error":"access not configured"}`. So Access is not optional, and you need two values from it (step 1b).
 Your `workers.dev` hostname is predictable: `meal-prep-engine.<your-account-subdomain>.workers.dev`
 (Dashboard → Workers & Pages → the subdomain shown on the right).
 
@@ -23,7 +25,29 @@ Dashboard → **Zero Trust → Access → Applications → Add → Self-hosted**
 - Policy: **Allow**, include **Emails** → your address(es)
 - Session duration: 1 month (the app stays usable offline between logins)
 
-If you skip this step, deploy (step 5) and add the Access application immediately afterwards.
+### 1b. Give the Worker its two Access settings
+
+Collect:
+- **Team domain**: Zero Trust → Settings → General → *Team domain*, e.g. `myteam.cloudflareaccess.com`
+- **AUD tag**: Zero Trust → Access → Applications → your app → Overview → *Application Audience (AUD) Tag*
+
+Put them in `wrangler.jsonc` (they are identifiers, not secrets):
+```jsonc
+"vars": {
+  "ACCESS_TEAM_DOMAIN": "myteam.cloudflareaccess.com",
+  "ACCESS_AUD": "<the AUD tag>"
+}
+```
+What the Worker enforces: RS256 only, `iss` = your team, `aud` contains your AUD tag, `exp` required and
+unexpired (30 s leeway), signature verified before any claim is trusted. Signing keys are fetched from
+`https://<team>/cdn-cgi/access/certs`, cached for an hour, and re-fetched at most once a minute when an unknown
+key id appears (key rotation).
+
+The static app files are protected by Access at the edge; the Worker's own check guards the **API** even if the
+Access policy is later loosened by mistake.
+
+> Never set `ACCESS_DEV_BYPASS` in `wrangler.jsonc` or the dashboard. It exists only for local development
+> (`npm run worker:dev` passes it on the command line) and is additionally ignored for any non-loopback hostname.
 
 ## 2. Create the remote D1 database and bind the real `database_id`
 
@@ -82,8 +106,10 @@ Output ends with the live URL, e.g. `https://meal-prep-engine.<subdomain>.worker
 
 ```bash
 curl -s https://meal-prep-engine.<subdomain>.workers.dev/api/health
-# {"ok":true,"service":"meal-prep-engine","schema":1,"cursor":0}   (Access will ask you to log in first
-#  if enabled: open the URL in a browser once, or use a service token for curl)
+# Without a valid Access session: {"error":"unauthorized"}  (HTTP 401) -- that is the correct answer.
+# Open the URL in a browser, log in, then visit /api/health there. Expect:
+# {"ok":true,"service":"meal-prep-engine","schema":1,"cursor":0,"auth":"access"}
+# ("auth":"dev-bypass" in production would be a serious misconfiguration; it cannot occur on a real hostname.)
 npx wrangler tail              # live Worker logs while you tap around
 ```
 Then on your phone: open the URL, log in via Access, wait for **"Ready to work offline."**, and use the
@@ -106,12 +132,18 @@ npx wrangler rollback                      # roll the Worker back (add a version
 npx wrangler d1 time-travel info meal-prep-engine    # D1 point-in-time restore window / bookmark
 ```
 
+## Troubleshooting the API gate
+
+| Response from `/api/*` | Meaning |
+|---|---|
+| `500 access not configured` | `ACCESS_TEAM_DOMAIN` / `ACCESS_AUD` are empty or the domain is not `<team>.cloudflareaccess.com`. |
+| `401 unauthorized` | No/invalid/expired token, or the AUD tag is wrong. `npx wrangler tail` shows the reason (`wrong audience`, `expired`, ...); it is never sent to the caller. |
+| `503 access keys unavailable` | The Worker could not fetch the team's signing keys. Transient; the app retries with backoff. |
+
 ## Known limitations of this deployment
 
-- **Access session expiry:** when the Access session expires, API calls return a login page instead of
-  JSON. The app treats that as a sync error ("Sync error" in the header), keeps all data on the device,
-  and recovers after you reload the page and log in again.
-- **No Worker-side JWT check:** protection relies on Access in front of the hostname. For defence in depth,
-  validate the `Cf-Access-Jwt-Assertion` header in the Worker (not implemented).
+- **Access session expiry:** when the Access session expires the API answers 401 or redirects to the login page.
+  The app shows **"Sign in again"** in the header, keeps every change on the device, and resumes syncing after you
+  reload the page and log in.
 - **Clock skew:** the server refuses changes stamped more than 60 s ahead of its own clock. A device whose
   clock is wrong shows **"Check device clock"**; its changes stay queued until the clock is fixed.

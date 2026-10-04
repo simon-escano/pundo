@@ -12,6 +12,14 @@
     "not_found_handling": "single-page-application",
     "run_worker_first": ["/api/*"]
   },
+  // Cloudflare Access. Both must be set for the API to answer (it fails closed otherwise).
+  //   ACCESS_TEAM_DOMAIN: Zero Trust -> Settings -> General -> Team domain, e.g. "myteam.cloudflareaccess.com"
+  //   ACCESS_AUD:         Zero Trust -> Access -> Applications -> your app -> Overview -> Application Audience (AUD) Tag
+  // Local dev bypass is NOT configured here on purpose: use `npm run worker:dev` (passes --var ACCESS_DEV_BYPASS:true).
+  "vars": {
+    "ACCESS_TEAM_DOMAIN": "",
+    "ACCESS_AUD": ""
+  },
   "d1_databases": [
     {
       "binding": "DB",

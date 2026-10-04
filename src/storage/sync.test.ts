@@ -113,6 +113,36 @@ describe("failure handling: never throws, never loses data", () => {
     expect(log.warn).toHaveBeenCalledTimes(1); // identical consecutive failures don't spam
   });
 
+  it("sign-in problems (401, 403, or Access's login redirect) are named, keep the outbox, and clear after re-login", async () => {
+    const opaque = () => Object.defineProperty(new Response(null, { status: 200 }), "type", { value: "opaqueredirect" });
+    const variants: [string, () => Response][] = [["401", () => json({ error: "unauthorized" }, 401)], ["403", () => json({}, 403)], ["login redirect", opaque]];
+    for (const [name, make] of variants) {
+      const { s } = await withOutbox(1);
+      const log = quiet();
+      let signedIn = false;
+      const net = scripted((u, b) => (signedIn ? allApplied(u, b) : make()), emptyPull);
+      const e = createSyncEngine(s.ctx, { fetch: net.fetch, log });
+      expect((await e.syncOnce()).ok, name).toBe(false);
+      expect(e.status(), name).toMatchObject({ state: "error", auth: true, pending: 1 });
+      expect(e.status().lastError).toContain("sign-in required");
+      expect(await s.db.outbox.count(), name).toBe(1); // nothing lost
+      await e.syncOnce();
+      expect(log.warn, name).toHaveBeenCalledTimes(1);
+      signedIn = true;
+      await e.syncOnce();
+      expect(e.status(), name).toMatchObject({ state: "idle", auth: false, pending: 0 });
+    }
+  });
+
+  it("requests are made with redirect: 'manual' so a login redirect is recognisable", async () => {
+    const { s } = await withOutbox(1);
+    const inits: (RequestInit | undefined)[] = [];
+    const f = (async (u: string, init?: RequestInit) => { inits.push(init); return String(u).includes("push") ? allApplied(String(u), JSON.parse(String(init?.body))) : emptyPull(String(u), null); }) as unknown as typeof fetch;
+    await createSyncEngine(s.ctx, { fetch: f, log: quiet() }).syncOnce();
+    expect(inits.length).toBeGreaterThanOrEqual(2);
+    expect(inits.every((i) => i?.redirect === "manual")).toBe(true);
+  });
+
   it("a failure during pull leaves the cursor untouched", async () => {
     const h = makeHarness();
     const s = await h.open({ seed: false });

@@ -13,7 +13,7 @@ const U = (p: string) => `${p}-${Date.now().toString(36)}-${++uid}`;
 const hlc = (wall: number, counter = 0, dev = "dev-a") => `${String(wall).padStart(15, "0")}-${String(counter).padStart(5, "0")}-${dev}`;
 const WALL = Date.now() - 24 * 3_600_000; // a day ago: realistic, and safely behind the server's clock-skew guard
 
-const call = (path: string, init?: RequestInit) => exports.default.fetch(new Request(`http://edge.test${path}`, init));
+const call = (path: string, init?: RequestInit) => exports.default.fetch(new Request(`http://localhost${path}`, init));
 const mut = (entity: Mutation["entity"], entity_key: string, h: string, payload: unknown, device_id = h.split("-").slice(2).join("-")) => ({ client_seq: ++seq, entity, entity_key, hlc: h, device_id, payload });
 async function push(...mutations: ReturnType<typeof mut>[]): Promise<PushResponse> {
   const res = await call("/api/sync/push", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ device_id: "dev-a", mutations }) });
