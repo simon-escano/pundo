@@ -81,6 +81,14 @@ test.describe("navigation and overlays", () => {
     await expect(screen).toBeHidden();
   });
 
+  test("the header sync status is plain text, and Sign in reopens the signed-out screen after dismissing it", async ({ page }) => {
+    await page.goto("/?fixture=demo&state=locked&signin=1#/plan");
+    await page.getByTestId("signin-screen").getByRole("button", { name: "Keep working offline" }).click();
+    await expect(page.getByTestId("sync-indicator").getByRole("button")).toHaveCount(0);
+    await page.getByRole("banner").getByRole("button", { name: "Sign in" }).click();
+    await expect(page.getByTestId("signin-screen")).toBeVisible();
+  });
+
   test("dark mode renders with readable surfaces", async ({ browser }) => {
     const ctx = await browser.newContext({ colorScheme: "dark" });
     const page = await ctx.newPage();

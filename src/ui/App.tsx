@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useState, type ComponentType } from "react";
 import { AnimatePresence, m } from "motion/react";
-import { BookOpen, Check } from "lucide-react";
+import { BookOpen, Check, LogIn, LogOut } from "lucide-react";
 import { AppProvider, useApp } from "./app-context";
 import { EASE_OUT, MotionProvider } from "./motion";
 import { canonicalHash, routeHref, STAGES, useRoute, type RouteId } from "./router";
@@ -40,7 +40,14 @@ function Shell() {
   const sync = useSyncIndicator();
   const [dismissed, setDismissed] = useState(false);
   const forced = forcedSignIn(window.location);
-  const signedOut = sync.state === "auth" || forced;
+  const [loggedOut, setLoggedOut] = useState(false);
+  const signedOut = sync.state === "auth" || forced || loggedOut;
+  const logOut = async () => {
+    // Expire the Access cookie, then show the signed-out screen whether or not the request got through (offline, dev).
+    await fetch("/api/logout", { method: "POST", credentials: "same-origin" }).catch(() => undefined);
+    setLoggedOut(true);
+    setDismissed(false);
+  };
 
   useEffect(() => {
     const next = canonicalHash(window.location.hash);
@@ -67,7 +74,15 @@ function Shell() {
         <div className="relative mx-auto flex h-16 max-w-5xl items-center justify-between gap-2 px-4">
           <a href={routeHref("plan")} aria-label="pundo, go to plan" className="-ml-1 inline-flex min-h-[44px] shrink-0 items-center whitespace-nowrap rounded-xl px-1"><Logo /></a>
           <div className="flex items-center gap-1">
-            <SyncIndicator onSignIn={() => setDismissed(false)} />
+            <SyncIndicator />
+            {(sync.state !== "local" || signedOut) && <button
+              type="button"
+              onClick={() => (signedOut ? setDismissed(false) : void logOut())}
+              className="inline-flex min-h-[44px] items-center gap-2 whitespace-nowrap rounded-full px-3 text-[15px] font-semibold text-ink transition-[scale,background-color] duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-ink/[0.06] active:scale-[0.97] max-[420px]:size-[44px] max-[420px]:justify-center max-[420px]:px-0"
+            >
+              {signedOut ? <LogIn aria-hidden className="size-[1.1rem]" strokeWidth={2.25} /> : <LogOut aria-hidden className="size-[1.1rem]" strokeWidth={2.25} />}
+              <span className="max-[420px]:sr-only">{signedOut ? "Sign in" : "Log out"}</span>
+            </button>}
             <a
               href={routeHref("recipes")}
               aria-current={route.id === "recipes" ? "page" : undefined}

@@ -64,6 +64,15 @@ app.get("/api/login", (c) => {
   return c.redirect(/^\/(?![/\\])/.test(next) ? next : "/", 302);
 });
 
+/**
+ * Log out: expire Access's app-session cookie (what Cloudflare's own logout does; its /cdn-cgi/access/logout path is not
+ * served on Workers-scoped apps). POST only, so a link or image on another site cannot sign the user out.
+ */
+app.post("/api/logout", (c) => {
+  c.header("Set-Cookie", "CF_Authorization=; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure; HttpOnly; SameSite=Lax");
+  return c.body(null, 204);
+});
+
 app.post("/api/sync/push", async (c) => {
   let body: unknown;
   try {

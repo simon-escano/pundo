@@ -435,3 +435,16 @@ describe("GET /api/login (sign-in bounce)", () => {
     for (const bad of ["//evil.example", "/\\evil.example", "https://evil.example", "evil"]) expect(await loc(bad)).toBe("/");
   });
 });
+
+describe("POST /api/logout", () => {
+  it("expires the Access session cookie", async () => {
+    const res = await call("/api/logout", { method: "POST" });
+    expect(res.status).toBe(204);
+    const cookie = res.headers.get("set-cookie") ?? "";
+    expect(cookie).toMatch(/^CF_Authorization=;/);
+    expect(cookie).toMatch(/Max-Age=0/);
+  });
+  it("is POST only", async () => {
+    expect((await call("/api/logout")).status).toBe(404);
+  });
+});

@@ -1,7 +1,6 @@
 import { useLiveQuery } from "dexie-react-hooks";
-import { AnimatePresence, m } from "motion/react";
 import { Cloud, CloudCheck, CloudOff, Clock, LogIn, RefreshCw, TriangleAlert, type LucideIcon } from "lucide-react";
-import { useState, useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "react";
 import { useApp } from "../app-context";
 import { useOnline } from "../hooks/useOnline";
 import { describeSync, type Indicator, type IndicatorState, type IndicatorTone } from "../lib/syncLabel";
@@ -26,37 +25,14 @@ export function useSyncIndicator(): SyncPill {
   return { ...describeSync({ online, pending, status }), pending };
 }
 
-/** Header pill: icon + short label; tap for the longer explanation (or, when signed out, to sign in). */
-export function SyncIndicator({ onSignIn }: { onSignIn: () => void }) {
+/** Header status: icon + short label as plain text (not a control); the longer explanation is its tooltip. Sign in / Log out live in `SessionButton`. */
+export function SyncIndicator() {
   const ind = useSyncIndicator();
-  const [open, setOpen] = useState(false);
   const Icon = ICON[ind.state];
   return (
-    <div role="status" aria-live="polite" data-testid="sync-indicator" data-state={ind.state} data-pending={ind.pending} className="relative">
-      <button
-        type="button"
-        aria-expanded={ind.state === "auth" ? undefined : open}
-        title={ind.detail}
-        onClick={() => (ind.state === "auth" ? onSignIn() : setOpen((o) => !o))}
-        className={cx("inline-flex min-h-[44px] max-w-[8.5rem] items-center gap-1.5 glass-ctl rounded-full px-3 max-[420px]:min-w-[44px] max-[420px]:justify-center text-xs font-semibold transition-[scale,background-color,box-shadow] duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-[0.97]", TONE[ind.tone])}
-      >
-        <Icon aria-hidden className={cx("size-4 shrink-0", ind.state === "syncing" && "animate-spin")} />
-        <span className="max-[420px]:sr-only truncate">{ind.label}</span>
-      </button>
-      <AnimatePresence>
-        {open && (
-          <m.div
-            initial={{ opacity: 0, y: -4, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -4, scale: 0.97 }}
-            transition={{ duration: 0.14 }}
-            className="absolute right-0 top-full z-50 mt-1 w-60 glass-strong squircle rounded-2xl p-4 text-sm"
-          >
-            <p className="font-semibold">{ind.label}</p>
-            <p className="mt-1 text-muted">{ind.detail}</p>
-          </m.div>
-        )}
-      </AnimatePresence>
+    <div role="status" aria-live="polite" data-testid="sync-indicator" data-state={ind.state} data-pending={ind.pending} title={ind.detail} className={cx("inline-flex max-w-[9.5rem] items-center gap-1.5 px-1.5 text-xs font-semibold max-[420px]:min-w-[28px] max-[420px]:justify-center", TONE[ind.tone])}>
+      <Icon aria-hidden className={cx("size-4 shrink-0", ind.state === "syncing" && "animate-spin")} />
+      <span className="max-[420px]:sr-only truncate">{ind.label}</span>
     </div>
   );
 }
