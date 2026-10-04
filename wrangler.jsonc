@@ -17,7 +17,7 @@
   // Local dev bypass is NOT configured here on purpose: use `npm run worker:dev` (passes --var ACCESS_DEV_BYPASS:true).
   "vars": {
     "ACCESS_TEAM_DOMAIN": "lingering-dew-04bc.cloudflareaccess.com",
-    "ACCESS_AUD": "ecffea3a0fd6050dc72f23290175a828e2b5f656f6111ccb6f1540045a3cd1d6"
+    "ACCESS_AUD": "b92e71f7f384ddbececcc2a5cb66ca571bcd3f09c5ebdd8f68af1907633abeba"
   },
   "d1_databases": [
     {
