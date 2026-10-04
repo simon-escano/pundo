@@ -9,7 +9,7 @@ import type { SlotView } from "../lib/derive";
 import { useApp } from "../app-context";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import { EASE_OUT } from "../motion";
-import { Banner, Button, cx, Empty, IconButton, LinkButton, Modal, PROTEIN_ICON, PROTEIN_TINT, Stepper, StoveOrder, Tag } from "../components/ui";
+import { AnimatedNumber, Banner, Button, cx, Empty, IconButton, LinkButton, Modal, PROTEIN_ICON, PROTEIN_TINT, Stepper, StoveOrder, Tag } from "../components/ui";
 import { routeHref } from "../router";
 
 function rollMessage(e: RollError): { title: string; body: string } {
@@ -47,7 +47,7 @@ export function PlanView() {
         <div className="mt-5 flex flex-wrap gap-2">
           {draft && (
             <>
-              <Button variant={hasDishes ? "secondary" : "primary"} icon={hasDishes ? Shuffle : Dices} onClick={doRoll}>{hasDishes ? "Shuffle unlocked" : "Roll dishes"}</Button>
+              <Button variant={hasDishes ? "secondary" : "primary"} icon={hasDishes ? Shuffle : Dices} onClick={doRoll}>{hasDishes ? "Roll again" : "Roll dishes"}</Button>
               <Button variant="primary" icon={Lock} disabled={!derived.complete} onClick={() => run(() => s.cycles.transition(cycle.id, "locked"))}>Lock plan</Button>
             </>
           )}
@@ -156,7 +156,7 @@ function DishTile({ view, onRollError }: { view: SlotView; onRollError: (e: Roll
         </span>
         <h3 className="line-clamp-5 font-display text-[1.05rem] font-bold leading-[1.1]">{recipe!.name}</h3>
         <span className="mt-auto flex flex-col">
-          <span className="font-display text-3xl font-extrabold leading-none tabular-nums">{portions}</span>
+          <AnimatedNumber value={portions} className="font-display text-3xl font-extrabold leading-none" />
           <span className="text-xs font-medium text-ink/70">portions</span>
         </span>
       </button>
@@ -211,7 +211,7 @@ function DishFacts({ view }: { view: SlotView }) {
       <p className="font-medium">{TIER_LABEL[recipe!.perishability_tier]} · {SAUCE_LABEL[recipe!.sauce_base]}</p>
       <StoveOrder priority={recipe!.stove_priority} />
       <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
-        <span className="font-display text-xl font-extrabold tabular-nums text-ink">{portions} portions</span>
+        <span className="font-display text-xl font-extrabold text-ink"><AnimatedNumber value={portions} /> portions</span>
         <span className="inline-flex items-center gap-1"><House aria-hidden className="size-4" />{home} home</span>
         {portions - home > 0 && <span className="inline-flex items-center gap-1"><Send aria-hidden className="size-4" />{portions - home} to share</span>}
         {dish!.portion_override !== null && <Tag tone="accent">Custom</Tag>}

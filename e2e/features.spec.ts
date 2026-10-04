@@ -227,7 +227,7 @@ test.describe("plan view", () => {
     await page.getByRole("button", { name: "Lock week 2", exact: true }).click();
     const w2 = () => page.getByTestId("week-2").getByTestId("dish-card").evaluateAll((c) => c.map((e) => e.getAttribute("data-recipe")));
     const locked = await w2();
-    await page.getByRole("button", { name: "Shuffle unlocked", exact: true }).click();
+    await page.getByRole("button", { name: "Roll again", exact: true }).click();
     await expect.poll(w2).toEqual(locked);
   });
 });

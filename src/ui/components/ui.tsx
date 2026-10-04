@@ -1,7 +1,7 @@
-import { m } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import { Beef, CircleAlert, CircleCheck, Drumstick, Fish, Flame, Leaf, Minus, Plus, TriangleAlert, X, type LucideIcon } from "lucide-react";
 import { createPortal } from "react-dom";
-import { useEffect, useId, useRef, type ButtonHTMLAttributes, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ButtonHTMLAttributes, type ReactNode } from "react";
 import type { Recipe } from "../../domain/schemas/blueprint";
 import { STOVE_RANK } from "../../domain/engines/stove";
 import { STOVE_ORDER } from "../lib/format";
@@ -80,11 +80,43 @@ export function StoveOrder({ priority, long = false }: { priority: Recipe["stove
   );
 }
 
+/** A number that rolls up or down to its new value (odometer style), so changes read as cause and effect. */
+export function AnimatedNumber({ value, className }: { value: number; className?: string }) {
+  const [prev, setPrev] = useState(value);
+  const [dir, setDir] = useState<1 | -1>(1);
+  if (value !== prev) {
+    setDir(value > prev ? 1 : -1);
+    setPrev(value);
+  }
+  return (
+    <span className={cx("relative inline-flex overflow-hidden py-[0.1em] align-bottom tabular-nums", className)}>
+      <AnimatePresence mode="popLayout" initial={false} custom={dir}>
+        <m.span
+          key={value}
+          custom={dir}
+          className="inline-block"
+          variants={{
+            enter: (d: number) => ({ y: `${d * 70}%`, opacity: 0, filter: "blur(3px)" }),
+            center: { y: "0%", opacity: 1, filter: "blur(0px)" },
+            exit: (d: number) => ({ y: `${d * -70}%`, opacity: 0, filter: "blur(3px)" }),
+          }}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{ type: "spring", stiffness: 520, damping: 38 }}
+        >
+          {value}
+        </m.span>
+      </AnimatePresence>
+    </span>
+  );
+}
+
 export function Stepper({ label, value, min = 1, max = 30, disabled, onChange }: { label: string; value: number; min?: number; max?: number; disabled?: boolean; onChange: (n: number) => void }) {
   return (
     <div className="inline-flex items-center gap-1" role="group" aria-label={label}>
       <IconButton icon={Minus} variant="secondary" label={`Decrease ${label}`} disabled={disabled || value <= min} onClick={() => onChange(value - 1)} />
-      <output aria-label={label} className="min-w-12 text-center font-display text-3xl font-extrabold tabular-nums">{value}</output>
+      <output aria-label={label} className="min-w-12 text-center font-display text-3xl font-extrabold"><AnimatedNumber value={value} /></output>
       <IconButton icon={Plus} variant="secondary" label={`Increase ${label}`} disabled={disabled || value >= max} onClick={() => onChange(value + 1)} />
     </div>
   );

@@ -32,7 +32,7 @@ test("end to end: roll → lock → grocery → toss/stock → mark bought + cal
   await closeDish(page);
   await page.getByRole("button", { name: "Lock plan" }).click();
   await expect(page.getByTestId("cycle-status")).toHaveText("Locked");
-  await expect(page.getByRole("button", { name: "Shuffle unlocked" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Roll again" })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Go to grocery" })).toBeVisible(); // the next step is always offered
 
   // ── Grocery list ──
