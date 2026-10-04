@@ -1,13 +1,8 @@
-import { CookingPot } from "lucide-react";
 import { cx } from "./ui";
 
-/** The pundo mark: one pot, many portions. Same glyph as public/icons/icon.svg. */
+/** The pundo mark: the liquid-glass app icon itself (public/icons/icon.svg), so the favicon, home-screen icon and header always match. */
 export function LogoMark({ className = "size-9" }: { className?: string }) {
-  return (
-    <span aria-hidden className={cx("grid shrink-0 -rotate-6 place-items-center rounded-[0.8rem] bg-accent text-accent-ink", className)}>
-      <CookingPot className="size-[62%]" strokeWidth={2} />
-    </span>
-  );
+  return <img src="/icons/icon.svg" alt="" aria-hidden width={36} height={36} className={cx("shrink-0 select-none drop-shadow-[0_3px_6px_rgb(120_50_0/0.28)]", className)} draggable={false} />;
 }
 
 export function Logo({ className }: { className?: string }) {

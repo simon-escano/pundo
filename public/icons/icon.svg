@@ -1,4 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="pundo">
-  <rect width="512" height="512" fill="#b45309"/>
-  <g transform="translate(256 256) scale(15) translate(-12 -12)" fill="none" stroke="#ffffff" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h20"/><path d="M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8"/><path d="m4 8 16-4"/><path d="m8.86 6.78-.45-1.81a2 2 0 0 1 1.45-2.43l1.94-.48a2 2 0 0 1 2.43 1.46l.45 1.8"/></g>
+  <defs>
+    <linearGradient id="body" x1="0.15" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#ff9a45"/><stop offset="0.55" stop-color="#e2650f"/><stop offset="1" stop-color="#b45309"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.6"/><stop offset="0.5" stop-color="#fff" stop-opacity="0.08"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="rim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.85"/><stop offset="0.45" stop-color="#fff" stop-opacity="0.12"/><stop offset="1" stop-color="#fff" stop-opacity="0.38"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="1.05" r="0.7">
+      <stop offset="0" stop-color="#ffd2a1" stop-opacity="0.55"/><stop offset="1" stop-color="#ffd2a1" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="clip"><rect width="512" height="512" rx="116"/></clipPath>
+    <filter id="lift" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="9" stdDeviation="9" flood-color="#5a2200" flood-opacity="0.38"/></filter>
+  </defs>
+  <g clip-path="url(#clip)">
+    <rect width="512" height="512" fill="url(#body)"/>
+    <rect width="512" height="512" fill="url(#glow)"/>
+    <ellipse cx="256" cy="-70" rx="400" ry="300" fill="url(#sheen)"/>
+  </g>
+  <rect x="3" y="3" width="506" height="506" rx="113" fill="none" stroke="url(#rim)" stroke-width="6"/>
+  <g filter="url(#lift)" transform="translate(256 262) scale(14.5) translate(-12 -12)" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h20"/><path d="M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8"/><path d="m4 8 16-4"/><path d="m8.86 6.78-.45-1.81a2 2 0 0 1 1.45-2.43l1.94-.48a2 2 0 0 1 2.43 1.46l.45 1.8"/></g>
 </svg>

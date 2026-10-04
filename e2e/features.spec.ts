@@ -246,3 +246,27 @@ test("persistence in the real database: a reload restores the plan and its locks
   await expect(page.getByRole("button", { name: "Lock week 1", exact: true })).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("button", { name: "Lock week 2", exact: true })).toHaveAttribute("aria-pressed", "false");
 });
+
+test.describe("recipe detail", () => {
+  test("clicking a recipe opens a popup with ingredients, prep, cook steps and the pack step", async ({ page }) => {
+    await openFixture(page, "recipes");
+    await page.getByTestId("recipe-row").filter({ hasText: "Pinakbet" }).first().getByRole("button", { name: /^View recipe/ }).click();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog.getByRole("heading", { name: "Pinakbet", level: 2 })).toBeVisible();
+    for (const h of ["Ingredients", "Prep", "Cook"]) await expect(dialog.getByRole("heading", { name: h, exact: true })).toBeVisible();
+    await expect(dialog.getByTestId("recipe-ingredient")).toHaveCount(pinakbet.prep_items.length);
+    await expect(dialog.getByTestId("recipe-ingredient").first()).toContainText("500 g"); // 50 g x 10 portions
+    await expect(dialog.getByTestId("recipe-steps").getByRole("listitem")).toHaveCount(pinakbet.cook_steps.length);
+    await expect(dialog).toContainText(pinakbet.pack_step);
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+  });
+
+  test("the whole card opens it, and Edit JSON hands over to the editor", async ({ page }) => {
+    await openFixture(page, "recipes");
+    await page.getByTestId("recipe-row").filter({ hasText: "Pinakbet" }).first().getByRole("heading").click();
+    const dialog = page.getByRole("dialog");
+    await dialog.getByRole("button", { name: "Edit JSON" }).click();
+    await expect(page.getByRole("dialog", { name: "Edit recipe JSON" })).toBeVisible();
+  });
+});

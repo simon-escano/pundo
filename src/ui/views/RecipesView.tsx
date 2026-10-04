@@ -5,6 +5,7 @@ import { PROTEIN_LABEL, SAUCE_LABEL, TIER_LABEL } from "../lib/format";
 import { useApp } from "../app-context";
 import { SpotlightCard } from "../components/bits/SpotlightCard";
 import { AddRecipeModal } from "../components/AddRecipeModal";
+import { RecipeDetailModal } from "../components/RecipeDetailModal";
 import { Banner, Button, cx, Empty, IconButton, PageTitle, PROTEIN_ICON, PROTEIN_TINT, StoveOrder, Tag } from "../components/ui";
 
 // The raw JSON editor is rarely opened, so it loads on demand.
@@ -14,6 +15,7 @@ export function RecipesView() {
   const { s, world, run } = useApp();
   const [editing, setEditing] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
+  const [viewing, setViewing] = useState<string | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const active = world.recipes.filter((r) => !r.deleted).length;
@@ -35,9 +37,12 @@ export function RecipesView() {
         {shown.map(({ recipe: r, deleted }) => {
           const Icon = PROTEIN_ICON[r.protein_category];
           return (
-            <SpotlightCard as="li" key={r.id} className={cx("squircle flex min-h-40 flex-col rounded-2xl p-4 transition-opacity duration-200", PROTEIN_TINT[r.protein_category], deleted && "opacity-55")} data-testid="recipe-row" data-recipe={r.id}>
+            <SpotlightCard as="li" key={r.id} className={cx("squircle flex min-h-40 cursor-pointer flex-col rounded-2xl p-4 transition-opacity duration-200", PROTEIN_TINT[r.protein_category], deleted && "opacity-55")} data-testid="recipe-row" data-recipe={r.id} onClick={(e) => { if (!(e.target as HTMLElement).closest("button")) setViewing(r.id); }}>
               <span className="inline-flex items-center gap-1 text-xs font-semibold text-ink/70"><Icon aria-hidden className="size-4" strokeWidth={2.25} />{PROTEIN_LABEL[r.protein_category]}</span>
-              <h3 className="mt-2 font-display text-xl font-bold leading-[1.1]">{r.name}{deleted && <> <Tag tone="danger">Deleted</Tag></>}</h3>
+              <h3 className="mt-2 font-display text-xl font-bold leading-[1.1]">
+                <button type="button" aria-label={`View recipe: ${r.name}`} className="rounded-md text-left" onClick={() => setViewing(r.id)}>{r.name}</button>
+                {deleted && <> <Tag tone="danger">Deleted</Tag></>}
+              </h3>
               <p className="mt-2 text-sm text-ink/75">{TIER_LABEL[r.perishability_tier]} · {SAUCE_LABEL[r.sauce_base]}</p>
               <div className="mt-auto flex items-end justify-between gap-2 pt-4">
                 <StoveOrder priority={r.stove_priority} />
@@ -54,6 +59,12 @@ export function RecipesView() {
       </ul>
       {shown.length === 0 && <Empty icon={Search}>No recipes match “{query}”.</Empty>}
 
+      <AnimatePresence>
+        {viewing && (() => {
+          const row = world.recipes.find((x) => x.recipe.id === viewing);
+          return row ? <RecipeDetailModal recipe={row.recipe} meta={world.meta} deleted={row.deleted} onClose={() => setViewing(null)} onEdit={() => { setViewing(null); setEditing(row.recipe.id); }} /> : null;
+        })()}
+      </AnimatePresence>
       <AnimatePresence>{adding && <AddRecipeModal onClose={() => setAdding(false)} onSaved={setSaved} />}</AnimatePresence>
       <AnimatePresence>
         {editing && (

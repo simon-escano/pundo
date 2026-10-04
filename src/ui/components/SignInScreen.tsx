@@ -1,6 +1,7 @@
-import { CloudOff, CookingPot, LogIn } from "lucide-react";
+import { CloudOff, LogIn } from "lucide-react";
 import { m } from "motion/react";
 import { createPortal } from "react-dom";
+import { LogoMark } from "./Logo";
 import { Button, useModalBehavior } from "./ui";
 
 /** Where Cloudflare Access hosts the login for this app; it returns the user to the page they were on. */
@@ -28,7 +29,7 @@ export function SignInScreen({ onDismiss }: { onDismiss: () => void }) {
       className="fixed inset-0 z-[60] flex min-h-dvh flex-col justify-between bg-accent px-7 pb-[max(2rem,env(safe-area-inset-bottom))] pt-[max(2rem,env(safe-area-inset-top))] text-accent-ink outline-none"
     >
       <span className="flex items-center gap-2.5">
-        <span aria-hidden className="grid size-9 -rotate-6 place-items-center rounded-[0.8rem] bg-accent-ink text-accent"><CookingPot className="size-[62%]" strokeWidth={2} /></span>
+        <LogoMark className="size-10 rounded-[0.9rem] ring-1 ring-white/50" />
         <span translate="no" className="font-display text-[1.45rem] font-extrabold leading-none">pundo</span>
       </span>
       <m.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="max-w-md">
