@@ -154,4 +154,24 @@ describe("actions + derive over real storage", () => {
     expect(todayIso(new Date(2026, 0, 5))).toBe("2026-01-05");
     expect(Number.isInteger(randomSeed())).toBe(true);
   });
+  it("ensureCycle pulls first: a fresh device keeps the server's earlier plan instead of creating one for today", async () => {
+    const s = await makeHarness().open();
+    const sync = {
+      syncOnce: async () => {
+        await s.cycles.create({ start_date: "2026-10-04", seed: 1 }); // stands in for the pulled cycle
+        return { ok: true };
+      },
+    };
+    await ensureCycle(s, sync);
+    const all = await s.cycles.list();
+    expect(all.map((c) => c.start_date)).toEqual(["2026-10-04"]);
+  });
+  it("ensureCycle falls back to a local cycle when the first sync fails or hangs", async () => {
+    const failing = await makeHarness().open();
+    await ensureCycle(failing, { syncOnce: async () => ({ ok: false }) });
+    expect(await failing.cycles.list()).toHaveLength(1);
+    const hanging = await makeHarness().open();
+    await ensureCycle(hanging, { syncOnce: () => new Promise(() => undefined) }, 10);
+    expect(await hanging.cycles.list()).toHaveLength(1);
+  });
 });
