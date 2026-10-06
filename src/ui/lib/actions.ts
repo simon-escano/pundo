@@ -67,6 +67,22 @@ export const todayIso = (d: Date = new Date()): string =>
 
 export const randomSeed = (): number => crypto.getRandomValues(new Uint32Array(1))[0]!;
 
-export async function ensureCycle(s: Storage): Promise<void> {
-  if (!(await s.cycles.latest())) await s.cycles.create({ start_date: todayIso(), seed: randomSeed() });
+/** How long a device with no local cycle waits for its first sync before falling back to a local plan. */
+export const FIRST_SYNC_WAIT_MS = 10_000;
+
+/**
+ * Make sure a cycle exists. A device that has none (fresh browser, new login) must NOT invent a plan for
+ * today: the plan may already exist on the server for an earlier date range. So when sync is available we
+ * pull first and only create a cycle if the server had none. Offline or failing sync falls back to creating
+ * locally (offline-first), after the wait below.
+ */
+export async function ensureCycle(s: Storage, sync: { syncOnce: () => Promise<unknown> } | null = null, waitMs = FIRST_SYNC_WAIT_MS): Promise<void> {
+  if (await s.cycles.latest()) return;
+  if (sync) {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    await Promise.race([sync.syncOnce(), new Promise((r) => (timer = setTimeout(r, waitMs)))]);
+    clearTimeout(timer);
+    if (await s.cycles.latest()) return;
+  }
+  await s.cycles.create({ start_date: todayIso(), seed: randomSeed() });
 }

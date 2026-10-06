@@ -22,13 +22,14 @@ export function getStorage(): Promise<Storage> {
     if (fixture) return createFixtureStorage(fixture);
     void requestPersistentStorage(); // protect IndexedDB from browser eviction; best effort
     const s = await createStorage();
-    await ensureCycle(s);
     // Edge sync: production builds, or opt in locally with VITE_ENABLE_SYNC=true (needs `npm run worker:dev`).
     // Off in dev/fixtures so tests never depend on a backend. It never throws into the UI; failures just back off.
     if (import.meta.env.PROD || import.meta.env.VITE_ENABLE_SYNC === "true") {
       syncEngine = s.sync();
       syncEngine.start();
     }
+    // After the sync engine starts: a fresh device pulls the existing plan before ever creating one.
+    await ensureCycle(s, syncEngine);
     return s;
   })();
   return storagePromise;
