@@ -11,7 +11,7 @@ export default defineConfig({
       // The app registers the worker itself (useRegisterSW) so it can show an update prompt.
       registerType: "prompt",
       injectRegister: false,
-      includeAssets: ["icons/icon.svg", "icons/apple-touch-icon.png"],
+      includeAssets: ["icons/icon.svg", "icons/icon-dark.svg", "icons/apple-touch-icon.png", "icons/apple-touch-icon-dark.png"],
       manifest: {
         id: "/",
         name: "pundo",

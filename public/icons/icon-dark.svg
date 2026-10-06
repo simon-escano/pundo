@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="pundo">
+  <defs>
+    <linearGradient id="bg" x1="0.15" y1="0" x2="0.85" y2="1"><stop offset="0" stop-color="#2d2018"/><stop offset="0.6" stop-color="#1a130e"/><stop offset="1" stop-color="#0f0b08"/></linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="1.05" r="0.75"><stop offset="0" stop-color="#f08a24" stop-opacity="0.28"/><stop offset="1" stop-color="#f08a24" stop-opacity="0"/></radialGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.10"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <linearGradient id="rim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb066" stop-opacity="0.45"/><stop offset="0.5" stop-color="#ffb066" stop-opacity="0.06"/><stop offset="1" stop-color="#ffb066" stop-opacity="0.2"/></linearGradient>
+    <linearGradient id="ink" gradientUnits="userSpaceOnUse" x1="6" y1="2" x2="18" y2="22"><stop offset="0" stop-color="#ffb066"/><stop offset="0.5" stop-color="#f08a24"/><stop offset="1" stop-color="#e2650f"/></linearGradient>
+    <clipPath id="clip"><rect width="512" height="512" rx="116"/></clipPath>
+    <filter id="halo" x="-30%" y="-30%" width="160%" height="170%"><feGaussianBlur stdDeviation="9"/></filter>
+  </defs>
+  <g transform="translate(256 256) rotate(-6) scale(0.9) translate(-256 -256)">
+  <g clip-path="url(#clip)">
+    <rect width="512" height="512" fill="url(#bg)"/>
+    <rect width="512" height="512" fill="url(#glow)"/>
+    <ellipse cx="256" cy="-70" rx="400" ry="300" fill="url(#sheen)"/>
+  </g>
+  <rect x="3" y="3" width="506" height="506" rx="113" fill="none" stroke="url(#rim)" stroke-width="6"/>
+  <g transform="translate(256 262) scale(14.5) translate(-12 -12)" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9">
+    <g filter="url(#halo)" stroke="#f08a24" opacity="0.55"><path d="M2 12h20"/><path d="M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8"/><path d="m4 8 16-4"/><path d="m8.86 6.78-.45-1.81a2 2 0 0 1 1.45-2.43l1.94-.48a2 2 0 0 1 2.43 1.46l.45 1.8"/></g>
+    <g stroke="url(#ink)"><path d="M2 12h20"/><path d="M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8"/><path d="m4 8 16-4"/><path d="m8.86 6.78-.45-1.81a2 2 0 0 1 1.45-2.43l1.94-.48a2 2 0 0 1 2.43 1.46l.45 1.8"/></g></g>
+  </g>
+</svg>
