@@ -92,9 +92,13 @@
     scroll-snap-type: none; /* never a carousel */
     scroll-padding-top: 5rem;
     -webkit-tap-highlight-color: transparent;
+    /* no native bounce / Chrome pull-to-reload chaining: the app draws its own pull-to-refresh (PullToRefresh.tsx) */
+    overscroll-behavior-y: contain;
   }
   body {
     min-height: 100dvh;
+    /* notch / landscape side insets (top and bottom are handled by the header, stage bar and sheets) */
+    padding-inline: env(safe-area-inset-left) env(safe-area-inset-right);
     background: var(--surface);
     color: var(--ink);
     font-family: var(--font-sans);
@@ -120,6 +124,12 @@
 }
 
 @layer components {
+  /* Pull-to-refresh spinner: 12 spokes that step round like the iOS activity indicator. */
+  @keyframes ptr-spin { to { transform: rotate(360deg); } }
+  @keyframes ptr-pulse { 50% { opacity: 0.35; } }
+  .ptr-spin { transform-origin: 50% 50%; animation: ptr-spin 0.9s steps(12) infinite; }
+  @media (prefers-reduced-motion: reduce) { .ptr-spin { animation: ptr-pulse 1.2s ease-in-out infinite; } }
+
   .field {
     min-height: 44px; width: 100%; padding: 0 0.75rem; background: var(--raised); color: var(--ink);
     border: 1.5px solid var(--line); border-radius: 0.875rem; font-size: 1rem;

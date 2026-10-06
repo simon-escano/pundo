@@ -5,6 +5,7 @@ import { applyCalibration, ensureCycle, lockWeek, randomSeed, rerollOne, rollPla
 import { planCalibration } from "./calibration";
 import { derive } from "./derive";
 import { describeBuy, describeNeed, formatMoney, formatQuantity, splitGroupHeading, STATUS_LABEL, STOVE_ORDER, TIER_LABEL } from "./format";
+import { HOLD, LIMIT, pullProgress, refreshApp, rubberBand, SPOKES, spinnerOpacity, spokeOpacity, THRESHOLD } from "./pullToRefresh";
 import { loadWorld } from "./world";
 
 const line = (over: Partial<GroceryLine>): GroceryLine => ({
@@ -173,5 +174,51 @@ describe("actions + derive over real storage", () => {
     const hanging = await makeHarness().open();
     await ensureCycle(hanging, { syncOnce: () => new Promise(() => undefined) }, 10);
     expect(await hanging.cycles.list()).toHaveLength(1);
+  });
+});
+
+describe("pull to refresh", () => {
+  it("rubber-bands: zero for no/upward pull, monotonic, resistive, never past the limit", () => {
+    expect(rubberBand(0)).toBe(0);
+    expect(rubberBand(-40)).toBe(0);
+    expect(rubberBand(Number.NaN)).toBe(0);
+    let prev = 0;
+    for (let dy = 10; dy <= 2000; dy += 10) {
+      const o = rubberBand(dy);
+      expect(o).toBeGreaterThan(prev);
+      expect(o).toBeLessThan(LIMIT);
+      prev = o;
+    }
+    expect(rubberBand(40) / 40).toBeGreaterThan(rubberBand(400) / 400); // resistance grows
+    expect(rubberBand(150)).toBeGreaterThan(THRESHOLD); // a normal pull can reach the threshold
+    expect(HOLD).toBeLessThan(THRESHOLD);
+  });
+  it("spokes fill in one by one, and the refreshing tail fades from solid to faint", () => {
+    expect(pullProgress(-5)).toBe(0);
+    expect(pullProgress(THRESHOLD / 2)).toBe(0.5);
+    expect(pullProgress(THRESHOLD * 3)).toBe(1);
+    expect(spokeOpacity(0, 0)).toBe(0);
+    expect(spokeOpacity(0, 1)).toBe(1);
+    expect(spokeOpacity(SPOKES - 1, 0.5)).toBe(0);
+    expect(spokeOpacity(2, 0.25)).toBeCloseTo(1);
+    expect(spinnerOpacity(SPOKES - 1)).toBe(1);
+    expect(spinnerOpacity(0)).toBe(0.25);
+  });
+  it("refreshApp syncs and checks for an update when sync is on, and survives either failing", async () => {
+    const calls: string[] = [];
+    await refreshApp({
+      sync: { syncOnce: async () => void calls.push("sync") },
+      checkUpdate: async () => void calls.push("update"),
+      reload: () => calls.push("reload"),
+    });
+    expect(calls.sort()).toEqual(["sync", "update"]);
+    await expect(
+      refreshApp({ sync: { syncOnce: async () => Promise.reject(new Error("offline")) }, checkUpdate: async () => Promise.reject(new Error("x")), reload: () => undefined }),
+    ).resolves.toBeUndefined();
+  });
+  it("refreshApp reloads when there is no sync to pull from", async () => {
+    let reloaded = 0;
+    await refreshApp({ sync: null, checkUpdate: async () => undefined, reload: () => void reloaded++ });
+    expect(reloaded).toBe(1);
   });
 });

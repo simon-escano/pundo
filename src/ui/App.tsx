@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState, type ComponentType } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState, type ComponentType } from "react";
 import { AnimatePresence, m } from "motion/react";
 import { BookOpen, Check, LogIn, LogOut } from "lucide-react";
 import { AppProvider, useApp } from "./app-context";
@@ -7,9 +7,11 @@ import { canonicalHash, routeHref, STAGES, useRoute, type RouteId } from "./rout
 import { Logo } from "./components/Logo";
 import { SignInScreen } from "./components/SignInScreen";
 import { SyncIndicator, useSyncIndicator } from "./components/SyncIndicator";
+import { PullToRefresh } from "./components/PullToRefresh";
 import { UpdatePrompt } from "./components/UpdatePrompt";
 import { cx } from "./components/ui";
 import { forcedSignIn } from "./fixtureFlags";
+import { refreshApp } from "./lib/pullToRefresh";
 import { GroceryView } from "./views/GroceryView";
 import { PlanView } from "./views/PlanView";
 
@@ -37,7 +39,17 @@ export function App() {
 function Shell() {
   const route = useRoute();
   const View = VIEWS[route.id];
+  const { sync: engine } = useApp();
   const sync = useSyncIndicator();
+  const onRefresh = useCallback(
+    () =>
+      refreshApp({
+        sync: engine,
+        checkUpdate: async () => (await navigator.serviceWorker?.getRegistration())?.update(),
+        reload: () => window.location.reload(),
+      }),
+    [engine],
+  );
   const [dismissed, setDismissed] = useState(false);
   const forced = forcedSignIn(window.location);
   const [loggedOut, setLoggedOut] = useState(false);
@@ -99,7 +111,8 @@ function Shell() {
       </header>
 
       <UpdatePrompt />
-      <main id="main" tabIndex={-1} className="mx-auto max-w-5xl px-4 pb-40 pt-4 outline-none" data-route={route.id}>
+      <PullToRefresh onRefresh={onRefresh} />
+      <main id="main" tabIndex={-1} className="mx-auto max-w-5xl px-4 pb-[calc(10rem+env(safe-area-inset-bottom))] pt-4 outline-none" data-route={route.id}>
         <AnimatePresence mode="wait" initial={false}>
           <m.div key={route.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.18, ease: EASE_OUT }}>
             <Suspense fallback={<ViewLoading />}>
