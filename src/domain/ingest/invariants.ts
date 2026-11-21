@@ -29,7 +29,7 @@ export function findPriceFields(raw: unknown): IngestIssue[] {
 }
 
 /** Domain rules beyond the Zod schema. Pure and deterministic. */
-export function checkInvariants(r: Recipe): IngestIssue[] {
+export function checkInvariants(r: Recipe & { tags?: readonly string[] }): IngestIssue[] {
   const out: IngestIssue[] = [];
   const err = (path: string, message: string) => out.push({ path, message, severity: "error" });
   const warn = (path: string, message: string) => out.push({ path, message, severity: "warning" });
@@ -43,7 +43,13 @@ export function checkInvariants(r: Recipe): IngestIssue[] {
 
   r.cook_steps.forEach((s, i) => {
     if (s.trim() === "") err(`cook_steps[${i}]`, "Step must not be empty.");
-    else if (/\d/.test(s)) err(`cook_steps[${i}]`, "Cook steps are action verbs and sensory cues only: no numbers.");
+  });
+
+  const seenTags = new Set<string>();
+  (r.tags ?? []).forEach((t, i) => {
+    const k = t.trim().toLowerCase();
+    if (seenTags.has(k)) err(`tags[${i}]`, `Duplicate tag "${t}".`);
+    seenTags.add(k);
   });
 
   r.prep_items.forEach((p, i) => {

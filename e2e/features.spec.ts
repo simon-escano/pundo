@@ -98,13 +98,15 @@ test.describe("recipes: ingest pipeline and editor", () => {
     await expect(errors).toContainText("default_portions");
     await expect(errors).toContainText("prep_items[0].price_php");
 
-    // domain invariants (run once the schema passes): numbers in cook steps, bad discrete piece counts
-    const rules = structuredClone(pinakbet);
-    rules.cook_steps[0] = "Sear for 5 minutes.";
+    // domain invariants (run once the schema passes): empty cook steps, duplicate tags
+    const rules = structuredClone(pinakbet) as typeof pinakbet & { tags: string[] };
+    rules.cook_steps[0] = " ";
+    rules.tags = ["Filipino", "filipino"];
     await page.getByLabel("Recipe JSON from Gemini").fill(JSON.stringify(rules));
     await page.getByRole("button", { name: "Check", exact: true }).click();
     await expect(errors).toContainText("cook_steps[0]");
-    await expect(errors).toContainText("no numbers");
+    await expect(errors).toContainText("must not be empty");
+    await expect(errors).toContainText("Duplicate tag");
   });
 
   test("new ingredient: inline row prefilled with a suggested unit, requires aisle + storage class, then saves into the roller pool", async ({ page }) => {
@@ -233,18 +235,18 @@ test.describe("plan view", () => {
 });
 
 test("persistence in the real database: a reload restores the plan and its locks", async ({ page }) => {
-  await page.goto("/#/plan"); // normal mode: real IndexedDB, real clock, random seed
+  await page.goto("/#/plan"); // normal mode: real IndexedDB, real clock, random seed; a first plan is 1 week x 2 dishes
   await page.getByRole("button", { name: "Roll dishes", exact: true }).click();
-  await expect(page.getByTestId("dish-card")).toHaveCount(6);
+  await expect(page.getByTestId("dish-card")).toHaveCount(2);
   await page.getByRole("button", { name: "Lock week 1", exact: true }).click();
   await expect(page.getByRole("button", { name: "Lock week 1", exact: true })).toHaveAttribute("aria-pressed", "true"); // written, then reload
   const ids = await page.getByTestId("dish-card").evaluateAll((c) => c.map((e) => e.getAttribute("data-recipe")));
 
   await page.reload();
-  await expect(page.getByTestId("dish-card")).toHaveCount(6);
+  await expect(page.getByTestId("dish-card")).toHaveCount(2);
   expect(await page.getByTestId("dish-card").evaluateAll((c) => c.map((e) => e.getAttribute("data-recipe")))).toEqual(ids);
   await expect(page.getByRole("button", { name: "Lock week 1", exact: true })).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByRole("button", { name: "Lock week 2", exact: true })).toHaveAttribute("aria-pressed", "false");
+  await expect(page.getByRole("button", { name: "Lock week 2", exact: true })).toHaveCount(0);
 });
 
 test.describe("recipe detail", () => {

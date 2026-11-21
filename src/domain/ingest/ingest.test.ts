@@ -58,8 +58,16 @@ describe("ingest", () => {
     const i = good.prep_items.findIndex((p: any) => p.granularity === "continuous");
     expect(errPaths(run((r) => (r.prep_items[i].pieces_per_portion = 2)))).toContain(`prep_items[${i}].pieces_per_portion`);
   });
-  it("rejects numbers in cook steps", () => {
-    expect(errPaths(run((r) => (r.cook_steps[0] = "Sear for 5 minutes.")))).toContain("cook_steps[0]");
+  it("accepts amounts and times in cook steps, but not empty steps", () => {
+    expect(errPaths(run((r) => (r.cook_steps[0] = "Add about 600 ml water and simmer for 15 minutes.")))).not.toContain("cook_steps[0]");
+    expect(errPaths(run((r) => (r.cook_steps[0] = "  ")))).toContain("cook_steps[0]");
+  });
+  it("keeps tags, defaults them to [] and rejects duplicates", () => {
+    const tagged = run((r) => (r.tags = ["Filipino", "High-Protein"]));
+    expect(tagged.ok && tagged.recipe.tags).toEqual(["Filipino", "High-Protein"]);
+    const untagged = run((r) => delete r.tags);
+    expect(untagged.ok && untagged.recipe.tags).toEqual([]);
+    expect(errPaths(run((r) => (r.tags = ["Filipino", "filipino"])))).toContain("tags[1]");
   });
   it("requires cut_note for CUSTOM and snake_case ingredient ids", () => {
     expect(errPaths(run((r) => { r.prep_items[2].cut_technique = "CUSTOM"; r.prep_items[2].cut_note = null; }))).toContain("prep_items[2].cut_note");

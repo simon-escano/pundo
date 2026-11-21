@@ -1,6 +1,9 @@
 {
   "id": "pinakbet",
   "name": "Pinakbet",
+  "tags": [
+    "Filipino"
+  ],
   "default_portions": 10,
   "protein_category": "vegetable",
   "sauce_base": "shrimp_paste",

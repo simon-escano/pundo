@@ -1,9 +1,9 @@
 import { Droplets, FileJson, Snowflake } from "lucide-react";
 import { CUT_LABELS } from "../../domain/engines/cuts";
-import type { PrepItem, Recipe } from "../../domain/schemas/blueprint";
-import type { IngredientMeta } from "../../domain/schemas/app";
+import type { PrepItem } from "../../domain/schemas/blueprint";
+import type { AppRecipe as Recipe, IngredientMeta } from "../../domain/schemas/app";
 import { toCanonical } from "../../domain/units/units";
-import { formatMoney, formatQuantity, PROTEIN_LABEL, SAUCE_LABEL, TIER_LABEL } from "../lib/format";
+import { formatMoney, formatQuantity, formatTags, PROTEIN_LABEL, SAUCE_LABEL, TIER_LABEL } from "../lib/format";
 import { VideoDrawer } from "./VideoDrawer";
 import { Button, cx, Modal, PROTEIN_ICON, PROTEIN_TINT, StoveOrder } from "./ui";
 
@@ -62,6 +62,7 @@ export function RecipeDetailModal({ recipe: r, meta, deleted, onClose, onEdit }:
             <span>{SAUCE_LABEL[r.sauce_base]} sauce</span>
             {deleted && <span className="font-semibold text-danger">Deleted</span>}
           </p>
+          {r.tags.length > 0 && <p className="mt-1.5 text-sm text-ink/75" data-testid="recipe-tags">{formatTags(r.tags)}</p>}
           <div className="mt-2"><StoveOrder priority={r.stove_priority} long /></div>
           <dl className="mt-4 grid grid-cols-3 gap-3">
             {[

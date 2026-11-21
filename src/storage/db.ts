@@ -14,7 +14,8 @@ import type { Entity } from "../domain/sync/protocol";
 export type { Entity };
 
 // Rows that can conflict across devices carry their last-write HLC (`_hlc`, or `updated_at` where the schema has it).
-export type RecipeRow = Recipe & { _hlc: string; _deleted: boolean };
+// `tags` is optional: rows stored before tags existed have none (toRecipe parses them as []).
+export type RecipeRow = Recipe & { tags?: string[]; _hlc: string; _deleted: boolean };
 export type DishRow = CycleDish & { _hlc: string };
 /** Registry identity (name + pricing unit) is LWW by `_hlc`; the price itself is derived from observations. */
 export type RegistryRow = IngredientPriceRecord & { _hlc?: string };
@@ -32,7 +33,8 @@ export type SyncMetaRow =
   | { key: "deviceId"; value: string }
   | { key: "hlc"; value: HlcState }
   | { key: "seedVersion"; value: number }
-  | { key: "pullCursor"; value: number };
+  | { key: "pullCursor"; value: number }
+  | { key: `content:${string}`; value: number }; // one-time content updates applied on this device (contentUpdates.ts)
 
 export class PundoDB extends Dexie {
   // `declare` (not `!`) so class-field semantics never overwrite the tables Dexie installs.

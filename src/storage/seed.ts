@@ -1,8 +1,7 @@
-import { RecipeSchema } from "../domain/schemas/blueprint";
 import { validateRecipe } from "../domain/ingest/parse";
 import { replayObservations } from "../domain/engines/pricing";
 import { compareStrings } from "../domain/math/compare";
-import type { PriceObservation } from "../domain/schemas/app";
+import { AppRecipeSchema, type PriceObservation } from "../domain/schemas/app";
 import { StorageError } from "./errors";
 import { bootstrapTx, type Ctx } from "./outbox";
 import { SEED_HLC } from "./hlc";
@@ -22,7 +21,7 @@ export async function seedIfEmpty(ctx: Ctx, data: SeedData): Promise<boolean> {
   const recipes = data.recipes.map((raw) => {
     const res = validateRecipe(raw);
     if (!res.ok) throw new StorageError("VALIDATION", `Seed recipe invalid: ${res.errors.map((e) => `${e.path}: ${e.message}`).join("; ")}`, res.errors);
-    return RecipeSchema.parse(res.recipe);
+    return AppRecipeSchema.parse(res.recipe);
   });
 
   const ids = Object.keys(data.registry).sort(compareStrings);

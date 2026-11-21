@@ -1,4 +1,4 @@
-import { RecipeSchema, type Recipe } from "../../domain/schemas/blueprint";
+import { AppRecipeSchema, type AppRecipe } from "../../domain/schemas/app";
 import { validateRecipe, parseJson, type IngestIssue } from "../../domain/ingest/parse";
 import { compareStrings } from "../../domain/math/compare";
 import type { RecipeRow } from "../db";
@@ -6,9 +6,9 @@ import { StorageError } from "../errors";
 import { writeTx, type Ctx } from "../outbox";
 
 /** Strip sync metadata and re-validate: corrupted rows fail loudly instead of reaching the engines. */
-function toRecipe(row: RecipeRow): Recipe {
+function toRecipe(row: RecipeRow): AppRecipe {
   const { _hlc, _deleted, ...rest } = row;
-  const res = RecipeSchema.safeParse(rest);
+  const res = AppRecipeSchema.safeParse(rest);
   if (!res.success) {
     throw new StorageError("CORRUPT", `Stored recipe "${row.id}" no longer matches RecipeSchema: ${res.error.issues.map((i) => i.message).join("; ")}`);
   }
@@ -18,7 +18,7 @@ function toRecipe(row: RecipeRow): Recipe {
 export function recipesRepo(ctx: Ctx) {
   const { db } = ctx;
   return {
-    async get(id: string, opts: { includeDeleted?: boolean } = {}): Promise<Recipe | undefined> {
+    async get(id: string, opts: { includeDeleted?: boolean } = {}): Promise<AppRecipe | undefined> {
       const row = await db.recipes.get(id);
       return row && (opts.includeDeleted || !row._deleted) ? toRecipe(row) : undefined;
     },
@@ -29,7 +29,7 @@ export function recipesRepo(ctx: Ctx) {
     },
 
     /** Active recipes (the roller pool), sorted by id. */
-    async list(opts: { includeDeleted?: boolean } = {}): Promise<Recipe[]> {
+    async list(opts: { includeDeleted?: boolean } = {}): Promise<AppRecipe[]> {
       const rows = await db.recipes.toArray();
       return rows
         .filter((r) => opts.includeDeleted || !r._deleted)
@@ -38,15 +38,15 @@ export function recipesRepo(ctx: Ctx) {
     },
 
     /** Every recipe with its soft-delete flag (for the Recipes screen). */
-    async listAll(): Promise<{ recipe: Recipe; deleted: boolean }[]> {
+    async listAll(): Promise<{ recipe: AppRecipe; deleted: boolean }[]> {
       const rows = await db.recipes.toArray();
       return rows.sort((a, b) => compareStrings(a.id, b.id)).map((r) => ({ recipe: toRecipe(r), deleted: r._deleted }));
     },
 
     /** Validate (Zod + domain invariants) then upsert. Re-saving a soft-deleted id revives it. */
-    async put(input: unknown): Promise<Recipe> {
+    async put(input: unknown): Promise<AppRecipe> {
       const res = validateRecipe(input);
-      if (!res.ok) throw new StorageError("VALIDATION", "Recipe failed validation.", res.errors);
+      if (!res.ok) throw new StorageError("VALIDATION", "AppRecipe failed validation.", res.errors);
       const recipe = res.recipe;
       await writeTx(ctx, [db.recipes, db.priceRegistry], async (tx) => {
         const ids = [...new Set(recipe.prep_items.map((p) => p.ingredient_id))].sort(compareStrings);
@@ -73,16 +73,16 @@ export function recipesRepo(ctx: Ctx) {
     /** Raw JSON for the in-app editor modal. */
     async toJson(id: string): Promise<string> {
       const r = await this.get(id, { includeDeleted: true });
-      if (!r) throw new StorageError("NOT_FOUND", `Recipe "${id}" not found.`);
+      if (!r) throw new StorageError("NOT_FOUND", `AppRecipe "${id}" not found.`);
       return JSON.stringify(r, null, 2);
     },
 
     /** Editor save: JSON text → validation → upsert. Returns non-blocking warnings. */
-    async saveJson(text: string): Promise<{ recipe: Recipe; warnings: IngestIssue[] }> {
+    async saveJson(text: string): Promise<{ recipe: AppRecipe; warnings: IngestIssue[] }> {
       const parsed = parseJson(text);
       if (!parsed.ok) throw new StorageError("VALIDATION", parsed.error.message, [parsed.error]);
       const res = validateRecipe(parsed.value);
-      if (!res.ok) throw new StorageError("VALIDATION", "Recipe failed validation.", res.errors);
+      if (!res.ok) throw new StorageError("VALIDATION", "AppRecipe failed validation.", res.errors);
       return { recipe: await this.put(res.recipe), warnings: res.warnings };
     },
   };
@@ -90,7 +90,7 @@ export function recipesRepo(ctx: Ctx) {
   async function setDeleted(id: string, deleted: boolean): Promise<void> {
     await writeTx(ctx, [db.recipes], async (tx) => {
       const row = await db.recipes.get(id);
-      if (!row) throw new StorageError("NOT_FOUND", `Recipe "${id}" not found.`);
+      if (!row) throw new StorageError("NOT_FOUND", `AppRecipe "${id}" not found.`);
       if (row._deleted === deleted) return;
       const hlc = tx.stamp();
       await db.recipes.put({ ...row, _hlc: hlc, _deleted: deleted });

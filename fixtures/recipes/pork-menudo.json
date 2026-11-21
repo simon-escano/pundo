@@ -1,6 +1,9 @@
 {
   "id": "pork-menudo",
   "name": "Pork Menudo",
+  "tags": [
+    "Filipino"
+  ],
   "default_portions": 10,
   "protein_category": "pork",
   "sauce_base": "tomato",

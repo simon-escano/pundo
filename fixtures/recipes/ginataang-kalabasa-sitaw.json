@@ -1,6 +1,9 @@
 {
   "id": "ginataang-kalabasa-sitaw",
   "name": "Ginataang Kalabasa at Sitaw",
+  "tags": [
+    "Filipino"
+  ],
   "default_portions": 10,
   "protein_category": "vegetable",
   "sauce_base": "coconut",

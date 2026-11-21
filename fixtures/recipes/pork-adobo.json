@@ -1,6 +1,9 @@
 {
   "id": "pork-adobo",
   "name": "Pork Adobo",
+  "tags": [
+    "Filipino"
+  ],
   "default_portions": 10,
   "protein_category": "pork",
   "sauce_base": "soy_vinegar",

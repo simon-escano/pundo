@@ -1,6 +1,9 @@
 {
   "id": "pork-kaldereta",
   "name": "Pork Kaldereta",
+  "tags": [
+    "Filipino"
+  ],
   "default_portions": 10,
   "protein_category": "pork",
   "sauce_base": "tomato",

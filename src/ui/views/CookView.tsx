@@ -17,17 +17,20 @@ export function CookView() {
   useWakeLock(true);
   const { derived } = useApp();
   const { sub } = useRoute();
-  const week = sub === "week-2" ? 2 : 1;
+  const twoWeeks = derived.shape.weeks === 2;
+  const week = twoWeeks && sub === "week-2" ? 2 : 1;
   const dishes = orderByStovePriority(derived.scaled.filter((d) => d.week === week).map((d) => ({ ...d.recipe, dish: d })));
   return (
     <div>
       <PageTitle title="Cook" hint="Start in this order. The screen stays awake." />
-      <Segmented
-        className="mt-4"
-        label="Cook day"
-        value={`week-${week}`}
-        options={[{ id: "week-1", label: "Week 1", href: routeHref("cook", "week-1") }, { id: "week-2", label: "Week 2", href: routeHref("cook", "week-2") }]}
-      />
+      {twoWeeks && (
+        <Segmented
+          className="mt-4"
+          label="Cook day"
+          value={`week-${week}`}
+          options={[{ id: "week-1", label: "Week 1", href: routeHref("cook", "week-1") }, { id: "week-2", label: "Week 2", href: routeHref("cook", "week-2") }]}
+        />
+      )}
       {!derived.complete ? (
         <Empty icon={Flame} action={<LinkButton variant="primary" href={routeHref("plan")}>Go to plan</LinkButton>}>
           Roll and lock your plan to see your cooking order.

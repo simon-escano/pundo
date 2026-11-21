@@ -1,5 +1,5 @@
-import type { Recipe, GlobalPriceRegistry } from "../../domain/schemas/blueprint";
-import type { Cycle, GroceryLineState, IngredientMeta, PantryEntry } from "../../domain/schemas/app";
+import type { GlobalPriceRegistry } from "../../domain/schemas/blueprint";
+import type { AppRecipe, Cycle, GroceryLineState, IngredientMeta, PantryEntry } from "../../domain/schemas/app";
 import type { DishRow } from "../../storage/db";
 import type { Storage } from "../../storage";
 
@@ -7,7 +7,7 @@ import type { Storage } from "../../storage";
 export type World = {
   cycle: Cycle | undefined;
   dishes: DishRow[];
-  recipes: { recipe: Recipe; deleted: boolean }[];
+  recipes: { recipe: AppRecipe; deleted: boolean }[];
   meta: Record<string, IngredientMeta>;
   registry: GlobalPriceRegistry;
   pantry: PantryEntry[];

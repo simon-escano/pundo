@@ -1,9 +1,9 @@
-import { RecipeSchema, type Recipe } from "../schemas/blueprint";
+import { AppRecipeSchema, type AppRecipe } from "../schemas/app";
 import { checkInvariants, findPriceFields, type IngestIssue } from "./invariants";
 
 export type { IngestIssue };
 export type IngestResult =
-  | { ok: true; recipe: Recipe; warnings: IngestIssue[] }
+  | { ok: true; recipe: AppRecipe; warnings: IngestIssue[] }
   | { ok: false; errors: IngestIssue[]; warnings: IngestIssue[] };
 
 /** ['prep_items', 2, 'cut_technique'] → "prep_items[2].cut_technique" */
@@ -126,10 +126,10 @@ export function parseJson(text: string): { ok: true; value: unknown } | { ok: fa
   }
 }
 
-/** Validate an already-parsed value: price-field guard → RecipeSchema → domain invariants. */
+/** Validate an already-parsed value: price-field guard → AppRecipeSchema (blueprint + tags) → domain invariants. */
 export function validateRecipe(raw: unknown): IngestResult {
   const priceIssues = findPriceFields(raw);
-  const result = RecipeSchema.safeParse(raw);
+  const result = AppRecipeSchema.safeParse(raw);
   if (!result.success) {
     const errors: IngestIssue[] = result.error.issues.map((i) => ({
       path: formatPath(i.path),

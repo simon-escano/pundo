@@ -9,8 +9,8 @@ test("iOS home-screen metadata is in the head", async ({ page }) => {
   expect(await meta("apple-mobile-web-app-status-bar-style")).toBe("default");
   expect(await meta("apple-mobile-web-app-title")).toBe("pundo");
   expect(await meta("viewport")).toContain("viewport-fit=cover");
-  await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute("href", "/icons/apple-touch-icon.png");
-  const res = await page.request.get("/icons/apple-touch-icon.png");
+  await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute("href", "/icons/apple-touch-icon-dark.png");
+  const res = await page.request.get("/icons/apple-touch-icon-dark.png");
   expect(res.ok()).toBe(true);
 });
 

@@ -34,14 +34,15 @@ export function planFor(db: D1Database, m: Mutation, payload: unknown): Plan {
       const stmts: D1PreparedStatement[] = [
         db
           .prepare(
-            `INSERT INTO recipes (id, name, default_portions, protein_category, sauce_base, perishability_tier, stove_priority, estimated_base_cost_php, pack_step, updated_at, deleted)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)
+            `INSERT INTO recipes (id, name, default_portions, protein_category, sauce_base, perishability_tier, stove_priority, estimated_base_cost_php, pack_step, updated_at, deleted, tags)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)
              ON CONFLICT(id) DO UPDATE SET name = excluded.name, default_portions = excluded.default_portions, protein_category = excluded.protein_category,
                sauce_base = excluded.sauce_base, perishability_tier = excluded.perishability_tier, stove_priority = excluded.stove_priority,
-               estimated_base_cost_php = excluded.estimated_base_cost_php, pack_step = excluded.pack_step, updated_at = excluded.updated_at, deleted = excluded.deleted
+               estimated_base_cost_php = excluded.estimated_base_cost_php, pack_step = excluded.pack_step, updated_at = excluded.updated_at, deleted = excluded.deleted,
+               tags = excluded.tags
              WHERE excluded.updated_at > recipes.updated_at`,
           )
-          .bind(r.id, r.name, r.default_portions, r.protein_category, r.sauce_base, r.perishability_tier, r.stove_priority, r.estimated_base_cost_php, r.pack_step, H, deleted ? 1 : 0),
+          .bind(r.id, r.name, r.default_portions, r.protein_category, r.sauce_base, r.perishability_tier, r.stove_priority, r.estimated_base_cost_php, r.pack_step, H, deleted ? 1 : 0, JSON.stringify(r.tags)),
       ];
       // Children are replaced only if this mutation is the current winner.
       for (const t of ["recipe_videos", "recipe_prep_items", "recipe_cook_steps"]) {
@@ -120,11 +121,13 @@ export function planFor(db: D1Database, m: Mutation, payload: unknown): Plan {
         stmts: [
           db
             .prepare(
-              `INSERT INTO cycles (id, start_date, seed, global_portions, status, updated_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6)
+              // weeks / dishes_per_week are written on INSERT only: the plan size is fixed at creation, and a client that
+              // predates plan sizes (and so omits them) must never reset an existing cycle to the 2 x 3 default.
+              `INSERT INTO cycles (id, start_date, seed, global_portions, status, updated_at, weeks, dishes_per_week) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
                ON CONFLICT(id) DO UPDATE SET start_date = excluded.start_date, seed = excluded.seed, global_portions = excluded.global_portions,
                  status = excluded.status, updated_at = excluded.updated_at WHERE excluded.updated_at > cycles.updated_at`,
             )
-            .bind(c.id, c.start_date, c.seed, c.global_portions, c.status, H),
+            .bind(c.id, c.start_date, c.seed, c.global_portions, c.status, H, c.weeks ?? 2, c.dishes_per_week ?? 3),
           log(db, m, payload, "(SELECT updated_at FROM cycles WHERE id = ?6) = ?3", c.id),
         ],
         outcome: stampIs(db, "SELECT updated_at AS h FROM cycles WHERE id = ?", H, c.id),

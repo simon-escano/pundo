@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import type { GroceryLine } from "../../domain/engines/grocery";
 import { makeHarness } from "../../storage/testing/harness";
-import { applyCalibration, ensureCycle, lockWeek, randomSeed, rerollOne, rollPlan, todayIso } from "./actions";
+import { applyCalibration, ensureCycle, lockWeek, nextSunday, randomSeed, rerollOne, rollPlan, startPlan, todayIso } from "./actions";
+import { NEW_PLAN_SHAPE } from "../../domain/engines/shape";
 import { planCalibration } from "./calibration";
 import { derive } from "./derive";
 import { describeBuy, describeNeed, formatMoney, formatQuantity, splitGroupHeading, STATUS_LABEL, STOVE_ORDER, TIER_LABEL } from "./format";
@@ -123,6 +124,30 @@ describe("actions + derive over real storage", () => {
     expect(d.slots.every((x) => x.cost?.source === "registry" && x.portions === 10)).toBe(true);
     expect(d.grocery!.containers).toBe(12);
     expect(d.activeRecipes).toHaveLength(15);
+  });
+  it("1 week x 2 dishes: two slots, a two-dish roll, four RE-250 containers, re-roll and lock", async () => {
+    const s = await makeHarness().open();
+    const cycle = await startPlan(s, "2026-11-22", NEW_PLAN_SHAPE);
+    let d = derive(await loadWorld(s));
+    expect(d.shape).toEqual(NEW_PLAN_SHAPE);
+    expect(d.slots.map((x) => `${x.week}-${x.slot}`)).toEqual(["1-0", "1-1"]);
+    const r = await rollPlan(s, cycle, false);
+    expect(r.ok && r.week1.length).toBe(2);
+    d = derive(await loadWorld(s));
+    expect(d.complete).toBe(true);
+    expect(d.grocery!.containers).toBe(4);
+    expect(d.grocery!.lines.every((l) => l.bucket !== "w2")).toBe(true);
+    const before = (await s.cycles.getPlan(cycle.id)).dishes.map((x) => x.recipe_id);
+    expect((await rerollOne(s, (await s.cycles.get(cycle.id))!, { week: 1, slot: 0 })).ok).toBe(true);
+    const after = (await s.cycles.getPlan(cycle.id)).dishes.map((x) => x.recipe_id);
+    expect(after[1]).toBe(before[1]);
+    expect(after[0]).not.toBe(before[0]);
+    expect((await s.cycles.transition(cycle.id, "locked")).status).toBe("locked");
+  });
+  it("new plans start on the next Sunday", () => {
+    expect(nextSunday("2026-11-21")).toBe("2026-11-22"); // Saturday → tomorrow
+    expect(nextSunday("2026-11-22")).toBe("2026-11-22"); // Sunday → today
+    expect(nextSunday("2026-11-23")).toBe("2026-11-29");
   });
   it("derive tolerates a plan dish whose recipe was later soft-deleted", async () => {
     const { s, cycle } = await fresh();

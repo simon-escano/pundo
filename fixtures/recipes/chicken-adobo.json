@@ -1,6 +1,9 @@
 {
   "id": "chicken-adobo",
   "name": "Chicken Adobo",
+  "tags": [
+    "Filipino"
+  ],
   "default_portions": 10,
   "protein_category": "chicken",
   "sauce_base": "soy_vinegar",

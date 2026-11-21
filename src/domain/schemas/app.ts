@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { RecipeSchema } from "./blueprint";
 
 // App-level schemas that sit beside (never inside) the blueprint schemas.
 // Fills blueprint gaps: aisle, storage class, surface prep, piece mass.
@@ -40,6 +41,10 @@ export const CycleSchema = z.object({
   global_portions: z.number().int().min(1).max(30),
   status: CycleStatusEnum,
   updated_at: z.string(),
+  // Plan size, fixed when the cycle is created. Absent on cycles made before plan sizes existed: those are 2 weeks × 3
+  // (see engines/shape.ts). Deliberately no .default(), so "unknown" stays distinguishable from an explicit value.
+  weeks: z.union([z.literal(1), z.literal(2)]).optional(),
+  dishes_per_week: z.union([z.literal(2), z.literal(3)]).optional(),
 });
 
 export const CycleDishSchema = z.object({
@@ -77,3 +82,15 @@ export type Cycle = z.infer<typeof CycleSchema>;
 export type CycleDish = z.infer<typeof CycleDishSchema>;
 export type PantryEntry = z.infer<typeof PantryEntrySchema>;
 export type GroceryLineState = z.infer<typeof GroceryLineStateSchema>;
+
+/** Free-form recipe labels ("Filipino", "High-Protein"). App-only: the blueprint Recipe has no tags. */
+export const RecipeTagsSchema = z.array(z.string().trim().min(1).max(24)).max(8);
+
+/**
+ * The blueprint Recipe plus app-only fields. Every place that validates a recipe must use this, not RecipeSchema:
+ * Zod drops unknown keys, so RecipeSchema would silently strip the tags. Recipes saved before tags existed parse as [].
+ */
+export const AppRecipeSchema = RecipeSchema.extend({ tags: RecipeTagsSchema.default([]) });
+export type AppRecipe = z.infer<typeof AppRecipeSchema>;
+/** What callers may pass in: tags optional. */
+export type AppRecipeInput = z.input<typeof AppRecipeSchema>;

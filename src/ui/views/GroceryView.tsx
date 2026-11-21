@@ -85,8 +85,9 @@ export function GroceryView() {
 }
 
 function LineItem({ line, hasStock, cycleId }: { line: GroceryLine; hasStock: boolean; cycleId: string }) {
-  const { s, run } = useApp();
-  const week = line.bucket === "cycle" ? null : line.bucket === "w1" ? 1 : 2;
+  const { s, run, derived } = useApp();
+  // A 1-week plan has only one week, so a "Week 1" note would say nothing.
+  const week = line.bucket === "cycle" || derived.shape.weeks === 1 ? null : line.bucket === "w1" ? 1 : 2;
   const label = line.display_name + (week ? ` (Week ${week})` : "");
   return (
     <li className="border-b border-line transition-colors duration-300 hover:bg-ink/[0.025]" data-testid="grocery-line" data-ingredient={line.ingredient_id} data-unit={line.unitLabel} data-aisle={line.aisle}>

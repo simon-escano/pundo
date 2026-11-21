@@ -1,6 +1,9 @@
 {
   "id": "pork-nilaga",
   "name": "Pork Nilaga",
+  "tags": [
+    "Filipino"
+  ],
   "default_portions": 10,
   "protein_category": "pork",
   "sauce_base": "clear_broth",

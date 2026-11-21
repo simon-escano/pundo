@@ -1,4 +1,5 @@
-import type { Recipe } from "../../domain/schemas/blueprint";
+import type { AppRecipe as Recipe } from "../../domain/schemas/app";
+import { LEGACY_SHAPE, shapeOf, slotsOf, type CycleShape } from "../../domain/engines/shape";
 import { buildGroceryList, type GroceryList } from "../../domain/engines/grocery";
 import { recipeCost, type RecipeCost } from "../../domain/engines/pricing";
 import { scaleRecipe, type ScaledDish } from "../../domain/engines/scaling";
@@ -16,19 +17,19 @@ export type SlotView = {
 
 export type Derived = {
   activeRecipes: Recipe[];
-  slots: SlotView[]; // always six, slot order
-  complete: boolean; // all six slots filled
+  shape: CycleShape; // plan size of the active cycle
+  slots: SlotView[]; // every slot of the shape, in display order
+  complete: boolean; // every slot filled
   scaled: ScaledDish[];
   grocery: GroceryList | null;
 };
-
-const SLOTS: [1 | 2, 0 | 1 | 2][] = [[1, 0], [1, 1], [1, 2], [2, 0], [2, 1], [2, 2]];
 
 /** Pure projection of stored state through the domain engines. */
 export function derive(world: World): Derived {
   const byId = new Map(world.recipes.map((r) => [r.recipe.id, r.recipe]));
   const cycle = world.cycle;
-  const slots: SlotView[] = SLOTS.map(([week, slot]) => {
+  const shape = cycle ? shapeOf(cycle) : LEGACY_SHAPE;
+  const slots: SlotView[] = slotsOf(shape).map(({ week, slot }) => {
     const dish = world.dishes.find((d) => d.week === week && d.slot === slot);
     const recipe = dish ? byId.get(dish.recipe_id) : undefined;
     const portions = dish?.portion_override ?? cycle?.global_portions ?? 10;
@@ -40,5 +41,5 @@ export function derive(world: World): Derived {
     complete && cycle
       ? buildGroceryList({ cycleId: cycle.id, dishes: scaled, pantry: world.pantry, meta: world.meta, registry: world.registry, lineState: world.lineState })
       : null;
-  return { activeRecipes: world.recipes.filter((r) => !r.deleted).map((r) => r.recipe), slots, complete, scaled, grocery };
+  return { activeRecipes: world.recipes.filter((r) => !r.deleted).map((r) => r.recipe), shape, slots, complete, scaled, grocery };
 }

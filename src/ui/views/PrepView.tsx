@@ -18,25 +18,31 @@ const HINT = {
   "week-2": "Cut everything before you turn on the stove.",
 } as const;
 
-/** Prep stage: Day 1 (freezer tasks) and the two cook-day cutting lists, as flat sub-tabs that live in the URL. */
+/**
+ * Prep stage: Day 1 (freezer tasks) and the two cook-day cutting lists, as flat sub-tabs that live in the URL.
+ * A 1-week plan has a single cook day and nothing to freeze for later, so it shows just that list (no tabs).
+ */
 export function PrepView() {
   useWakeLock(true);
   const { derived } = useApp();
   const { sub } = useRoute();
-  const tab = (sub ?? "week-1") as keyof typeof HINT;
+  const twoWeeks = derived.shape.weeks === 2;
+  const tab = (twoWeeks ? (sub ?? "week-1") : "week-1") as keyof typeof HINT;
   return (
     <div>
       <PageTitle title="Prep" hint={HINT[tab]} />
-      <Segmented
-        className="mt-4"
-        label="Prep section"
-        value={tab}
-        options={[
-          { id: "day-1", label: "Day 1", href: routeHref("prep", "day-1") },
-          { id: "week-1", label: "Week 1", href: routeHref("prep", "week-1") },
-          { id: "week-2", label: "Week 2", href: routeHref("prep", "week-2") },
-        ]}
-      />
+      {twoWeeks && (
+        <Segmented
+          className="mt-4"
+          label="Prep section"
+          value={tab}
+          options={[
+            { id: "day-1", label: "Day 1", href: routeHref("prep", "day-1") },
+            { id: "week-1", label: "Week 1", href: routeHref("prep", "week-1") },
+            { id: "week-2", label: "Week 2", href: routeHref("prep", "week-2") },
+          ]}
+        />
+      )}
       {!derived.complete ? (
         <Empty icon={Soup} action={<LinkButton variant="primary" href={routeHref("plan")}>Go to plan</LinkButton>}>
           Roll and lock your plan to get your prep lists.

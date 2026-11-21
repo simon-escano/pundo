@@ -1,6 +1,9 @@
 {
   "id": "chicken-afritada",
   "name": "Chicken Afritada",
+  "tags": [
+    "Filipino"
+  ],
   "default_portions": 10,
   "protein_category": "chicken",
   "sauce_base": "tomato",

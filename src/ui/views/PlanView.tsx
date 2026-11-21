@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { AnimatePresence, m } from "motion/react";
-import { ArrowRight, Dices, House, Lock, LockOpen, Pencil, Plus, RotateCcw, Send, Shuffle, Undo2 } from "lucide-react";
+import { ArrowRight, CalendarPlus, Dices, House, Lock, LockOpen, Pencil, RotateCcw, Send, Shuffle, Undo2 } from "lucide-react";
 import { cycleRanges, formatCycleRange, formatRange } from "../../domain/engines/dates";
 import type { RollError } from "../../domain/engines/roller";
-import { formatMoney, PROTEIN_LABEL, SAUCE_LABEL, STATUS_LABEL, TIER_LABEL, WEEK_CAPTION } from "../lib/format";
-import { lockWeek, randomSeed, rerollOne, rollPlan, todayIso } from "../lib/actions";
+import { countWord, formatMoney, formatTags, PROTEIN_LABEL, SAUCE_LABEL, STATUS_LABEL, TIER_LABEL, WEEK_CAPTION } from "../lib/format";
+import { lockWeek, rerollOne, rollPlan } from "../lib/actions";
+import { allocatePortions } from "../../domain/engines/allocation";
+import { NewPlanModal } from "../components/NewPlanModal";
 import type { SlotView } from "../lib/derive";
 import { useApp } from "../app-context";
 import { useMediaQuery } from "../hooks/useMediaQuery";
@@ -19,11 +21,13 @@ function rollMessage(e: RollError): { title: string; body: string } {
 }
 
 export function PlanView() {
-  const { s, cycle, world, derived, run } = useApp();
+  const { s, cycle, derived, run } = useApp();
   const [roll, setRoll] = useState<RollError | null>(null);
+  const [newPlan, setNewPlan] = useState(false);
   const draft = cycle.status === "draft";
-  const hasDishes = world.dishes.length > 0;
-  const ranges = cycleRanges(cycle.start_date);
+  const { shape } = derived;
+  const hasDishes = derived.slots.some((x) => x.dish);
+  const ranges = cycleRanges(cycle.start_date, shape.weeks);
   const weekLocked = (w: 1 | 2) => derived.slots.filter((x) => x.week === w).every((x) => x.dish?.locked);
 
   const doRoll = () =>
@@ -35,7 +39,7 @@ export function PlanView() {
   return (
     <div className="flex flex-col gap-9">
       <section aria-label="Cycle controls">
-        <h1 className="font-display text-[2.75rem] font-extrabold leading-[0.95] tracking-tight" data-testid="cycle-dates">{formatCycleRange(cycle.start_date)}</h1>
+        <h1 className="font-display text-[2.75rem] font-extrabold leading-[0.95] tracking-tight" data-testid="cycle-dates">{formatCycleRange(cycle.start_date, shape.weeks)}</h1>
         <div className="mt-3 flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
           <Tag tone="accent" icon={cycle.status === "draft" ? Pencil : Lock} data-testid="cycle-status" className="text-[15px]">{STATUS_LABEL[cycle.status]}</Tag>
           <div className="flex items-center gap-3">
@@ -57,14 +61,15 @@ export function PlanView() {
               <Button variant="ghost" icon={Undo2} onClick={() => run(() => s.cycles.transition(cycle.id, "draft"))}>Unlock plan</Button>
             </>
           )}
-          {cycle.status === "complete" && <Button variant="primary" icon={Plus} onClick={() => run(() => s.cycles.create({ start_date: todayIso(), seed: randomSeed() }))}>Start new cycle</Button>}
+          <Button variant={cycle.status === "complete" ? "primary" : "ghost"} icon={CalendarPlus} onClick={() => setNewPlan(true)}>New plan</Button>
         </div>
       </section>
+      <AnimatePresence>{newPlan && <NewPlanModal onClose={() => setNewPlan(false)} />}</AnimatePresence>
 
       <AnimatePresence>{roll && <Banner title={rollMessage(roll).title}>{rollMessage(roll).body}</Banner>}</AnimatePresence>
 
-      {([1, 2] as const).map((week) => {
-        const r = week === 1 ? ranges.week1 : ranges.week2;
+      {ranges.weeks.map((r, i) => {
+        const week = (i + 1) as 1 | 2;
         const locked = hasDishes && weekLocked(week);
         return (
           <section key={week} aria-label={`Week ${week}`} data-testid={`week-${week}`}>
@@ -74,7 +79,7 @@ export function PlanView() {
                   Week {week}
                   <span className="font-sans text-sm font-medium tabular-nums text-muted">{formatRange(r.start, r.end)}</span>
                 </h2>
-                <p className="mt-1 text-sm text-muted">{WEEK_CAPTION[week]}</p>
+                <p className="mt-1 text-sm text-muted">{shape.weeks === 1 ? `${shape.dishesPerWeek === 2 ? "Two" : "Three"} dishes, any kind` : WEEK_CAPTION[week]}</p>
               </div>
               <IconButton
                 icon={locked ? Lock : LockOpen}
@@ -85,7 +90,7 @@ export function PlanView() {
                 onClick={() => run(() => lockWeek(s, cycle.id, week, !weekLocked(week)))}
               />
             </div>
-            <div className="mt-4 grid grid-cols-3 gap-2 sm:gap-3 md:gap-4">
+            <div className={cx("mt-4 grid gap-2 sm:gap-3 md:gap-4", shape.dishesPerWeek === 2 ? "grid-cols-2" : "grid-cols-3")}>
               {derived.slots.filter((x) => x.week === week).map((x) => (
                 <DishCell key={x.slot} view={x} onRollError={setRoll} />
               ))}
@@ -93,7 +98,7 @@ export function PlanView() {
           </section>
         );
       })}
-      {!hasDishes && <Empty icon={Dices}>Nothing rolled yet. Roll to draw three dishes for each week.</Empty>}
+      {!hasDishes && <Empty icon={Dices}>Nothing rolled yet. Roll to draw {countWord(shape.dishesPerWeek)} dishes {shape.weeks === 1 ? "for the week" : "for each week"}.</Empty>}
     </div>
   );
 }
@@ -138,7 +143,7 @@ function ProteinTag({ view }: { view: SlotView }) {
   );
 }
 
-/** Phones: a flat colour tile, three across. Tapping opens the details sheet. */
+/** Phones: a flat colour tile, two or three across. Tapping opens the details sheet. */
 function DishTile({ view, onRollError }: { view: SlotView; onRollError: (e: RollError | null) => void }) {
   const [open, setOpen] = useState(false);
   const { recipe, dish, portions } = view;
@@ -205,10 +210,11 @@ function DishCard({ view, onRollError }: { view: SlotView; onRollError: (e: Roll
 /** Tier, sauce, stove order, the 8 + 2 split and the cost, as plain lines. Shared by the card and the sheet. */
 function DishFacts({ view }: { view: SlotView }) {
   const { recipe, dish, portions, cost } = view;
-  const home = Math.min(portions, 8);
+  const home = allocatePortions(portions).home;
   return (
     <div className="mt-3 flex flex-col gap-1.5 text-sm text-ink/75">
       <p className="font-medium">{TIER_LABEL[recipe!.perishability_tier]} · {SAUCE_LABEL[recipe!.sauce_base]}</p>
+      {recipe!.tags.length > 0 && <p data-testid="dish-tags">{formatTags(recipe!.tags)}</p>}
       <StoveOrder priority={recipe!.stove_priority} />
       <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
         <span className="font-display text-xl font-extrabold text-ink"><AnimatedNumber value={portions} /> portions</span>

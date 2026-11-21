@@ -1,6 +1,9 @@
 {
   "id": "kare-kare",
   "name": "Kare-Kare",
+  "tags": [
+    "Filipino"
+  ],
   "default_portions": 10,
   "protein_category": "beef",
   "sauce_base": "peanut",

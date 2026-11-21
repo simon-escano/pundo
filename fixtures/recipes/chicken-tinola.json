@@ -1,6 +1,9 @@
 {
   "id": "chicken-tinola",
   "name": "Chicken Tinola",
+  "tags": [
+    "Filipino"
+  ],
   "default_portions": 10,
   "protein_category": "chicken",
   "sauce_base": "clear_broth",

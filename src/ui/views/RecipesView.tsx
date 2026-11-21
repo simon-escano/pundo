@@ -1,7 +1,7 @@
 import { lazy, Suspense, useState } from "react";
 import { AnimatePresence } from "motion/react";
 import { FileJson, Plus, Search, Trash2, Undo2 } from "lucide-react";
-import { PROTEIN_LABEL, SAUCE_LABEL, TIER_LABEL } from "../lib/format";
+import { formatTags, PROTEIN_LABEL, SAUCE_LABEL, TIER_LABEL } from "../lib/format";
 import { useApp } from "../app-context";
 import { SpotlightCard } from "../components/bits/SpotlightCard";
 import { AddRecipeModal } from "../components/AddRecipeModal";
@@ -20,7 +20,8 @@ export function RecipesView() {
   const [query, setQuery] = useState("");
   const active = world.recipes.filter((r) => !r.deleted).length;
   const q = query.trim().toLowerCase();
-  const shown = world.recipes.filter(({ recipe }) => recipe.name.toLowerCase().includes(q));
+  // Search matches names and tags, so "high-protein" or "filipino" filters the library.
+  const shown = world.recipes.filter(({ recipe }) => recipe.name.toLowerCase().includes(q) || recipe.tags.some((t) => t.toLowerCase().includes(q)));
 
   return (
     <div>
@@ -29,7 +30,7 @@ export function RecipesView() {
       </PageTitle>
       <div className="relative mt-6">
         <Search aria-hidden className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted" />
-        <input type="search" aria-label="Search recipes" placeholder="Search recipes…" autoComplete="off" className="field !rounded-full !pl-12" value={query} onChange={(e) => setQuery(e.target.value)} />
+        <input type="search" aria-label="Search recipes" placeholder="Search recipes or tags…" autoComplete="off" className="field !rounded-full !pl-12" value={query} onChange={(e) => setQuery(e.target.value)} />
       </div>
       <AnimatePresence>{saved && <div className="mt-4"><Banner tone="ok" onDismiss={() => setSaved(null)}>{saved}</Banner></div>}</AnimatePresence>
 
@@ -44,6 +45,7 @@ export function RecipesView() {
                 {deleted && <> <Tag tone="danger">Deleted</Tag></>}
               </h3>
               <p className="mt-2 text-sm text-ink/75">{TIER_LABEL[r.perishability_tier]} · {SAUCE_LABEL[r.sauce_base]}</p>
+              {r.tags.length > 0 && <p className="mt-0.5 text-sm text-ink/60" data-testid="recipe-tags">{formatTags(r.tags)}</p>}
               <div className="mt-auto flex items-end justify-between gap-2 pt-4">
                 <StoveOrder priority={r.stove_priority} />
                 <div className="flex items-center gap-1">

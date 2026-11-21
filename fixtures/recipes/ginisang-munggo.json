@@ -1,6 +1,9 @@
 {
   "id": "ginisang-munggo",
   "name": "Ginisang Munggo",
+  "tags": [
+    "Filipino"
+  ],
   "default_portions": 10,
   "protein_category": "vegetable",
   "sauce_base": "clear_broth",

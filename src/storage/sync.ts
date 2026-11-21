@@ -162,7 +162,8 @@ async function applyOne(ctx: Ctx, entity: Entity, key: string, hlc: string, payl
       const c = payload as Payload["cycle"];
       const local = await db.cycles.get(c.id);
       if (local && local.updated_at >= hlc) return false;
-      await db.cycles.put(c);
+      // The plan size is write-once: a change from a client that predates plan sizes omits it, so keep ours.
+      await db.cycles.put({ ...c, weeks: c.weeks ?? local?.weeks, dishes_per_week: c.dishes_per_week ?? local?.dishes_per_week });
       return true;
     }
     case "cycleDish": {

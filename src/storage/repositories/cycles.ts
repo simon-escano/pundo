@@ -1,7 +1,8 @@
 import { CycleSchema, type Cycle } from "../../domain/schemas/app";
 import type { Recipe } from "../../domain/schemas/blueprint";
 import { parseIsoDate } from "../../domain/engines/dates";
-import { SLOT_KEYS, type RollResult, type SlotKey } from "../../domain/engines/roller";
+import { type RollResult, type SlotKey } from "../../domain/engines/roller";
+import { hasSlot, LEGACY_SHAPE, shapeFields, shapeOf, slotCount, slotsOf, type CycleShape } from "../../domain/engines/shape";
 import { compareBy } from "../../domain/math/compare";
 import type { DishRow } from "../db";
 import { StorageError } from "../errors";
@@ -43,11 +44,21 @@ export function cyclesRepo(ctx: Ctx) {
   }
 
   return {
-    async create(input: { start_date: string; seed: number; global_portions?: number }): Promise<Cycle> {
+    /**
+     * New draft cycle. `shape` (plan size) is fixed for the cycle's lifetime; it defaults to the legacy 2 weeks x 3 dishes.
+     * `id` is for deterministic ids (one-time content updates); normal callers let the context mint one.
+     */
+    async create(input: { start_date: string; seed: number; global_portions?: number; shape?: CycleShape; id?: string }): Promise<Cycle> {
       if (parseIsoDate(input.start_date) === null) throw new StorageError("VALIDATION", `Invalid start_date "${input.start_date}" (expected YYYY-MM-DD).`);
-      const res = CycleSchema.safeParse({ id: ctx.newId(), start_date: input.start_date, seed: input.seed, global_portions: input.global_portions ?? 10, status: "draft", updated_at: "" });
+      const res = CycleSchema.safeParse({
+        id: input.id ?? ctx.newId(), start_date: input.start_date, seed: input.seed, global_portions: input.global_portions ?? 10, status: "draft", updated_at: "",
+        ...shapeFields(input.shape ?? LEGACY_SHAPE),
+      });
       if (!res.success) throw new StorageError("VALIDATION", `Invalid cycle: ${res.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ")}`);
-      return writeTx(ctx, [db.cycles], (tx) => saveCycle(tx, res.data));
+      return writeTx(ctx, [db.cycles], async (tx) => {
+        if (await db.cycles.get(res.data.id)) throw new StorageError("CONFLICT", `Cycle "${res.data.id}" already exists.`);
+        return saveCycle(tx, res.data);
+      });
     },
 
     get: (id: string) => db.cycles.get(id),
@@ -89,7 +100,7 @@ export function cyclesRepo(ctx: Ctx) {
      */
     async setDishes(id: string, assignments: readonly SlotAssignment[]): Promise<DishRow[]> {
       return writeTx(ctx, [db.cycles, db.cycleDishes, db.recipes], async (tx) => {
-        await requireDraft(id);
+        const shape = shapeOf(await requireDraft(id));
         const rows = await db.cycleDishes.where("cycle_id").equals(id).toArray();
         const next = new Map(rows.map((r) => [dishKey(id, r.week, r.slot), r]));
         const recipeIds = [...new Set(assignments.map((a) => a.recipe_id))];
@@ -98,7 +109,7 @@ export function cyclesRepo(ctx: Ctx) {
 
         const changed: DishRow[] = [];
         for (const a of assignments) {
-          if (![1, 2].includes(a.week) || ![0, 1, 2].includes(a.slot)) throw new StorageError("VALIDATION", `Invalid slot ${a.week}-${a.slot}.`);
+          if (!hasSlot(shape, a.week, a.slot)) throw new StorageError("VALIDATION", `Invalid slot ${a.week}-${a.slot} for a ${shape.weeks}-week, ${shape.dishesPerWeek}-dish plan.`);
           const recipe = recipes.get(a.recipe_id);
           if (!recipe) throw new StorageError("NOT_FOUND", `Recipe "${a.recipe_id}" not found or deleted.`);
           if (a.week === 2 && recipe.perishability_tier !== "TIER_2_HARDY") {
@@ -129,12 +140,8 @@ export function cyclesRepo(ctx: Ctx) {
 
     /** Persist a successful roll (slot-ordered week arrays) into the cycle. */
     async applyRollResult(id: string, roll: Extract<RollResult, { ok: true }>): Promise<DishRow[]> {
-      const a: SlotAssignment[] = [];
-      for (const k of SLOT_KEYS) {
-        const week = Number(k[0]) as 1 | 2;
-        const slot = Number(k[2]) as 0 | 1 | 2;
-        a.push({ week, slot, recipe_id: (week === 1 ? roll.week1 : roll.week2)[slot]!.id });
-      }
+      const shape = shapeOf(await requireCycle(id));
+      const a: SlotAssignment[] = slotsOf(shape).map(({ week, slot }) => ({ week, slot, recipe_id: (week === 1 ? roll.week1 : roll.week2)[slot]!.id }));
       return this.setDishes(id, a);
     },
 
@@ -176,14 +183,16 @@ export function cyclesRepo(ctx: Ctx) {
       return writeTx(ctx, [db.cycles], async (tx) => saveCycle(tx, { ...(await requireDraft(id)), global_portions: portions }));
     },
 
-    /** Status machine. Locking requires all six slots to be filled. */
+    /** Status machine. Locking requires every slot of the cycle's shape to be filled. */
     async transition(id: string, to: CycleStatus): Promise<Cycle> {
       return writeTx(ctx, [db.cycles, db.cycleDishes], async (tx) => {
         const cycle = await requireCycle(id);
         if (!STATUS_NEXT[cycle.status].includes(to)) throw new StorageError("INVALID_STATE", `Cannot go from ${cycle.status} to ${to}.`);
         if (to === "locked") {
-          const n = await db.cycleDishes.where("cycle_id").equals(id).count();
-          if (n !== 6) throw new StorageError("INVALID_STATE", `Fill all 6 slots before locking (${n}/6).`);
+          const shape = shapeOf(cycle);
+          const n = await db.cycleDishes.where("cycle_id").equals(id).filter((d) => hasSlot(shape, d.week, d.slot)).count();
+          const need = slotCount(shape);
+          if (n !== need) throw new StorageError("INVALID_STATE", `Fill all ${need} slots before locking (${n}/${need}).`);
         }
         return saveCycle(tx, { ...cycle, status: to });
       });

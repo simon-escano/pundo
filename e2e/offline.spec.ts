@@ -46,13 +46,18 @@ test("offline-first: the app works without a network, keeps changes on the devic
   const { installabilityErrors } = await cdp.send("Page.getInstallabilityErrors");
   expect(installabilityErrors, JSON.stringify(installabilityErrors)).toEqual([]);
 
-  // Build a plan while online, lock it, and let it sync.
-  await page.getByRole("button", { name: "Roll dishes", exact: true }).click();
-  await expect(page.getByTestId("dish-card")).toHaveCount(6);
-  await page.getByRole("button", { name: "Lock plan" }).click();
+  // After the first successful sync the shipped content update writes this week's locked 1-week plan (two new recipes,
+  // their ingredients, tags) as ordinary synced changes; wait for it to land and drain to the server.
+  await expect(page.getByTestId("cycle-dates")).toHaveText("Nov 22 – Nov 28", { timeout: 20_000 });
+  await expect(page.getByTestId("dish-card")).toHaveCount(2);
   await expect(page.getByTestId("cycle-status")).toHaveText("Locked");
+  await expect.poll(async () => (await idb(page)).outbox, { timeout: 20_000 }).toBe(0);
   await expect(indicator(page)).toHaveAttribute("data-state", "synced", { timeout: 20_000 });
-  expect((await idb(page)).outbox).toBe(0);
+  const pushed = await (await request.get("/api/sync/pull?since=0&limit=500")).json();
+  for (const id of ["pork-pata-tokwa-braise", "beef-oyster-pepper-glaze"]) {
+    expect(pushed.changes.some((c: { entity: string; entity_key: string }) => c.entity === "recipe" && c.entity_key === id)).toBe(true);
+  }
+  expect(pushed.changes.some((c: { entity: string; entity_key: string; payload: { weeks?: number } }) => c.entity === "cycle" && c.entity_key === "plan-2026-11-22" && c.payload?.weeks === 1)).toBe(true);
 
   // ── 2. Network off: reload straight from the service worker ──
   await context.setOffline(true);
@@ -60,12 +65,12 @@ test("offline-first: the app works without a network, keeps changes on the devic
   await expect(indicator(page)).toContainText("Offline");
   await page.reload();
   await expect(page.locator("main[data-route]")).toBeVisible(); // app shell served from the precache
-  await expect(page.getByTestId("dish-card")).toHaveCount(6); // data served from IndexedDB
+  await expect(page.getByTestId("dish-card")).toHaveCount(2); // data served from IndexedDB
   await expect(page.getByTestId("cycle-status")).toHaveText("Locked");
 
   // Split-out (lazy) views are precached too: they open offline.
   await go(page, "recipes");
-  await expect(page.getByTestId("recipe-count")).toHaveText("15");
+  await expect(page.getByTestId("recipe-count")).toHaveText("17");
   await go(page, "cook");
   await expect(page.getByTestId("cook-card").first()).toBeVisible();
   await go(page, "prep");

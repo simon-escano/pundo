@@ -1,6 +1,7 @@
 import { z } from "zod";
-import { IngredientPriceRecordSchema, RecipeSchema } from "../schemas/blueprint";
+import { IngredientPriceRecordSchema } from "../schemas/blueprint";
 import {
+  AppRecipeSchema,
   CycleDishSchema,
   CycleSchema,
   GroceryLineStateSchema,
@@ -77,7 +78,7 @@ export type PullResponse = z.infer<typeof PullResponseSchema>;
 
 // ── Payloads ──────────────────────────────────────────────────────────────────────────────
 const PayloadSchemas = {
-  recipe: z.object({ recipe: RecipeSchema, deleted: z.boolean() }),
+  recipe: z.object({ recipe: AppRecipeSchema, deleted: z.boolean() }),
   priceRegistry: z.object({
     ingredient_id: z.string().min(1),
     display_name: z.string(),

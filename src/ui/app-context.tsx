@@ -6,6 +6,7 @@ import { createStorage, type Storage } from "../storage";
 import type { SyncEngine } from "../storage/sync";
 import { StorageError } from "../storage/errors";
 import { ensureCycle } from "./lib/actions";
+import { applyContentUpdate } from "../storage/contentUpdates";
 import { derive, type Derived } from "./lib/derive";
 import { loadWorld, type World } from "./lib/world";
 import { createFixtureStorage, fixtureFromLocation } from "./fixture";
@@ -30,6 +31,9 @@ export function getStorage(): Promise<Storage> {
     }
     // After the sync engine starts: a fresh device pulls the existing plan before ever creating one.
     await ensureCycle(s, syncEngine);
+    // One-time data shipped with this release (new recipes, tags, this week's plan). In the background: it waits for a
+    // successful sync first and the UI follows its writes live. Off with sync (dev), and retried on a later boot if it fails.
+    if (syncEngine) void applyContentUpdate(s, syncEngine).catch((e) => console.warn("content update failed", e));
     return s;
   })();
   return storagePromise;

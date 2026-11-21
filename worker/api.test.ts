@@ -1,7 +1,7 @@
 import { env, exports } from "cloudflare:workers";
 import { describe, expect, it } from "vitest";
 import pinakbet from "../fixtures/recipes/pinakbet.json";
-import { RecipeSchema, type Recipe } from "../src/domain/schemas/blueprint";
+import { AppRecipeSchema, type AppRecipe as Recipe } from "../src/domain/schemas/app";
 import type { Change, PullResponse, PushResponse } from "../src/domain/sync/protocol";
 import { MAX_CLOCK_SKEW_MS, type Mutation } from "../src/domain/sync/protocol";
 import { push as pushDirect, skewVerdict } from "./sync";
@@ -40,8 +40,8 @@ async function loadRecipe(id: string): Promise<{ recipe: Recipe; updated_at: str
   const videos = (await db.prepare("SELECT title, platform, url FROM recipe_videos WHERE recipe_id = ? ORDER BY ord").bind(id).all()).results;
   const items = (await db.prepare("SELECT * FROM recipe_prep_items WHERE recipe_id = ? ORDER BY ord").bind(id).all<Record<string, unknown>>()).results;
   const steps = (await db.prepare("SELECT text FROM recipe_cook_steps WHERE recipe_id = ? ORDER BY ord").bind(id).all<{ text: string }>()).results;
-  const recipe = RecipeSchema.parse({
-    id: r.id, name: r.name, default_portions: r.default_portions, protein_category: r.protein_category, sauce_base: r.sauce_base,
+  const recipe = AppRecipeSchema.parse({
+    id: r.id, name: r.name, tags: JSON.parse(r.tags as string), default_portions: r.default_portions, protein_category: r.protein_category, sauce_base: r.sauce_base,
     perishability_tier: r.perishability_tier, stove_priority: r.stove_priority, estimated_base_cost_php: r.estimated_base_cost_php, pack_step: r.pack_step,
     videos,
     prep_items: items.map((p) => ({
@@ -206,6 +206,23 @@ describe("last-write-wins by HLC", () => {
   });
 });
 
+describe("cycles: plan size", () => {
+  it("is written on insert, defaults to 2 x 3, and an update without it (old client) never resets it", async () => {
+    const one = U("cyc");
+    await push(mut("cycle", one, hlc(WALL + 500), cyclePayload(one, hlc(WALL + 500), { weeks: 1, dishes_per_week: 2 })));
+    expect(await first("SELECT weeks, dishes_per_week FROM cycles WHERE id = ?", one)).toEqual({ weeks: 1, dishes_per_week: 2 });
+    expect(statuses(await push(mut("cycle", one, hlc(WALL + 510), cyclePayload(one, hlc(WALL + 510), { status: "locked" }))))).toEqual(["applied"]);
+    expect(await first("SELECT status, weeks, dishes_per_week FROM cycles WHERE id = ?", one)).toEqual({ status: "locked", weeks: 1, dishes_per_week: 2 });
+    const legacy = U("cyc");
+    await push(mut("cycle", legacy, hlc(WALL + 520), cyclePayload(legacy, hlc(WALL + 520))));
+    expect(await first("SELECT weeks, dishes_per_week FROM cycles WHERE id = ?", legacy)).toEqual({ weeks: 2, dishes_per_week: 3 });
+  });
+  it("rejects a shape outside 1-2 weeks / 2-3 dishes at the protocol", async () => {
+    const id = U("cyc");
+    expect(statuses(await push(mut("cycle", id, hlc(WALL + 530), cyclePayload(id, hlc(WALL + 530), { weeks: 3 }))))).toEqual(["invalid"]);
+  });
+});
+
 describe("recipes: normalised mirror", () => {
   it("a recipe edit round-trips losslessly through the relational tables, replacing children", async () => {
     const edited = structuredClone(pinakbet) as Recipe;
@@ -216,7 +233,7 @@ describe("recipes: normalised mirror", () => {
     const h = hlc(WALL + 200);
     expect(statuses(await push(mut("recipe", "pinakbet", h, { recipe: edited, deleted: false })))).toEqual(["applied"]);
     const stored = (await loadRecipe("pinakbet"))!;
-    expect(stored.recipe).toEqual(RecipeSchema.parse(edited));
+    expect(stored.recipe).toEqual(AppRecipeSchema.parse(edited));
     expect(stored).toMatchObject({ updated_at: h, deleted: 0 });
     expect(stored.recipe.prep_items).toHaveLength(3); // the 4 removed items are gone
   });
@@ -227,10 +244,23 @@ describe("recipes: normalised mirror", () => {
     await push(mut("recipe", id, hlc(WALL + 300), { recipe: base, deleted: false }));
     const older = { ...base, name: "Older", cook_steps: ["Stir until thick."], prep_items: base.prep_items.slice(0, 1) };
     expect(statuses(await push(mut("recipe", id, hlc(WALL + 250), { recipe: older, deleted: false })))).toEqual(["stale"]);
-    expect((await loadRecipe(id))!.recipe).toEqual(RecipeSchema.parse(base));
+    expect((await loadRecipe(id))!.recipe).toEqual(AppRecipeSchema.parse(base));
     const newer = { ...base, name: "Newer", cook_steps: ["Stir until thick."] };
     await push(mut("recipe", id, hlc(WALL + 350), { recipe: newer, deleted: false }));
-    expect((await loadRecipe(id))!.recipe).toEqual(RecipeSchema.parse(newer));
+    expect((await loadRecipe(id))!.recipe).toEqual(AppRecipeSchema.parse(newer));
+  });
+
+  it("tags are mirrored in the recipes row and pulled back in the payload; a tagless push stores []", async () => {
+    const id = U("rcp");
+    const tagged = { ...structuredClone(pinakbet), id, tags: ["Filipino", "High-Protein"] } as Recipe;
+    const c = await cursor();
+    await push(mut("recipe", id, hlc(WALL + 360), { recipe: tagged, deleted: false }));
+    expect((await loadRecipe(id))!.recipe.tags).toEqual(["Filipino", "High-Protein"]);
+    const pulled = (await changesSince(c)).find((x) => x.entity_key === id)!;
+    expect((pulled.payload as { recipe: Recipe }).recipe.tags).toEqual(["Filipino", "High-Protein"]);
+    const { tags: _t, ...old } = tagged; // a client from before tags existed
+    await push(mut("recipe", id, hlc(WALL + 370), { recipe: old, deleted: false }));
+    expect((await loadRecipe(id))!.recipe.tags).toEqual([]);
   });
 
   it("soft delete is an LWW write and keeps the rows", async () => {

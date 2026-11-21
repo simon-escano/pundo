@@ -4,7 +4,7 @@ const MS_DAY = 86_400_000;
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"] as const;
 
 export type DateRange = { start: string; end: string };
-export type CycleRanges = { week1: DateRange; week2: DateRange; end: string };
+export type CycleRanges = { week1: DateRange; week2: DateRange; end: string; weeks: DateRange[] };
 
 /** Milliseconds since epoch (UTC midnight) for a valid YYYY-MM-DD, else null. */
 export function parseIsoDate(iso: string): number | null {
@@ -28,11 +28,12 @@ export function addDays(iso: string, days: number): string {
   return formatIsoDate(ms + days * MS_DAY);
 }
 
-/** Week 1 = days 0-6, Week 2 = days 7-13. */
-export function cycleRanges(startDate: string): CycleRanges {
+/** Week 1 = days 0-6, Week 2 = days 7-13. `weeks` and `end` cover only the weeks the cycle has (1 or 2). */
+export function cycleRanges(startDate: string, weekCount: 1 | 2 = 2): CycleRanges {
   const week1 = { start: startDate, end: addDays(startDate, 6) };
   const week2 = { start: addDays(startDate, 7), end: addDays(startDate, 13) };
-  return { week1, week2, end: week2.end };
+  const weeks = weekCount === 2 ? [week1, week2] : [week1];
+  return { week1, week2, weeks, end: weeks[weeks.length - 1]!.end };
 }
 
 function parts(iso: string): { month: number; day: number } {
@@ -50,9 +51,9 @@ export function formatRange(start: string, end: string): string {
   return a.month === b.month ? `${left}–${b.day}` : `${left}–${MONTHS[b.month]} ${b.day}`;
 }
 
-/** "Oct 4 – Oct 17" for the top app bar. */
-export function formatCycleRange(startDate: string): string {
+/** "Oct 4 – Oct 17" (2 weeks) or "Nov 22 – Nov 28" (1 week) for the plan header. */
+export function formatCycleRange(startDate: string, weekCount: 1 | 2 = 2): string {
   const a = parts(startDate);
-  const b = parts(cycleRanges(startDate).end);
+  const b = parts(cycleRanges(startDate, weekCount).end);
   return `${MONTHS[a.month]} ${a.day} – ${MONTHS[b.month]} ${b.day}`;
 }

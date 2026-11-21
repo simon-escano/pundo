@@ -1,6 +1,9 @@
 {
   "id": "ginisang-sayote-ground-pork",
   "name": "Ginisang Sayote with Ground Pork",
+  "tags": [
+    "Filipino"
+  ],
   "default_portions": 10,
   "protein_category": "pork",
   "sauce_base": "clear_broth",

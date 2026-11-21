@@ -51,6 +51,16 @@ export const STOVE_ORDER: Record<1 | 2 | 3, { short: string; long: string; how: 
 
 export const WEEK_CAPTION = { 1: "Any dish", 2: "Only dishes that keep 2 weeks" } as const;
 
+/** Plan sizes as the New plan form names them. */
+export type ShapeId = "1x2" | "2x3";
+export const shapeId = (s: { weeks: 1 | 2; dishesPerWeek: 2 | 3 }): ShapeId => (s.weeks === 1 ? "1x2" : "2x3");
+export const SHAPE_LABEL: Record<ShapeId, string> = { "1x2": "1 week · 2 dishes", "2x3": "2 weeks · 3 dishes" };
+const COUNT_WORD = { 2: "two", 3: "three" } as const;
+export const countWord = (n: 2 | 3) => COUNT_WORD[n];
+
+/** Recipe tags as one quiet line ("Filipino · High-Protein"), never a row of pills. */
+export const formatTags = (tags: readonly string[]): string => tags.join(" · ");
+
 /** Human labels for stored enum values shown in forms. The stored values never change. */
 export const STORAGE_CLASS_LABEL = {
   loose_produce: "Loose produce",
