@@ -17,11 +17,13 @@ npx wrangler whoami         # confirm the right account
 The Worker **validates the `Cf-Access-Jwt-Assertion` header itself** (RS256, standard Web Crypto, against your
 team's public keys) and **fails closed**: with Access unconfigured, every `/api/*` request answers
 `500 {"error":"access not configured"}`. So Access is not optional, and you need two values from it (step 1b).
-Your `workers.dev` hostname is predictable: `pundo.<your-account-subdomain>.workers.dev`
-(Dashboard → Workers & Pages → the subdomain shown on the right).
+The app is served only at its custom domain, **`pundo.siteworks.uk`** (zone `siteworks.uk` in the same Cloudflare
+account). `wrangler.jsonc` routes it with `"custom_domain": true` and turns the `workers.dev` and preview URLs off, so
+there is exactly one origin. **Protect a hostname in Access before routing the Worker to it**, or its static files are
+briefly public.
 
-Dashboard → **Zero Trust → Access → Applications → Add → Self-hosted**
-- Destination: that hostname, path left empty (covers the PWA *and* `/api/*`)
+Dashboard → **Zero Trust → Access → Applications → Add → Self-hosted** (the existing app is named **pundo**)
+- Destination: `pundo.siteworks.uk`, path left empty (covers the PWA *and* `/api/*`)
 - Policy: **Allow**, include **Emails** → your address(es)
 - Session duration: 1 month (the app stays usable offline between logins)
 
@@ -100,13 +102,13 @@ npx wrangler deploy --dry-run  # local only: bundles the Worker and lists bindin
 ```bash
 npx wrangler deploy
 ```
-Output ends with the live URL, e.g. `https://pundo.<subdomain>.workers.dev`.
+Output ends with `pundo.siteworks.uk (custom domain)`. The first deploy creates the DNS record and certificate.
 
 ## 6. Smoke test
 
 ```bash
-curl -s https://pundo.<subdomain>.workers.dev/api/health
-# Without a valid Access session: {"error":"unauthorized"}  (HTTP 401) -- that is the correct answer.
+curl -s -o /dev/null -w "%{http_code} %{redirect_url}\n" https://pundo.siteworks.uk/api/health
+# Without an Access session: 302 to <team>.cloudflareaccess.com/cdn-cgi/access/login/pundo.siteworks.uk -- correct.
 # Open the URL in a browser, log in, then visit /api/health there. Expect:
 # {"ok":true,"service":"pundo","schema":1,"cursor":0,"auth":"access"}
 # ("auth":"dev-bypass" in production would be a serious misconfiguration; it cannot occur on a real hostname.)
@@ -121,7 +123,8 @@ and the header dot should say **Offline**. Turn the network back on: it should r
 | Change | What to do |
 |---|---|
 | App/Worker code only | `npm run build && npx wrangler deploy`. Users see "A new version is ready" with a Reload button. |
-| Database schema | Add `migrations/0003_<name>.sql`, run `npx wrangler d1 migrations apply pundo --remote` **before** deploying the Worker that needs it. |
+| New hostname | Add it to the Access app's destinations first, then to `routes` in `wrangler.jsonc`, then deploy. |
+| Database schema | Add `migrations/000N_<name>.sql`, run `npx wrangler d1 migrations apply pundo --remote` **before** deploying the Worker that needs it. |
 | Fixture data (new bundled recipes) | **Never edit `0002_seed.sql` once applied remotely.** Write a new migration; `tests/seed-sql.test.ts` guards the file against the fixtures for local development. |
 
 ## Rollback
